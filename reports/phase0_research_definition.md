@@ -167,18 +167,18 @@ Status key: **DONE** · **PARTIAL** (started, needs redo/finish) · **TODO** · 
 | 03 | Define prediction horizon | DONE | §3 |
 | 04 | Identify prediction unit | DONE | §2 |
 | 05 | Collect and document datasets | PARTIAL | §6 inventory; geo/refs missing |
-| 06 | Load raw data | DONE | `build_dataset.py` |
-| 07 | Understand dataset structure | PARTIAL | facts captured; formal EDA in notebook 02 |
+| 06 | Load raw data | DONE | `build_dataset.py` + notebook 02 (S06a–d) |
+| 07 | Understand dataset structure | DONE | notebook 02 — 54 columns in 10 groups, identities recomputed (S07a–h) |
 | 08 | Validate timestamps and locations | DONE | audit A8/A10 |
-| 09 | Investigate flood labels | DONE | §4 + audit A5/A7 + `verify_model_ready.py` |
-| 10 | Missing-value analysis | TODO | previous notebook deleted → redo in 02 |
-| 11 | Duplicate analysis | DONE | audit A3 (0 dups) |
-| 12 | Outlier / data-quality analysis | PARTIAL | audit A2/A8; formal write-up pending |
+| 09 | Investigate flood labels | DONE | §4 + audit A5/A7 + `verify_model_ready.py` + notebook 02 (S09a–d) |
+| 10 | Missing-value analysis | DONE | notebook 02 (Q10a–d) — F1 regression guard + every NaN cause named |
+| 11 | Duplicate analysis | DONE | audit A3 + notebook 02 (Q11a–d) — 0 dups, keys unique, monotone |
+| 12 | Outlier / data-quality analysis | DONE | notebook 02 (Q12a–j, Q14–Q15) — 41/41 checks; findings F2–F7, G1–G4 → `reports/phase2_3_data_quality.md` |
 
 ### Explore (stages 13–18)
 | # | Stage | Status |
 | --- | --- | --- |
-| 13 | EDA | TODO → `notebooks/02_eda.ipynb` |
+| 13 | EDA | TODO → `notebooks/03_eda.ipynb` |
 | 14 | Temporal analysis | TODO |
 | 15 | Spatial analysis | TODO (station-level only; choropleth BLOCKED) |
 | 16 | Target–feature analysis | TODO |
@@ -236,10 +236,11 @@ Status key: **DONE** · **PARTIAL** (started, needs redo/finish) · **TODO** · 
 | 58 | Administrator dashboard | TODO | |
 | 59 | System testing | TODO | no `tests/` yet |
 | 60 | Final scientific evaluation | TODO | §9 checklist of the workflow |
-| 61 | Documentation / reproducibility | PARTIAL | this document; **still no git repository** |
+| 61 | Documentation / reproducibility | DONE | phase 0/1/2–3 reports + 4 git commits; F1 fix reproducible from history |
 | 62 | Research report / thesis | TODO | |
 
-**Totals:** 16 DONE · 11 PARTIAL · 26 TODO · 5 BLOCKED · (3 horizons counted in TODO).
+**Totals:** 20 DONE · 8 PARTIAL · 25 TODO · 5 BLOCKED · (3 horizons counted in TODO).
+*Updated 2026-10-07 after Phases 0–3 (stages 06, 07, 10, 11, 12 completed; 61 closed on git).*
 
 ## 9. Decisions logged (user-confirmed, 2026-10-07)
 
