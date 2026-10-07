@@ -27,6 +27,21 @@ PART = RAW / "weather_station_daily.partial.csv"
 PARAMS = "PRECTOTCORR,T2M,T2M_MAX,T2M_MIN"
 
 
+def _series(param: dict, key: str, dates: list[str]) -> list[float]:
+    """NASA POWER returns -999.0 for 'no data' (e.g. the newest few days) and may
+    return null.  Both mean UNKNOWN -> NaN.  Never 0 (that would assert "no rain").
+    Finding F1 (reports/phase1_data_inventory.md)."""
+    out = []
+    for d in dates:
+        v = param.get(key, {}).get(d)
+        if v is None or v == "":
+            out.append(float("nan"))
+        else:
+            v = float(v)
+            out.append(float("nan") if v <= -999 else v)
+    return out
+
+
 def _get_point(lat: float, lon: float, start: str, end: str, tries: int = 5) -> pd.DataFrame:
     params = {
         "parameters": PARAMS,
@@ -53,10 +68,10 @@ def _get_point(lat: float, lon: float, start: str, end: str, tries: int = 5) -> 
         return pd.DataFrame(
             {
                 "date": pd.to_datetime([f"{d[:4]}-{d[4:6]}-{d[6:8]}" for d in dates]),
-                "precip_mm": [float(param["PRECTOTCORR"].get(d) or 0) for d in dates],
-                "tmax_c": [float(param["T2M_MAX"].get(d) or float("nan")) for d in dates],
-                "tmin_c": [float(param["T2M_MIN"].get(d) or float("nan")) for d in dates],
-                "tmean_c": [float(param["T2M"].get(d) or float("nan")) for d in dates],
+                "precip_mm": _series(param, "PRECTOTCORR", dates),
+                "tmax_c": _series(param, "T2M_MAX", dates),
+                "tmin_c": _series(param, "T2M_MIN", dates),
+                "tmean_c": _series(param, "T2M", dates),
             }
         )
     raise RuntimeError(f"too many failures for ({lat}, {lon})")

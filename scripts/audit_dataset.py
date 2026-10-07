@@ -27,7 +27,6 @@ import pandas as pd
 import requests
 
 warnings.filterwarnings("ignore")
-pd.set_option("future.no_silent_downcasting", True)
 sys.stdout.reconfigure(encoding="utf-8")
 
 ROOT = Path(r"D:\Flood predictor")

@@ -122,7 +122,19 @@ Built by `src/flood/features/build_dataset.py`; independently verified by
 | Processed impact | **244 model-ready rows** carry `precip_mm = -999`, and their rolling sums are corrupted: `rain_3d` down to **−1997.9 mm**, `rain_7d` to −1996.3, `rain_30d` to −1908.4 |
 | Consequence | any tree model sees an impossible "large negative rain" pattern on exactly the newest days — the rows an operational system would score first |
 | Fix (Phase 3) | map `-999 → NaN` in ingestion, rebuild, then decide whether trailing windows may use partial windows (`min_periods`) or those rows are dropped |
-| Status | **not yet fixed** |
+| **Status** | **FIXED 2026-10-07** — see "F1 remediation record" below |
+
+### F1 remediation record (2026-10-07, during Phase 3)
+
+| Step | Detail |
+| --- | --- |
+| Root cause | `src/flood/ingest/rainfall.py` used `float(param.get(d) or 0)` — a NASA `-999.0` is truthy so it passed through, and a `null` precip silently became `0` ("assume dry") |
+| Code fix | new `_series()` helper: `null` → NaN and any value `<= -999` → NaN, for `PRECTOTCORR/T2M_MAX/T2M_MIN/T2M` |
+| Build fix | `build_dataset.py` now masks `precip_mm, tmax_c, tmin_c, tmean_c <= -999 → NaN` **on read** of the existing raw CSV (raw file left byte-identical: `data/` immutability contract) |
+| Rebuild result | **1,836 sentinel cells → NaN** (459 rows × 4 columns) |
+| Proof of no collateral change | pre/post snapshot diff: rows `200,671`, stations `133`, range `2017-01-06..2026-10-05`, `day_observed`, and all three labels **identical** (`n`/`pos`/`NaN` unchanged); only the sentinel/negative-rain lines differ |
+| Verification | `audit_dataset.py --skip-live` → **ALL CHECKS PASSED** (A1–A3, A5–A10); `verify_model_ready.py` → **PASS**, 0 mismatches vs hand-rolled recompute |
+| Residual | 244 model-ready rows now legitimately carry `NaN` rain/temperature for 2026-10-04…06 → **a median imputer must be fitted inside the training fold** for the logistic-regression baseline (Phase 16); tree models handle NaN natively |
 
 ### Previously known findings (carried from Phase 0)
 
@@ -151,8 +163,10 @@ Built by `src/flood/features/build_dataset.py`; independently verified by
   NASA POWER weather (D3).
 * The target layer is **trustworthy by construction** (master danger level, no assumed zeros,
   two independent verifiers).
-* One **new defect (F1)** must be fixed in Phase 3 before any modelling.
+* One **new defect (F1)** was found here and **fixed the same day** — both audits re-passed
+  on the rebuilt dataset (remediation record above).
 * Eight required datasets (M1–M8) are absent; five of them gate spatial/map stages.
 
 **Next: Phase 2 — load & structural inspection**, and Phase 3 — data-quality investigation,
-in `notebooks/02_data_quality_eda.ipynb` (F1 fix first).
+in `notebooks/02_data_quality_eda.ipynb` (F1 already fixed and verified above; the notebook
+re-checks it and hunts for further defects).

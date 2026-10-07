@@ -180,7 +180,6 @@ def _save(df: pd.DataFrame, path: Path, what: str) -> Path:
 
 def main() -> None:
     global OUT, _MASTER_DL
-    pd.set_option("future.no_silent_downcasting", True)
     st = pd.read_csv(STATIONS)
     _MASTER_DL = st[["id", "dangerlevel"]].rename(
         columns={"id": "station_id", "dangerlevel": "danger_level"}
@@ -191,6 +190,15 @@ def main() -> None:
          "upazilla", "lat", "long", "riverhighestwaterlevel"]
     ]
     weather = pd.read_csv(WEATHER)
+    # F1 (reports/phase1_data_inventory.md): NASA POWER uses -999.0 for "no data".
+    # Those cells are not NaN, so every isna() check reports "0 missing" while the
+    # rolling rain sums pick up -999 mm.  Unknown stays unknown -> NaN, never 0.
+    wx_cols = ["precip_mm", "tmax_c", "tmin_c", "tmean_c"]
+    wx_cols = [c for c in wx_cols if c in weather.columns]
+    n_sent = int(sum(int((weather[c] <= -999).sum()) for c in wx_cols))
+    if n_sent:
+        weather[wx_cols] = weather[wx_cols].mask(weather[wx_cols] <= -999)
+        print(f"F1: {n_sent} NASA POWER sentinel cells (<= -999) -> NaN in weather")
 
     raw = load_waterlevels()
     daily = build_daily(raw)
