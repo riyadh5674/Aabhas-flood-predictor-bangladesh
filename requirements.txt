@@ -1,0 +1,33 @@
+# Flood predictor - virtual environment dependencies
+# Python 3.13.7
+# Versions below (numpy/pandas/scikit-learn/matplotlib/requests) are exactly the ones
+# that produced data/processed/flood_dataset*.csv and reports/feature_whitelist.csv.
+
+# --- core: reproduce the existing data layer ---
+numpy==2.3.2
+pandas==3.0.6
+scikit-learn==1.9.1
+scipy
+matplotlib==3.10.6
+requests==2.32.5
+tabulate          # pandas .to_markdown() used by reports/baseline_summary.md
+
+# --- workflow Phase 16/17: candidate models ---
+lightgbm
+xgboost
+
+# --- workflow Phase 5/20: plotting ---
+seaborn
+
+# --- notebooks / VS Code ---
+ipykernel
+jupyter
+
+# --- utilities ---
+tqdm
+
+# --- deferred: installed when their phase arrives ---
+# shap                # Phase 28 explainable AI
+# imbalanced-learn    # Phase 19 class imbalance
+# geopandas, folium   # Phase 31 Bangladesh risk map
+# fastapi, uvicorn    # Phase 33 real-time pipeline

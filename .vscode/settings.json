@@ -1,0 +1,13 @@
+{
+  "python.defaultInterpreterPath": "${workspaceFolder}\\.venv\\Scripts\\python.exe",
+  "python.terminal.activateEnvironment": true,
+  "notebook.defaultFormatter": "ms-toolsai.jupyter",
+  "[python]": {
+    "editor.formatOnSave": false,
+    "editor.lintOnSave": "default"
+  },
+  "files.exclude": {
+    "**/__pycache__": true,
+    "**/.ipynb_checkpoints": true
+  }
+}

@@ -1,0 +1,15 @@
+columns,meaning
+"station_id,name,river,basin,division,district,upazilla,lat,lon",station identity and geography (from FFWC /stations)
+danger_level,FFWC published danger level in m; the threshold that defines a flood label
+date,issue day UTC; all features use only information up to end of this day
+"n_readings,day_observed",observed 3-hourly readings that day; day_observed = n_readings >= 3
+wl_mean..wl_last,daily aggregate observed water level (m)
+"wl_last_lag1..7,wl_max_lag1..3","water level of previous days (shifted, never future)"
+"wl_rise_1d,wl_rise_3d",water level rise over 1 and 3 days
+"wl_dist_to_danger,wl_pct_danger",how far today's max is below/at the danger level
+"wl_max_roll7,wl_max_roll30,wl_exceed_days_30",antecedent hydrology windows
+"precip_mm,rain_1d..rain_30d,rain_max_7d,wet_days_7",NASA POWER (MERRA-2) precipitation at the station (mm)
+"tmax_c,tmin_c",daily temperature at the station (deg C)
+"doy_sin,doy_cos",day-of-year harmonics (deliberately narrow seasonality)
+"label_24h,label_48h,label_72h",1 = danger level reached in the next 1/2/3 days; 0 = fully observed window with no reach; NaN = window not fully observed
+"obs_days_24h,obs_days_48h,obs_days_72h",how many days of the label window were observed

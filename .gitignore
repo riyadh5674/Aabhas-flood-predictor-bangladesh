@@ -1,0 +1,15 @@
+# --- environment ---
+.venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# --- bulk data: too large for git, reproducible via scripts/ + src/flood/ingest ---
+data/raw/ffwc/waterlevel/
+data/raw/rainfall/weather_station_daily.csv
+data/processed/flood_dataset.csv
+data/processed/flood_dataset_model_ready*.csv
+data/raw/ffwc/*.html
+
+# --- transient outputs ---
+scripts/*.err
