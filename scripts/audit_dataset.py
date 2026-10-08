@@ -317,6 +317,71 @@ check("A8 geo/plausibility",
       f"lat+lon inside Bangladesh bbox={lat_ok and lon_ok}; wl_max p0.1%={q[0.001]:.1f} median={q[0.5]:.1f} p99.9%={q[0.99]:.1f}",
       lat_ok and lon_ok and pl_ok)
 
+# ---- Phase 11 spatial feature checks (reports/phase1_data_inventory.md D7) ----
+SP_COLS = ["elevation_m", "slope_deg", "dist_to_coast_km", "dist_river_km",
+           "dist_major_river_km", "river_density_10km_km_per_km2", "n_river_lines_10km"]
+NB_COLS = (["nb3_rain_7d", "nb5_rain_7d", "nb3_rain_14d", "nb5_rain_14d",
+            "nb3_wl_pct_danger", "nb5_wl_pct_danger", "nb3_n_wl_danger", "nb5_n_wl_danger"])
+UP_COLS = ["up_rain7d_lag1", "up_rain7d_lag2",
+           "up_wl_pct_danger_lag1", "up_wl_pct_danger_lag2"]
+
+# A8b static spatial identity: every station's values must EQUAL station_spatial_features.csv
+spat = pd.read_csv(PROC / "station_spatial_features.csv")[["station_id"] + SP_COLS].set_index("station_id")
+got = DS.groupby("station_id")[SP_COLS].first()
+spat_in = spat.reindex(got.index)
+static_bad = 0
+static_na = 0
+for c in SP_COLS:
+    a = got[c]; b = spat_in[c]
+    m = a.notna() & b.notna()
+    static_bad += int(((a[m] - b[m]).abs() > 1e-9).sum())
+static_na = int((got[SP_COLS].isna() & spat_in[SP_COLS].notna()).sum().sum())
+rng_ok = (DS["elevation_m"].between(-50, 900).all()
+          and DS["slope_deg"].between(0, 90).all()
+          and (DS[["dist_to_coast_km", "dist_river_km", "dist_major_river_km"]] >= 0).all().all()
+          and DS["river_density_10km_km_per_km2"].between(0, 1).all()
+          and DS["n_river_lines_10km"].between(1, 200).all())
+check("A8b static spatial identity+range",
+      f"{static_bad} station-level mismatches vs station_spatial_features.csv (must be 0); "
+      f"{static_na} cells present in the CSV but NaN in the dataset (must be 0); "
+      f"all static cols within plausible range={rng_ok}",
+      static_bad == 0 and static_na == 0 and rng_ok)
+
+# A8c division canonicalised: one spelling per division, 8 divisions
+div = DS["division"].str.strip()
+canon = {"Sylhet", "Dhaka", "Rangpur", "Rajshahi", "Chattogram", "Mymensingh", "Khulna", "Barishal"}
+div_bad = int((~div.isin(canon)).sum())
+check("A8c division canonical",
+      f"{div_bad} cells outside the 8 canonical division names (e.g. legacy 'Chittagong'); "
+      f"divisions present={sorted(div.unique())}",
+      div_bad == 0 and set(div.unique()) == canon)
+
+# A11 dynamic spatial plausibility: nb/up must sit inside the signal ranges they aggregate
+def _agg_ok(cols):
+    bad = 0
+    for c in cols:
+        if c.startswith("nb") and c.endswith("n_wl_danger"):
+            bad += int(((DS[c] < 0) | (DS[c] > 5)).sum())
+        elif c in NB_COLS and "rain" in c:
+            bad += int((DS[c] < 0).sum())
+        elif c in NB_COLS and "wl_pct" in c:
+            bad += int((DS[c] < DS["wl_pct_danger"].min() - 0.01).sum()
+                       + (DS[c] > DS["wl_pct_danger"].max() + 0.01).sum())
+        elif c in UP_COLS and "rain" in c:
+            bad += int((DS[c] < 0).sum())
+        elif c in UP_COLS:
+            bad += int((DS[c] < DS["wl_pct_danger"].min() - 0.01).sum()
+                       + (DS[c] > DS["wl_pct_danger"].max() + 0.01).sum())
+    return bad
+
+a11_bad = _agg_ok(NB_COLS + UP_COLS)
+na_nb_rain = DS["nb3_rain_7d"].isna().mean()
+na_nb_wl = DS["nb3_wl_pct_danger"].isna().mean()
+check("A11 dynamic spatial plausibility",
+      f"nb/up out-of-range cells={a11_bad} (must be 0); NaN fraction nb3_rain_7d={na_nb_rain:.1%}, "
+      f"nb3_wl_pct_danger={na_nb_wl:.1%} (rain must be complete once any gauge reports)",
+      a11_bad == 0 and na_nb_rain < 0.05)
+
 # A9 coverage
 cov = FULLDS.groupby("station_id").agg(day_obs=("day_observed", "sum"), span=("date", lambda s: (s.max() - s.min()).days + 1))
 cov["coverage"] = (cov["day_obs"] / cov["span"] * 100).round(1)

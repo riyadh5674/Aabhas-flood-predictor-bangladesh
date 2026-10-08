@@ -103,7 +103,7 @@ Rare-but-not-degenerate ⇒ **PR-AUC is the primary metric** (Phase 20), accurac
 
 **LEGAL (features):** everything computable at 24:00 UTC of day `t`
 
-| Group | Columns (44 approved) |
+| Group | Columns (63 approved) |
 | --- | --- |
 | Station identity/geo | `river basin division district upazilla lat lon danger_level` |
 | Observation metadata | `n_readings day_observed` |
@@ -112,6 +112,13 @@ Rare-but-not-degenerate ⇒ **PR-AUC is the primary metric** (Phase 20), accurac
 | Hydrology derived | `wl_rise_1d wl_rise_3d wl_dist_to_danger wl_pct_danger wl_max_roll7 wl_max_roll30 wl_exceed_days_30` |
 | Rain/temperature | `precip_mm rain_1d rain_3d rain_7d rain_14d rain_30d rain_max_7d wet_days_7 tmax_c tmin_c` |
 | Season (narrow) | `doy_sin doy_cos` |
+| Static geography (Phase 11) | `elevation_m slope_deg dist_to_coast_km dist_river_km dist_major_river_km river_density_10km_km_per_km2 n_river_lines_10km` |
+| Neighbourhood (Phase 11) | `nb3_rain_7d nb5_rain_7d nb3_rain_14d nb5_rain_14d nb3_wl_pct_danger nb5_wl_pct_danger nb3_n_wl_danger nb5_n_wl_danger` |
+| Upstream (Phase 11) | `up_rain7d_lag1 up_rain7d_lag2 up_wl_pct_danger_lag1 up_wl_pct_danger_lag2` |
+
+Phase-11 groups are **pre-audit admitted** on the argument in
+`reports/phase11_spatial_features.md` §4 (all computed at or before `t`); the formal
+whitelist ruling is stage 19 and may still demote individual columns.
 
 **ILLEGAL (must never appear in a feature matrix):**
 
@@ -152,7 +159,7 @@ Rare-but-not-degenerate ⇒ **PR-AUC is the primary metric** (Phase 20), accurac
 | R5 | **Rainfall is reanalysis, not observed** | NASA POWER / MERRA‑2 | stated in every report; ablation with/without rain (Phase 38) |
 | R6 | **2018 gap** | 0 readings in the whole year | split around it; never interpolate across it |
 | R7 | **Growing station network** | 85 → 133 stations | station-out validation must not let network growth leak into "unseen location" claims |
-| R8 | **Geospatial data partially sourced 2026-10-08** | SRTM 1" (40 tiles), OSM river network (6,792 centrelines), geoBoundaries ADM1/ADM2 → `data/raw/geo/` (manifest `geo/README.md`); soil / land cover / independent flood extents still absent | Phase 11 static features unblocked; soil/landcover groups stay behind R8 |
+| R8 | **Geospatial data partially sourced 2026-10-08** | SRTM 1" (40 tiles), OSM river network (6,792 centrelines), geoBoundaries ADM1/ADM2 → `data/raw/geo/` (manifest `geo/README.md`); soil / land cover / independent flood extents still absent | Phase 11 **engineering complete** (19 spatial columns in the dataset); the soil/landcover *feature group* stays behind R8 |
 
 ## 8. Mapped workflow — all 62 stages
 
@@ -190,9 +197,9 @@ Status key: **DONE** · **PARTIAL** (started, needs redo/finish) · **TODO** · 
 | --- | --- | --- | --- |
 | 19 | Data-leakage audit | PARTIAL | rules in §5; formal audit doc pending (whitelist was deleted) |
 | 20 | Define prediction-time info boundary | DONE | §5 |
-| 21 | Feature engineering | PARTIAL | core features in `build_dataset.py`; notebook extras were lost, redo cleanly |
+| 21 | Feature engineering | DONE | core features in `build_dataset.py`; Phase 11 added static + neighbourhood + upstream groups → `reports/phase11_spatial_features.md` |
 | 22 | Temporal / lag / rolling features | DONE | lags 1–7, roll 7/30, rain windows |
-| 23 | Spatial / geographical features | **PARTIAL** | static set computed (2026-10-08) from SRTM + OSM: `elevation_m, slope_deg, dist_to_coast_km, dist_river_km, dist_major_river_km, river_density_10km` → `data/processed/station_spatial_features.csv`; dynamic neighbourhood/upstream propagation features pending |
+| 23 | Spatial / geographical features | DONE | static 7 (`station_spatial_features.csv`) + neighbourhood 8 + upstream 4 = 19 columns, built 2026-10-08; soil/landcover group still absent (R8) |
 | 24 | Feature selection | TODO | Phase 12 |
 | 25 | Mutual information | PARTIAL | MI computed for 38 features × 3 horizons in `notebooks/03_eda.ipynb` (TF2); the selection decision itself is Phase 12 |
 | 26 | Model-ready dataset | DONE | 200,665 × 54 (post-F3 + F8 fixes, D4/D9) |
@@ -239,8 +246,8 @@ Status key: **DONE** · **PARTIAL** (started, needs redo/finish) · **TODO** · 
 | 61 | Documentation / reproducibility | DONE | phase 0/1/2–3 reports + 4 git commits; F1 fix reproducible from history |
 | 62 | Research report / thesis | TODO | |
 
-**Totals:** 21 DONE · 8 PARTIAL · 28 TODO · 2 BLOCKED · (3 horizons counted in TODO).
-*Updated 2026-10-07 after Phases 0–3 (stages 06, 07, 10, 11, 12 completed; 61 closed on git).*
+**Totals:** 23 DONE · 6 PARTIAL · 28 TODO · 2 BLOCKED · (3 horizons counted in TODO).
+*Updated 2026-10-08 after Phase 11 (stages 21, 23 closed: 19 spatial columns, 73-col model-ready table, audits 14/14 + verifier green).*
 
 ## 9. Decisions logged (user-confirmed, 2026-10-07)
 
@@ -267,6 +274,7 @@ Status key: **DONE** · **PARTIAL** (started, needs redo/finish) · **TODO** · 
 - [x] Phase-0 risks recorded with evidence (§7)
 - [x] All 62 workflow stages mapped (§8)
 
-**Next stage:** stages 13–18 done (EDA). Next: stage 19 formal leakage audit
-(`obs_days_*`, `n_readings`/E7 admissibility decision) + Phase 15 split design per F7/F8,
-D7 and D8 — then Phase 10–12 feature engineering & selection with the 17-feature keep list.
+**Next stage:** Phase 11 closed (stages 21, 23). Next: **stage 19 formal leakage audit**
+(`obs_days_*` ban, `n_readings`/E7 admissibility, Phase-19 columns whitelist) + Phase 15
+split design per F7/F8, D7 and D8 — then Phase 12 feature selection with a re-derived
+keep-list that includes the spatial groups.

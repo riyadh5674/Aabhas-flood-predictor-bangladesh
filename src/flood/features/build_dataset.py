@@ -4,6 +4,7 @@ Inputs
     data/raw/ffwc/waterlevel/{station_id}/{year}.csv   (3-hourly observed water level)
     data/raw/ffwc/ffwc_stations.csv                    (station master, danger levels, geo)
     data/raw/rainfall/weather_station_daily.csv        (daily precipitation / temperature)
+    data/processed/station_spatial_features.csv        (Phase 11 static geo: elevation, slope, distances)
 
 Output
     data/processed/flood_dataset.csv        the dataset to model on
@@ -28,10 +29,28 @@ ROOT = Path(r"D:\Flood predictor")
 WL = ROOT / "data" / "raw" / "ffwc" / "waterlevel"
 STATIONS = ROOT / "data" / "raw" / "ffwc" / "ffwc_stations.csv"
 WEATHER = ROOT / "data" / "raw" / "rainfall" / "weather_station_daily.csv"
+SPATIAL = ROOT / "data" / "processed" / "station_spatial_features.csv"
 OUT_DIR = ROOT / "data" / "processed"
 OUT = OUT_DIR / "flood_dataset.csv"
 MIN_READINGS_PER_DAY = 3
 LEADS = {"label_24h": 1, "label_48h": 2, "label_72h": 3}
+# Phase 11 spatial feature engineering (reports/phase1_data_inventory.md D7):
+#  * static per-station geo from SRTM + OSM + geoBoundaries (station_spatial_features.csv)
+#  * nearest-neighbour regional context: mean of the k nearest matrix gauges' rain and
+#    water-level state on the SAME day t (all known by the issue instant -> no leakage)
+#  * upstream propagation: on multi-station rivers the nearest same-river gauge at HIGHER
+#    elevation (lat ordering is wrong for the west-flowing Ganges/Padma systems) within
+#    UPSTREAM_MAX_KM, lagged 1-2 days (strictly <= day t-1)
+NEIGHB_KS = (3, 5)
+NEIGHB_SIGS = ("rain_7d", "rain_14d", "wl_pct_danger")
+NEIGHB_POOL = 15  # each gauge's candidate pool = nearest POOL gauges; the nearest-k that actually reported are used
+UPSTREAM_MAX_KM = 250.0
+UPSTREAM_ELEV_DIFF_M = 0.5  # must be clearly higher, else the "nearest upstream" is ambiguous
+UPSTREAM_LAGS = (1, 2)
+SPATIAL_COLS = ["elevation_m", "slope_deg", "dist_to_coast_km", "dist_river_km",
+                "dist_major_river_km", "river_density_10km_km_per_km2", "n_river_lines_10km"]
+# FFWC master spells the same division two ways (api_master vs legacy catalog)
+DIVISION_NORM = {"Chittagong": "Chattogram"}
 # F3 (reports/phase2_3_data_quality.md): the FFWC feed contains decimal-shifted readings
 # (1213.00 m, 1315.13 m).  No gauge in Bangladesh can physically exceed the highest
 # published danger level (70.3 m); 100 m is a generous impossible-value bound.
@@ -199,6 +218,187 @@ def add_features(daily: pd.DataFrame, weather: pd.DataFrame) -> pd.DataFrame:
     return df, num
 
 
+def _haversine_km(lat1, lon1, lat2, lon2) -> np.ndarray:
+    R = 6371.0088
+    p1, p2 = np.radians(lat1), np.radians(lat2)
+    dp = np.radians(lat2 - lat1)
+    dl = np.radians(lon2 - lon1)
+    a = np.sin(dp / 2) ** 2 + np.cos(p1) * np.cos(p2) * np.sin(dl / 2) ** 2
+    return 2 * R * np.arcsin(np.sqrt(np.clip(a, 0.0, 1.0)))
+
+
+def add_static_spatial(df: pd.DataFrame) -> pd.DataFrame:
+    """Phase 11: join per-station SRTM/OSM-derived static features (station_spatial_features.csv).
+
+    Kept as a separate audit-able group; every modelling station must resolve."""
+    static = pd.read_csv(SPATIAL)[["station_id"] + SPATIAL_COLS]
+    n0 = df["station_id"].nunique()
+    out = df.merge(static, on="station_id", how="left")
+    missing = n0 - out["station_id"].nunique()
+    na = {c: int(out[c].isna().sum()) for c in SPATIAL_COLS}
+    if missing:
+        print(f"WARN add_static_spatial: {missing} stations absent from station_spatial_features.csv")
+    print(f"static spatial joined for {out['station_id'].nunique()} stations; "
+          f"NaN cells per column = {na}")
+    return out
+
+
+def add_neighbourhood(df: pd.DataFrame) -> pd.DataFrame:
+    """Phase 11: nearest-k matrix gauges' regional context on day t (never future).
+
+    Newly-installed gauges only exist from their first report, so the neighbour set is
+    RESOLVED PER DAY: of the nearest NEIGHB_POOL gauges, use the nearest k that actually
+    reported a value that day; if fewer than k reported, use those that did.  Their rain /
+    water-level state on the SAME day is known by the issue instant -> no leakage.
+    """
+    stcol = df[["station_id", "lat", "lon"]].drop_duplicates("station_id")
+    latv = stcol["lat"].to_numpy()
+    lonv = stcol["lon"].to_numpy()
+    ids = stcol["station_id"].to_numpy().astype("int64")
+    # SxS distance -> per-gauge ranked pool (nearest-first, self-last)
+    D = np.empty((len(ids), len(ids)), dtype="float")
+    for i in range(len(ids)):
+        D[i] = _haversine_km(latv[i], lonv[i], latv, lonv)
+    np.fill_diagonal(D, np.inf)
+    pools = np.argsort(D, axis=1)[:, :NEIGHB_POOL]          # position ranks at distance order
+
+    def resolve(pivot):
+        """for each station-day: mean over the nearest-k SIG observed that day.
+
+        Returns (mean_matrix, count_matrix) with columns = pivot columns (station order)."""
+        vals = pivot.to_numpy(dtype="float")                # (T, S)
+        has = ~np.isnan(vals)
+        means = {k: np.full(vals.shape, np.nan) for k in NEIGHB_KS}
+        counts = {k: np.zeros(vals.shape, dtype="int64") for k in NEIGHB_KS}
+        for i in range(vals.shape[1]):
+            cols = pools[i]                                  # ranked candidate positions
+            sub = vals[:, cols]
+            sub_has = has[:, cols]
+            cum = sub_has.cumsum(axis=1)
+            for k in NEIGHB_KS:
+                ok_everywhere = cum[:, -1] >= k
+                kth = np.full(vals.shape[0], cols.shape[0], dtype="int64")
+                kth[ok_everywhere] = np.argmax(cum[ok_everywhere] >= k, axis=1)
+                sel = np.arange(cols.shape[0])[None, :] <= kth[:, None]
+                use = sel & sub_has
+                cnt = use.sum(axis=1)
+                wsum = np.nansum(np.where(use, sub, 0.0), axis=1)
+                means[k][:, i] = np.where(cnt > 0, wsum / np.maximum(cnt, 1), np.nan)
+                counts[k][:, i] = cnt
+        return means, counts
+
+    # RAIN neighbour signals are built from the weather record, not the WL-active matrix:
+    # rainfall is knowable at any gauge location on any day (NASA POWER), independent of
+    # whether that gauge reported a river stage.  A weather-only day therefore still
+    # carries the areal signal.  Same F1 sentinel rule as main().
+    wxframe = pd.read_csv(WEATHER, usecols=["station_id", "date", "precip_mm"])
+    wxframe = wxframe[wxframe["station_id"].isin(ids)]
+    n_sent_wx = int((wxframe["precip_mm"] <= -999).sum())
+    wxframe.loc[wxframe["precip_mm"] <= -999, "precip_mm"] = np.nan
+    wxframe["date"] = pd.to_datetime(wxframe["date"])
+    wxframe["rain_7d"] = wxframe.groupby("station_id")["precip_mm"].transform(
+        lambda s: s.rolling(7, min_periods=1).sum())
+    wxframe["rain_14d"] = wxframe.groupby("station_id")["precip_mm"].transform(
+        lambda s: s.rolling(14, min_periods=1).sum())
+    for sig in ("rain_7d", "rain_14d"):
+        pivot = wxframe.pivot_table(index="date", columns="station_id",
+                                    values=sig, dropna=False).reindex(columns=ids)
+        assert (np.asarray(pivot.columns, dtype="int64") == ids).all()
+        means, _ = resolve(pivot)
+        for k in NEIGHB_KS:
+            colname = f"nb{k}_{sig}"
+            long = pd.DataFrame(means[k], index=pivot.index, columns=pivot.columns).stack()
+            long.name = colname
+            df = df.merge(long.reset_index(), on=["station_id", "date"], how="left", validate="one_to_one")
+    if n_sent_wx:
+        print(f"  nb: {n_sent_wx} weather sentinel cells skipped in the neighbour rain window (F1)")
+
+    # neighbour water-level state: mean wl/danger ratio of the nearest k gauges that
+    # actually reported a stage on day t (same issue instant -> no leakage).  This is
+    # the NEIGHB_SIGS 'wl_pct_danger' entry; without it the column is silently dropped
+    # by the `keep` filter below and audit check A11 fails.
+    pv = df.pivot_table(index="date", columns="station_id", values="wl_pct_danger", dropna=False)
+    assert (np.asarray(pv.columns, dtype="int64") == ids).all()
+    means, _ = resolve(pv)
+    for k in NEIGHB_KS:
+        colname = f"nb{k}_wl_pct_danger"
+        long = pd.DataFrame(means[k], index=pv.index, columns=pv.columns).stack()
+        long.name = colname
+        df = df.merge(long.reset_index(), on=["station_id", "date"], how="left", validate="one_to_one")
+
+    # count of nearest neighbours currently at/above their danger level (same day, no leak)
+    pvv = pv.to_numpy(dtype="float")
+    dng = (pvv >= 1.0).astype("float")
+    dng[np.isnan(pvv)] = np.nan
+    has_dng = ~np.isnan(dng)
+    res = {k: np.zeros(pv.shape, dtype="int64") for k in NEIGHB_KS}
+    for i in range(pvv.shape[1]):
+        cols = pools[i]
+        sub_has = has_dng[:, cols]
+        cum = sub_has.cumsum(axis=1)
+        for k in NEIGHB_KS:
+            ok_everywhere = cum[:, -1] >= k
+            kth = np.full(pvv.shape[0], cols.shape[0], dtype="int64")
+            kth[ok_everywhere] = np.argmax(cum[ok_everywhere] >= k, axis=1)
+            sel = np.arange(cols.shape[0])[None, :] <= kth[:, None]
+            use = sel & sub_has
+            res[k][:, i] = np.nansum(np.where(use, dng[:, cols], 0.0), axis=1)
+    for k in NEIGHB_KS:
+        colname = f"nb{k}_n_wl_danger"
+        long = pd.DataFrame(res[k], index=pv.index, columns=pv.columns).stack()
+        long.name = colname
+        df = df.merge(long.reset_index(), on=["station_id", "date"], how="left", validate="one_to_one")
+    df = df.sort_values(["station_id", "date"]).reset_index(drop=True)
+    return df
+
+
+def add_upstream(df: pd.DataFrame) -> pd.DataFrame:
+    """Phase 11: upstream dwell-time features on multi-station rivers.
+
+    Lat ordering is wrong for the west-flowing Ganges/Padma lower systems, so upstream =
+    nearest same-river gauge with clearly HIGHER elevation within UPSTREAM_MAX_KM.  Its
+    rain / WL state shifted 1 and 2 days (strictly before the label window) precedes
+    arrivals at the downstream gauge.
+    """
+    topo = df[["station_id", "river", "lat", "lon", "elevation_m"]].drop_duplicates("station_id")
+    up_map: dict[int, int] = {}
+    for _, g in topo.groupby("river"):
+        g = g.dropna(subset=["elevation_m"])
+        if len(g) < 2:
+            continue
+        for _, s in g.iterrows():
+            higher = g[g["elevation_m"] > s["elevation_m"] + UPSTREAM_ELEV_DIFF_M]
+            if higher.empty:
+                continue
+            d = _haversine_km(s["lat"], s["lon"], higher["lat"].to_numpy(), higher["lon"].to_numpy())
+            j = int(np.argmin(d))
+            if d[j] <= UPSTREAM_MAX_KM:
+                up_map[int(s["station_id"])] = int(higher["station_id"].iloc[j])
+    n_mapped = len(up_map)
+    if not up_map:
+        raise RuntimeError("add_upstream: no upstream relations found - elevation unreliable?")
+    usrc = df[["station_id", "date", "rain_7d", "wl_pct_danger"]].copy()
+    for k in UPSTREAM_LAGS:
+        usrc[f"up_rain7d_lag{k}"] = usrc.groupby("station_id")["rain_7d"].shift(k)
+        usrc[f"up_wl_pct_danger_lag{k}"] = usrc.groupby("station_id")["wl_pct_danger"].shift(k)
+    usrc = usrc[["station_id", "date", *[f"up_rain7d_lag{k}" for k in UPSTREAM_LAGS],
+                 *[f"up_wl_pct_danger_lag{k}" for k in UPSTREAM_LAGS]]]
+    df["_up_id"] = df["station_id"].map(up_map)
+    df = df.merge(usrc, left_on=["_up_id", "date"], right_on=["station_id", "date"],
+                  how="left", suffixes=("", "_usrc"))
+    usrc_cols = [f"up_rain7d_lag{k}" for k in UPSTREAM_LAGS] + \
+                [f"up_wl_pct_danger_lag{k}" for k in UPSTREAM_LAGS]
+    for c in usrc_cols:
+        df[c] = df[c + "_usrc"] if c + "_usrc" in df.columns else df[c]
+    keepcol = [c for c in df.columns if c.endswith("_usrc")]
+    df.drop(columns=["_up_id", *keepcol], inplace=True)
+    print(f"upstream map: {n_mapped} downstream stations with a same-river upstream gauge "
+          f"within {UPSTREAM_MAX_KM:g} km; NaN cells per feature = ")
+    for c in usrc_cols:
+        print(f"    {c}: {int(df[c].isna().sum())}")
+    return df
+
+
 def _save(df: pd.DataFrame, path: Path, what: str) -> Path:
     path.parent.mkdir(parents=True, exist_ok=True)
     for attempt in range(5):
@@ -224,6 +424,9 @@ def main() -> None:
         ["station_id", "name", "river", "basin", "division", "district",
          "upazilla", "lat", "long", "riverhighestwaterlevel"]
     ]
+    # The FFWC master calls the same division two different ways; a feature must not
+    # split a 21-station division on a spelling.  Normalise to the standard, audible.
+    st["division"] = st["division"].str.strip().replace(DIVISION_NORM)
     weather = pd.read_csv(WEATHER)
     # F1 (reports/phase1_data_inventory.md): NASA POWER uses -999.0 for "no data".
     # Those cells are not NaN, so every isna() check reports "0 missing" while the
@@ -245,21 +448,33 @@ def main() -> None:
 
     df["n_readings"] = df["n_readings"].fillna(0).astype("int64")
     df["day_observed"] = df["day_observed"].fillna(False).astype("bool")
+    df = add_static_spatial(df)
+    df = add_neighbourhood(df)
+    df = add_upstream(df)
     df = df.sort_values(["station_id", "date"]).reset_index(drop=True)
 
     lead_cols = list(LEADS)
+    neighb_cols = ([f"nb{k}_{sig}" for k in NEIGHB_KS for sig in NEIGHB_SIGS]
+                   + [f"nb{k}_n_wl_danger" for k in NEIGHB_KS])
+    up_cols = ([f"up_rain7d_lag{k}" for k in UPSTREAM_LAGS]
+               + [f"up_wl_pct_danger_lag{k}" for k in UPSTREAM_LAGS])
     keep = [
         "station_id", "name", "river", "basin", "division", "district", "upazilla",
         "lat", "lon", "danger_level", "date", "n_readings", "day_observed",
         "wl_mean", "wl_max", "wl_min", "wl_first", "wl_last",
-    ] + [f"wl_last_lag{k}" for k in range(1, 8)] + [f"wl_max_lag{k}" for k in (1, 2, 3)] + [
+    ] + SPATIAL_COLS + [f"wl_last_lag{k}" for k in range(1, 8)] + [f"wl_max_lag{k}" for k in (1, 2, 3)] + [
         "wl_rise_1d", "wl_rise_3d", "wl_dist_to_danger", "wl_pct_danger",
         "wl_max_roll7", "wl_max_roll30", "wl_exceed_days_30",
         "precip_mm", "rain_1d", "rain_3d", "rain_7d", "rain_14d", "rain_30d",
         "rain_max_7d", "wet_days_7", "tmax_c", "tmin_c", "source",
         "doy_sin", "doy_cos",
-    ] + lead_cols + [f"obs_days_{c[-3:]}" for c in lead_cols]
-    df = df[[c for c in keep if c in df.columns]]
+    ] + neighb_cols + up_cols + lead_cols + [f"obs_days_{c[-3:]}" for c in lead_cols]
+    # a column that was declared but never produced must FAIL the build, not vanish:
+    # that silent drop is exactly how nb3/nb5_wl_pct_danger disappeared (Phase 11).
+    missing = [c for c in keep if c not in df.columns]
+    if missing:
+        raise KeyError(f"build_dataset: declared columns were never produced: {missing}")
+    df = df[keep]
     df.sort_values(["station_id", "date"], inplace=True, ignore_index=True)
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -301,6 +516,16 @@ def main() -> None:
         ("precip_mm,rain_1d..rain_30d,rain_max_7d,wet_days_7", "NASA POWER (MERRA-2) precipitation at the station (mm)"),
         ("tmax_c,tmin_c", "daily temperature at the station (deg C)"),
         ("doy_sin,doy_cos", "day-of-year harmonics (deliberately narrow seasonality)"),
+        ("elevation_m,slope_deg,dist_to_coast_km,dist_river_km,dist_major_river_km,"
+         "river_density_10km_km_per_km2,n_river_lines_10km",
+         "Phase 11 static geo (SRTM/OSM): station elevation, terrain slope, km to coast, "
+         "km to nearest river line, km to nearest major river line, river density in a 10 km disc"),
+        ("nb3_rain_7d,nb5_rain_7d,nb3_rain_14d,nb5_rain_14d",
+         "mean of the 3/5 nearest gauges' precipitation sum over 7/14 d *at day t* (known by issue)"),
+        ("nb3_wl_pct_danger,nb5_wl_pct_danger", "mean of the 3/5 nearest gauges' wl/danger ratio at day t"),
+        ("nb3_n_wl_danger,nb5_n_wl_danger", "count of the 3/5 nearest gauges currently above danger level at day t"),
+        ("up_rain7d_lag1,up_rain7d_lag2", "nearest same-river HIGHER-elevation gauge's rainfall: 7 d sum 1 and 2 days earlier"),
+        ("up_wl_pct_danger_lag1,up_wl_pct_danger_lag2", "that upstream gauge's wl/danger ratio 1 and 2 days earlier"),
         ("label_24h,label_48h,label_72h", "1 = danger level reached in the next 1/2/3 days; "
          "0 = fully observed window with no reach; NaN = window not fully observed"),
         ("obs_days_24h,obs_days_48h,obs_days_72h", "how many days of the label window were observed"),

@@ -10,6 +10,11 @@
 Decisions baked in: **D1** JJAS monsoon · **D2** all horizons equal · **D5** drift decomposition ·
 **D6** informative-missingness test · **D7** persistence baseline per horizon *and* per year.
 
+> **Post-script (2026-10-08):** Phase 11 appended 19 spatial columns (→ 73 total). Labels are
+> byte-identical, so every number below still holds; what changed is only the *candidate
+> feature pool* — the §6 keep-list and §8 action 3 must be re-derived including the spatial
+> groups (`reports/phase11_spatial_features.md` §7).
+
 ---
 
 ## 1. Univariate analysis (stage 13)

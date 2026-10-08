@@ -11,5 +11,11 @@ wl_mean..wl_last,daily aggregate observed water level (m)
 "precip_mm,rain_1d..rain_30d,rain_max_7d,wet_days_7",NASA POWER (MERRA-2) precipitation at the station (mm)
 "tmax_c,tmin_c",daily temperature at the station (deg C)
 "doy_sin,doy_cos",day-of-year harmonics (deliberately narrow seasonality)
+"elevation_m,slope_deg,dist_to_coast_km,dist_river_km,dist_major_river_km,river_density_10km_km_per_km2,n_river_lines_10km","Phase 11 static geo (SRTM/OSM): station elevation, terrain slope, km to coast, km to nearest river line, km to nearest major river line, river density in a 10 km disc"
+"nb3_rain_7d,nb5_rain_7d,nb3_rain_14d,nb5_rain_14d",mean of the 3/5 nearest gauges' precipitation sum over 7/14 d *at day t* (known by issue)
+"nb3_wl_pct_danger,nb5_wl_pct_danger",mean of the 3/5 nearest gauges' wl/danger ratio at day t
+"nb3_n_wl_danger,nb5_n_wl_danger",count of the 3/5 nearest gauges currently above danger level at day t
+"up_rain7d_lag1,up_rain7d_lag2",nearest same-river HIGHER-elevation gauge's rainfall: 7 d sum 1 and 2 days earlier
+"up_wl_pct_danger_lag1,up_wl_pct_danger_lag2",that upstream gauge's wl/danger ratio 1 and 2 days earlier
 "label_24h,label_48h,label_72h",1 = danger level reached in the next 1/2/3 days; 0 = fully observed window with no reach; NaN = window not fully observed
 "obs_days_24h,obs_days_48h,obs_days_72h",how many days of the label window were observed

@@ -219,6 +219,170 @@ if fails:
 else:
     print("[PASS] 0 mismatches between CSV and hand-rolled recomputation")
 
+# ---- 4) Phase 11 spatial hand-check on the same sample ----
+import math
+
+def hdist(lat1, lon1, lat2, lon2):
+    R = 6371.0088
+    p1, p2 = math.radians(lat1), math.radians(lat2)
+    dp = math.radians(lat2 - lat1); dl = math.radians(lon2 - lon1)
+    a = math.sin(dp / 2) ** 2 + math.cos(p1) * math.cos(p2) * math.sin(dl / 2) ** 2
+    return 2 * R * math.asin(math.sqrt(min(1.0, a)))
+
+spat_master = {}
+with open(ROOT / "data" / "processed" / "station_spatial_features.csv", newline="", encoding="utf-8") as fh:
+    for r in csv.DictReader(fh):
+        spat_master[int(r["station_id"])] = r
+
+wx = {}
+with open(ROOT / "data" / "raw" / "rainfall" / "weather_station_daily.csv", newline="", encoding="utf-8") as fh:
+    for r in csv.DictReader(fh):
+        try:
+            wsid = int(r["station_id"])
+            d = datetime.strptime(r["date"], "%Y-%m-%d").date()
+            p = float(r["precip_mm"])
+        except (ValueError, TypeError):
+            continue
+        if p <= -999:                       # F1 NASA POWER sentinel -> NaN, never 0
+            continue
+        wx.setdefault(wsid, {})[d] = p
+
+stco = {}
+with open(STATIONS, newline="", encoding="utf-8") as fh:
+    for r in csv.DictReader(fh):
+        try:
+            stco[int(r["id"])] = (float(r["lat"]), float(r["long"]))
+        except (ValueError, TypeError):
+            pass
+matrix_stations = sorted({int(x) for x in FULL_DS["station_id"]})
+
+sp_bad = nb_bad = 0
+nb_checked = 0
+for _, row in sample.iterrows():
+    sid = int(row["station_id"])
+    t0 = row["date"]
+    t = datetime.strptime(t0[:10], "%Y-%m-%d").date() if not isinstance(t0, date) else t0
+    sm = spat_master.get(sid)
+    if sm is None:
+        sp_bad += 1
+        continue
+    for c in ("elevation_m", "slope_deg", "dist_to_coast_km", "dist_river_km"):
+        g, e = row[c], sm[c]
+        ok = ((isinstance(g, float) and g == g and e not in ("", "nan")
+               and abs(g - float(e)) < 1e-6) or (g != g and e in ("", "nan")))
+        if not ok:
+            sp_bad += 1
+    # nb3_rain_7d: mean of the nearest-3 matrix gauges (within the nearest-15 pool)
+    # that actually reported rainfall in the 7 days ending t, from the RAW weather file.
+    lat1, lon1 = stco[sid]
+    ranked = sorted(matrix_stations, key=lambda o: hdist(lat1, lon1, *stco[o]) if o in stco else 1e9)
+    pool = [o for o in ranked if o != sid][:15]
+    wins = []
+    for o in pool:
+        wrow = wx.get(o, {})
+        s = 0.0; any_v = False
+        for k in range(7):
+            p = wrow.get(t - timedelta(days=6 - k))
+            if p is not None:
+                s += p; any_v = True
+        if any_v:
+            wins.append(s)
+    exp = (sum(wins[:3]) / len(wins[:3])) if wins else float("nan")
+    got = float(row["nb3_rain_7d"]) if row["nb3_rain_7d"] == row["nb3_rain_7d"] else float("nan")
+    nb_checked += 1
+    if not ((got != got and exp != exp) or (got == got and exp == exp
+            and abs(got - exp) <= 1e-6 * max(1.0, abs(got), abs(exp)))):
+        nb_bad += 1
+
+print(f"\nPhase-11 spatial hand-check: {nb_checked} rows for nb3_rain_7d "
+      f"(neighbour mean built from raw weather + master coords); mismatches={nb_bad}; "
+      f"static-spatial mismatches vs station_spatial_features.csv={sp_bad}")
+if sp_bad or nb_bad:
+    print("[FAIL] spatial hand-check failed")
+else:
+    print("[PASS] static spatial join and nb3_rain_7d match independent recomputation")
+
+# ---- 4b) Phase-11 dynamic spatial: neighbour WL state + upstream lag ----
+# Independent path: neighbour pools from the station master coordinates, values from the
+# FULL matrix (never from the model-ready columns under test), upstream relation
+# re-derived from river + elevation.
+wl_val = {}
+for _, r in FULL_DS[["station_id", "date", "wl_pct_danger"]].iterrows():
+    v = r["wl_pct_danger"]
+    if v == v:
+        wl_val[(int(r["station_id"]), str(r["date"])[:10])] = float(v)
+
+pools = {}
+for o in matrix_stations:
+    if o not in stco:
+        continue
+    lat1, lon1 = stco[o]
+    ranked_o = sorted([x for x in matrix_stations if x in stco and x != o],
+                      key=lambda p: hdist(lat1, lon1, *stco[p]))
+    pools[o] = ranked_o[:15]
+
+topo = FULL_DS[["station_id", "river", "lat", "lon", "elevation_m"]].drop_duplicates("station_id")
+up_map = {}
+for riv, g in topo.groupby("river"):
+    g = g.dropna(subset=["elevation_m"])
+    if len(g) < 2:
+        continue
+    for _, s in g.iterrows():
+        higher = g[g["elevation_m"] > float(s["elevation_m"]) + 0.5]
+        if higher.empty:
+            continue
+        cand = [(hdist(float(s["lat"]), float(s["lon"]), float(r["lat"]), float(r["lon"])),
+                 int(r["station_id"])) for _, r in higher.iterrows()]
+        d, up = min(cand)
+        if d <= 250.0:
+            up_map[int(s["station_id"])] = up
+
+def _neq(got, exp):
+    if got is None or exp is None:
+        return not ((got is None or got != got) and (exp is None or exp != exp))
+    if got != got:                      # NaN in CSV
+        return exp is not None and exp == exp
+    if exp is None or exp != exp:
+        return True
+    return abs(float(got) - exp) > 1e-6 * max(1.0, abs(float(got)), abs(exp))
+
+nbw_bad = up_bad = up_checked = nbw_checked = 0
+for _, row in sample.iterrows():
+    sid = int(row["station_id"])
+    t = str(row["date"])[:10]
+    # nearest-3 reported wl/danger ratio on day t
+    vals = []
+    for o in pools.get(sid, []):
+        v = wl_val.get((o, t))
+        if v is not None:
+            vals.append(v)
+        if len(vals) == 3:
+            break
+    exp = sum(vals) / len(vals) if vals else None
+    got = row["nb3_wl_pct_danger"]
+    nbw_checked += 1
+    if _neq(got if got == got else None, exp):
+        nbw_bad += 1
+    # upstream lag-1: the higher-elevation same-river gauge's day t-1 state
+    up = up_map.get(sid)
+    if up is None:
+        continue
+    d = datetime.strptime(t, "%Y-%m-%d").date() - timedelta(days=1)
+    expu = wl_val.get((up, d.strftime("%Y-%m-%d")))
+    gotu = row["up_wl_pct_danger_lag1"]
+    up_checked += 1
+    if _neq(gotu if gotu == gotu else None, expu):
+        up_bad += 1
+
+print(f"Phase-11 dynamic hand-check: nb3_wl_pct_danger {nbw_checked} rows, mismatches={nbw_bad}; "
+      f"up_wl_pct_danger_lag1 {up_checked} rows (of which an upstream gauge exists), "
+      f"mismatches={up_bad}; upstream map size={len(up_map)}")
+if nbw_bad or up_bad:
+    print("[FAIL] dynamic spatial hand-check failed")
+else:
+    print("[PASS] nb3_wl_pct_danger and up_wl_pct_danger_lag1 match independent recomputation")
+
+
 # ---- 3) no-feature-leakage guarantee: confirm no lag/roll column can reference the win ----
 geo = FULL_DS  # reuse
 print("\n[ref] model-ready dates are all 'clean' UTC calendar days; "
