@@ -32,6 +32,18 @@ OUT_DIR = ROOT / "data" / "processed"
 OUT = OUT_DIR / "flood_dataset.csv"
 MIN_READINGS_PER_DAY = 3
 LEADS = {"label_24h": 1, "label_48h": 2, "label_72h": 3}
+# F3 (reports/phase2_3_data_quality.md): the FFWC feed contains decimal-shifted readings
+# (1213.00 m, 1315.13 m).  No gauge in Bangladesh can physically exceed the highest
+# published danger level (70.3 m); 100 m is a generous impossible-value bound.
+WL_MAX_PHYSICAL_M = 100.0
+# F8 (reports/phase2_3_data_quality.md): single-reading sensor spikes that sit BELOW the F3
+# bound (Chuadanga 38.84 m beside 3.85 m -> false-positive labels; Panchagarh 0.65 m beside
+# 64.75 m; 0.00 m year-boundary codes).  No river stage in Bangladesh changes by more than
+# SPIKE_JUMP_M within a +/-12 h neighbourhood, so a reading that deviates from its local
+# median is a sensor artefact, not water.
+SPIKE_JUMP_M = 10.0
+SPIKE_READINGS = 9          # +/- 4 readings = +/- 12 h at the nominal 3-hourly cadence
+SPIKE_GAP_S = 7 * 86400     # never let the local median span a data blackout
 _MASTER_DL: pd.DataFrame = None
 
 
@@ -48,7 +60,30 @@ def load_waterlevels() -> pd.DataFrame:
     raw["danger_level"] = pd.to_numeric(raw["dangerlevel"], errors="coerce")
     raw = raw.dropna(subset=["ts", "wl"])
     sentinel = (raw["wl"] <= -1000).sum()
-    raw = raw[raw["wl"] > -1000]
+    spikes = raw["wl"] > WL_MAX_PHYSICAL_M
+    n_spikes = int(spikes.sum())
+    if n_spikes:
+        hit = raw.loc[spikes].groupby("st_id").agg(
+            n=("wl", "size"), worst=("wl", "max"))
+        print(f"F3: dropped {n_spikes} physically impossible readings "
+              f"(> {WL_MAX_PHYSICAL_M} m, decimal-shifted feed errors):")
+        print(hit.sort_values("worst", ascending=False).to_string())
+    raw = raw[(raw["wl"] > -1000) & (raw["wl"] <= WL_MAX_PHYSICAL_M)]
+    raw.sort_values(["st_id", "ts"], inplace=True)
+    gap = (raw.groupby("st_id")["ts"].diff().dt.total_seconds() > SPIKE_GAP_S).fillna(False)
+    seg = gap.groupby(raw["st_id"]).cumsum()
+    local_med = raw.groupby(["st_id", seg])["wl"].transform(
+        lambda s: s.rolling(SPIKE_READINGS, center=True, min_periods=3).median())
+    raw["_dev8"] = (raw["wl"] - local_med).abs()
+    spike8 = raw["_dev8"] > SPIKE_JUMP_M
+    n_spike8 = int(spike8.sum())
+    if n_spike8:
+        hit = raw.loc[spike8].groupby("st_id").agg(n=("wl", "size"), worst_dev=("_dev8", "max"))
+        print(f"F8: dropped {n_spike8} single-reading sensor spikes "
+              f"(|wl - local 12-h median| > {SPIKE_JUMP_M} m):")
+        print(hit.sort_values("worst_dev", ascending=False).to_string())
+        raw = raw[~spike8]
+    raw.drop(columns=["_dev8"], inplace=True)
     raw["date"] = raw["ts"].dt.tz_convert(None).dt.date
     if sentinel:
         print(f"  dropped {sentinel} sentinel water levels (<= -1000, FFWC missing-code)")

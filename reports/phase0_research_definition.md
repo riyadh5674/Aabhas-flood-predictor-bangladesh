@@ -36,7 +36,7 @@ classification problem as forecasting:
 | --- | --- |
 | One observation = | one FFWC station × one issue day |
 | Issue grid | daily, UTC |
-| Rows in model-ready table | 200,671 station-days, 133 stations |
+| Rows in model-ready table | 200,665 station-days, 133 stations (200,671 originally; −2 F3, −4 F8 → D4/D9) |
 | Full calendar matrix | 357,250 station-days, 141 stations (all days, observed or not) |
 | Location resolution | station point (+ its district/upazila/river/basin attributes) |
 | Not used | grid cell, district-day, upazila-day aggregates |
@@ -93,9 +93,9 @@ Current label statistics (model-ready, 2017‑01‑06 → 2026‑10‑05):
 
 | Label | n | positives | base rate | NaN | imbalance (0:1) |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| `label_24h` | 200,565 | 9,990 | 4.98 % | 106 | 19.1 : 1 |
-| `label_48h` | 197,755 | 11,256 | 5.69 % | 2,916 | 16.6 : 1 |
-| `label_72h` | 195,182 | 12,361 | 6.33 % | 5,489 | 14.8 : 1 |
+| `label_24h` | 200,559 | 9,982 | 4.98 % | 106 | 19.1 : 1 |
+| `label_48h` | 197,748 | 11,241 | 5.68 % | 2,917 | 16.6 : 1 |
+| `label_72h` | 195,174 | 12,340 | 6.32 % | 5,491 | 14.8 : 1 |
 
 Rare-but-not-degenerate ⇒ **PR-AUC is the primary metric** (Phase 20), accuracy is not.
 
@@ -173,17 +173,17 @@ Status key: **DONE** · **PARTIAL** (started, needs redo/finish) · **TODO** · 
 | 09 | Investigate flood labels | DONE | §4 + audit A5/A7 + `verify_model_ready.py` + notebook 02 (S09a–d) |
 | 10 | Missing-value analysis | DONE | notebook 02 (Q10a–d) — F1 regression guard + every NaN cause named |
 | 11 | Duplicate analysis | DONE | audit A3 + notebook 02 (Q11a–d) — 0 dups, keys unique, monotone |
-| 12 | Outlier / data-quality analysis | DONE | notebook 02 (Q12a–j, Q14–Q15) — 41/41 checks; findings F2–F7, G1–G4 → `reports/phase2_3_data_quality.md` |
+| 12 | Outlier / data-quality analysis | DONE | notebook 02 (Q12a–l, Q14–Q15) — **43/43 checks**; findings F2–F8, G1–G4 → `reports/phase2_3_data_quality.md`; **F3 and F8 fixed same-day (D4/D9)** |
 
 ### Explore (stages 13–18)
-| # | Stage | Status |
-| --- | --- | --- |
-| 13 | EDA | TODO → `notebooks/03_eda.ipynb` |
-| 14 | Temporal analysis | TODO |
-| 15 | Spatial analysis | TODO (station-level only; choropleth BLOCKED) |
-| 16 | Target–feature analysis | TODO |
-| 17 | Correlation analysis | TODO |
-| 18 | Multicollinearity / redundancy | TODO |
+| # | Stage | Status | Note |
+| --- | --- | --- | --- |
+| 13 | EDA | DONE | `notebooks/03_eda.ipynb` — 20/20 checks, `reports/phase5_eda.md` |
+| 14 | Temporal analysis | DONE | monthly/yearly/JJAS frequencies, episodes; **D5** drift decomposition, **D6** missingness test |
+| 15 | Spatial analysis | DONE | 133-station rates + division rates (choropleth still BLOCKED, static scatter used) |
+| 16 | Target–feature analysis | DONE | 38 features × 3 horizons (AUC/KS/medians/MI) + **D7** persistence baseline per year |
+| 17 | Correlation analysis | DONE | Pearson + Spearman matrices, label correlations, heatmap |
+| 18 | Multicollinearity / redundancy | DONE | 160 pairs \|ρ\|>0.8, VIF pruning → 17-feature keep list, constants dropped |
 
 ### Leakage & experiment definition (stages 19–26)
 | # | Stage | Status | Note |
@@ -194,8 +194,8 @@ Status key: **DONE** · **PARTIAL** (started, needs redo/finish) · **TODO** · 
 | 22 | Temporal / lag / rolling features | DONE | lags 1–7, roll 7/30, rain windows |
 | 23 | Spatial / geographical features | **BLOCKED** | no DEM, boundaries, HydroRIVERS in `data/raw/geo` |
 | 24 | Feature selection | TODO | Phase 12 |
-| 25 | Mutual information | TODO | Phase 12 |
-| 26 | Model-ready dataset | DONE | 200,671 × 54 |
+| 25 | Mutual information | PARTIAL | MI computed for 38 features × 3 horizons in `notebooks/03_eda.ipynb` (TF2); the selection decision itself is Phase 12 |
+| 26 | Model-ready dataset | DONE | 200,665 × 54 (post-F3 + F8 fixes, D4/D9) |
 
 ### Split, model, evaluate (stages 27–46)
 | # | Stage | Status | Note |
@@ -239,7 +239,7 @@ Status key: **DONE** · **PARTIAL** (started, needs redo/finish) · **TODO** · 
 | 61 | Documentation / reproducibility | DONE | phase 0/1/2–3 reports + 4 git commits; F1 fix reproducible from history |
 | 62 | Research report / thesis | TODO | |
 
-**Totals:** 20 DONE · 8 PARTIAL · 25 TODO · 5 BLOCKED · (3 horizons counted in TODO).
+**Totals:** 26 DONE · 9 PARTIAL · 18 TODO · 5 BLOCKED · (3 horizons counted in TODO).
 *Updated 2026-10-07 after Phases 0–3 (stages 06, 07, 10, 11, 12 completed; 61 closed on git).*
 
 ## 9. Decisions logged (user-confirmed, 2026-10-07)
@@ -249,6 +249,12 @@ Status key: **DONE** · **PARTIAL** (started, needs redo/finish) · **TODO** · 
 | D1 | Monsoon window for all seasonal evaluation (Phase 42) | **JJAS — June, July, August, September** |
 | D2 | Headline horizon | **All three horizons (24/48/72 h) reported equally**, no privileged lead |
 | D3 | Version control | **git initialised at Phase 0** — code/docs tracked, bulk data ignored |
+| D4 | Defect handling (after Phase 2–3 review) | **Fix F3 immediately, not at Phase 15** — clip readings `> 100 m` to NaN in the builder, rebuild, re-audit. *Executed 2026-10-07: 5 readings dropped, 27 false-positive labels removed, audits re-passed.* |
+| D5 | EDA must explain the label drift (R1) | **Decompose drift into within-station change vs network composition** (fixed panel of stations vs all stations) before any split design |
+| D6 | Missing days must be treated as a potential bias | EDA must compare the **seasonal distribution of observed vs unobserved days** — if gaps cluster in monsoon, the observation process is informative |
+| D7 | Mandatory reference model from Phase 16 on | Every model result is reported **next to a one-feature persistence baseline (`wl_pct_danger` alone)**; no "our model works" claim without beating it |
+| D8 | Evaluation protocol | **Rolling-origin across years with bootstrap CIs, macro + micro averages**, per-year reporting — never a single global split, never pooled metrics |
+| D9 | Standing water-level QC rule (after EDA review, finding F8) | **Spike filter on read**: a reading >10 m from its local 12-h median (gap-aware) is dropped as a sensor artefact — same raw-immutability pattern as F3; mirrored in builder, audit (A2c) and the independent verifier |
 
 ## 10. Definition of "done" for Phase 0
 
@@ -261,5 +267,6 @@ Status key: **DONE** · **PARTIAL** (started, needs redo/finish) · **TODO** · 
 - [x] Phase-0 risks recorded with evidence (§7)
 - [x] All 62 workflow stages mapped (§8)
 
-**Next stage: Phase 1 — data inventory & documentation** (workflow stage 05), then
-Phase 2/3 in `notebooks/02_eda.ipynb`.
+**Next stage:** stages 13–18 done (EDA). Next: stage 19 formal leakage audit
+(`obs_days_*`, `n_readings`/E7 admissibility decision) + Phase 15 split design per F7/F8,
+D7 and D8 — then Phase 10–12 feature engineering & selection with the 17-feature keep list.

@@ -76,9 +76,25 @@ raw["wl"] = pd.to_numeric(raw["waterlevel"], errors="coerce")
 raw["dl"] = pd.to_numeric(raw["dangerlevel"], errors="coerce")
 raw["date"] = raw["ts"].dt.tz_convert(None).dt.date
 raw = raw.dropna(subset=["ts", "wl"])
-raw = raw[raw["wl"] > -1000]  # drop FFWC -9999 missing-code sentinels
+n_sent = int((raw["wl"] <= -1000).sum())
+n_spike = int((raw["wl"] > 100.0).sum())   # F3: decimal-shifted feed errors
+raw = raw[(raw["wl"] > -1000) & (raw["wl"] <= 100.0)]
+# F8: single-reading sensor spikes below the F3 bound (same rule as build_dataset.py)
+raw = raw.sort_values(["st_id", "ts"])
+gap = (raw.groupby("st_id")["ts"].diff().dt.total_seconds() > 7 * 86400).fillna(False)
+seg = gap.groupby(raw["st_id"]).cumsum()
+local_med = raw.groupby(["st_id", seg])["wl"].transform(
+    lambda s: s.rolling(9, center=True, min_periods=3).median())
+raw["_dev8"] = (raw["wl"] - local_med).abs()
+spike8 = raw["_dev8"] > 10.0
+n_spike8 = int(spike8.sum())
+raw = raw[~spike8]
+raw.drop(columns=["_dev8"], inplace=True)
 print(f"raw readings: {len(raw):,}, stations {raw.st_id.nunique()}, "
       f"{min(raw.date)}..{max(raw.date)}")
+print(f"F3/F1/F8 excluded from recompute: {n_sent} sentinels (<=-1000), "
+      f"{n_spike} impossible readings (>100 m), {n_spike8} sensor spikes "
+      f"(|wl - local 12-h median| > 10 m)")
 
 # A3 duplicates
 du_st = DS.duplicated(["station_id", "date"]).sum()
@@ -101,6 +117,27 @@ check("A2 no fabricated WL (today cols)",
       f"= {fabricated} (days with 1-2 readings DO have real values; "
       f"lag/rolling cols may carry earlier observed values by design)",
       fabricated == 0)
+
+bad_wl = int((FULLDS[today_cols] > 100.0).sum().sum())
+check("A2b physically possible water levels (F3 rule)",
+      f"{bad_wl} daily wl cells above 100 m in the dataset "
+      f"(max={float(FULLDS['wl_max'].max()):.2f} m; impossible bound = 100 m)",
+      bad_wl == 0)
+
+# A2c: F8 spike rule - no surviving raw reading deviates >10 m from its local 12-h median,
+# and no station-day changes stage by more than 15 m in one calendar day (max real value
+# observed in this dataset is ~7.8 m/day in the Sylhet flash-flood stations).
+gap2 = (raw.groupby("st_id")["ts"].diff().dt.total_seconds() > 7 * 86400).fillna(False)
+seg2 = gap2.groupby(raw["st_id"]).cumsum()
+med2 = raw.groupby(["st_id", seg2])["wl"].transform(
+    lambda s: s.rolling(9, center=True, min_periods=3).median())
+n_spike_left = int(((raw["wl"] - med2).abs() > 10.0).sum())
+rise = FULLDS["wl_rise_1d"].abs()
+max_rise = float(rise.max())
+check("A2c no single-reading spikes survive (F8 rule) / day jumps plausible",
+      f"{n_spike_left} raw readings deviate >10 m from local median (must be 0); "
+      f"max |wl_rise_1d| = {max_rise:.2f} m/day (bound 15 m)",
+      n_spike_left == 0 and max_rise <= 15.0)
 
 # A4 live FFWC API compare — skipped on demand (FFWC throttles after the ~21k-call harvest)
 if not SKIP_LIVE:

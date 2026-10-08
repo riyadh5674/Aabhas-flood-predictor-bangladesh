@@ -33,6 +33,37 @@ FULL = _newest("flood_dataset*.csv", exclude_model_ready=True)
 N_SAMPLE = int(sys.argv[1]) if len(sys.argv) > 1 else 60
 
 # ---- load raw readings into {station_id: [(datetime, wl_float), ...]} (chronological) ----
+def _spike_filter(bucket):
+    """F8: drop single-reading sensor spikes (|wl - local 12-h median| > 10 m).
+
+    Native, dependency-free implementation of the same rule used by build_dataset.py
+    and audit_dataset.py: per contiguous segment (gap <= 7 days), rolling median over
+    +/-4 readings with at least 3 in view.
+    """
+    bucket.sort(key=lambda r: r[0])
+    keep = []
+    n = len(bucket)
+    # segment boundaries (never let the median span a blackout)
+    seg_start = [0]
+    for i in range(1, n):
+        if (bucket[i][0] - bucket[i - 1][0]).total_seconds() > 7 * 86400:
+            seg_start.append(i)
+    seg_start.append(n)
+    for a, b in zip(seg_start, seg_start[1:]):
+        wls = [r[1] for r in bucket[a:b]]
+        for j in range(a, b):
+            lo, hi = max(a, j - 4), min(b, j + 5)     # +/-4 readings = +/-12 h
+            win = wls[lo - a:hi - a]
+            if len(win) < 3:
+                keep.append(bucket[j])
+                continue
+            s = sorted(win)
+            m = s[len(s) // 2] if len(s) % 2 else 0.5 * (s[len(s) // 2 - 1] + s[len(s) // 2])
+            if abs(wls[j - a] - m) > 10.0:
+                continue                               # F8 spike: drop
+            keep.append(bucket[j])
+    return keep
+
 def load_raw():
     out = {}
     for path in sorted(WL.glob("*/*.csv")):
@@ -48,7 +79,10 @@ def load_raw():
                     continue
                 if wl <= -1000:          # FFWC missing-code sentinel
                     continue
+                if wl > 100.0:           # F3: impossible decimal-shifted reading
+                    continue
                 bucket.append((ts, wl, dl))
+    out = {sid: _spike_filter(b) for sid, b in out.items()}
     return out
 
 def danger_level_master(sid):
