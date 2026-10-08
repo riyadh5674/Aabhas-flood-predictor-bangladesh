@@ -152,7 +152,7 @@ Rare-but-not-degenerate ⇒ **PR-AUC is the primary metric** (Phase 20), accurac
 | R5 | **Rainfall is reanalysis, not observed** | NASA POWER / MERRA‑2 | stated in every report; ablation with/without rain (Phase 38) |
 | R6 | **2018 gap** | 0 readings in the whole year | split around it; never interpolate across it |
 | R7 | **Growing station network** | 85 → 133 stations | station-out validation must not let network growth leak into "unseen location" claims |
-| R8 | **No elevation / distance-to-river / boundaries** | `data/raw/{geo,reference,satellite}` are empty | Phase 11 blocked (see §8) |
+| R8 | **Geospatial data partially sourced 2026-10-08** | SRTM 1" (40 tiles), OSM river network (6,792 centrelines), geoBoundaries ADM1/ADM2 → `data/raw/geo/` (manifest `geo/README.md`); soil / land cover / independent flood extents still absent | Phase 11 static features unblocked; soil/landcover groups stay behind R8 |
 
 ## 8. Mapped workflow — all 62 stages
 
@@ -166,7 +166,7 @@ Status key: **DONE** · **PARTIAL** (started, needs redo/finish) · **TODO** · 
 | 02 | Define prediction target | DONE | §4 |
 | 03 | Define prediction horizon | DONE | §3 |
 | 04 | Identify prediction unit | DONE | §2 |
-| 05 | Collect and document datasets | PARTIAL | §6 inventory; geo/refs missing |
+| 05 | Collect and document datasets | PARTIAL | §6 inventory; geo acquired (SRTM/OSM/geoBoundaries, 2026-10-08); soil/landcover/independent extents still missing |
 | 06 | Load raw data | DONE | `build_dataset.py` + notebook 02 (S06a–d) |
 | 07 | Understand dataset structure | DONE | notebook 02 — 54 columns in 10 groups, identities recomputed (S07a–h) |
 | 08 | Validate timestamps and locations | DONE | audit A8/A10 |
@@ -180,7 +180,7 @@ Status key: **DONE** · **PARTIAL** (started, needs redo/finish) · **TODO** · 
 | --- | --- | --- | --- |
 | 13 | EDA | DONE | `notebooks/03_eda.ipynb` — 20/20 checks, `reports/phase5_eda.md` |
 | 14 | Temporal analysis | DONE | monthly/yearly/JJAS frequencies, episodes; **D5** drift decomposition, **D6** missingness test |
-| 15 | Spatial analysis | DONE | 133-station rates + division rates (choropleth still BLOCKED, static scatter used) |
+| 15 | Spatial analysis | DONE | 133-station rates + division rates; choropleth now unblocked (ADM1/ADM2 in `geo/admin`) → Phase 31 |
 | 16 | Target–feature analysis | DONE | 38 features × 3 horizons (AUC/KS/medians/MI) + **D7** persistence baseline per year |
 | 17 | Correlation analysis | DONE | Pearson + Spearman matrices, label correlations, heatmap |
 | 18 | Multicollinearity / redundancy | DONE | 160 pairs \|ρ\|>0.8, VIF pruning → 17-feature keep list, constants dropped |
@@ -192,7 +192,7 @@ Status key: **DONE** · **PARTIAL** (started, needs redo/finish) · **TODO** · 
 | 20 | Define prediction-time info boundary | DONE | §5 |
 | 21 | Feature engineering | PARTIAL | core features in `build_dataset.py`; notebook extras were lost, redo cleanly |
 | 22 | Temporal / lag / rolling features | DONE | lags 1–7, roll 7/30, rain windows |
-| 23 | Spatial / geographical features | **BLOCKED** | no DEM, boundaries, HydroRIVERS in `data/raw/geo` |
+| 23 | Spatial / geographical features | **PARTIAL** | static set computed (2026-10-08) from SRTM + OSM: `elevation_m, slope_deg, dist_to_coast_km, dist_river_km, dist_major_river_km, river_density_10km` → `data/processed/station_spatial_features.csv`; dynamic neighbourhood/upstream propagation features pending |
 | 24 | Feature selection | TODO | Phase 12 |
 | 25 | Mutual information | PARTIAL | MI computed for 38 features × 3 horizons in `notebooks/03_eda.ipynb` (TF2); the selection decision itself is Phase 12 |
 | 26 | Model-ready dataset | DONE | 200,665 × 54 (post-F3 + F8 fixes, D4/D9) |
@@ -218,7 +218,7 @@ Status key: **DONE** · **PARTIAL** (started, needs redo/finish) · **TODO** · 
 | 42 | Monsoon evaluation | TODO | JJAS per §6 |
 | 43 | Robustness analysis | TODO | |
 | 44 | Error analysis | TODO | |
-| 45 | Ablation study | PARTIAL-BLOCKED | weather-only vs +hydrology possible; +geography/+hydrology blocked by R8 |
+| 45 | Ablation study | PARTIAL | weather-only vs +hydrology vs +geography possible (static spatial features now exist); +soil/landcover group still blocked by R8 |
 | 46 | Final model selection | TODO | |
 
 ### Explain, forecast, ship (stages 47–62)
@@ -227,8 +227,8 @@ Status key: **DONE** · **PARTIAL** (started, needs redo/finish) · **TODO** · 
 | 47 | Explainable AI / SHAP | TODO | needs `shap` install |
 | 48–50 | 24 / 48 / 72-hour prediction | TODO | three horizons, same protocol |
 | 51 | Risk-level definition | TODO | must be derived from validation, not arbitrary quartiles |
-| 52 | Location-based prediction | **BLOCKED** | needs geo + API layer |
-| 53 | Bangladesh risk map | **BLOCKED** | needs boundaries (`data/raw/geo` empty) |
+| 52 | Location-based prediction | **BLOCKED** | boundaries available now; still needs a served reverse-geocode/API layer |
+| 53 | Bangladesh risk map | **BLOCKED** | ADM1/ADM2 in `geo/admin`; needs the Phase 31 map module |
 | 54 | Automatic data acquisition | PARTIAL | FFWC ingest exists and is resumable; weather has no auto-refresh |
 | 55 | Real-time prediction pipeline | TODO | |
 | 56 | Early-warning engine | TODO | prototype label mandatory |
@@ -239,7 +239,7 @@ Status key: **DONE** · **PARTIAL** (started, needs redo/finish) · **TODO** · 
 | 61 | Documentation / reproducibility | DONE | phase 0/1/2–3 reports + 4 git commits; F1 fix reproducible from history |
 | 62 | Research report / thesis | TODO | |
 
-**Totals:** 26 DONE · 9 PARTIAL · 18 TODO · 5 BLOCKED · (3 horizons counted in TODO).
+**Totals:** 21 DONE · 8 PARTIAL · 28 TODO · 2 BLOCKED · (3 horizons counted in TODO).
 *Updated 2026-10-07 after Phases 0–3 (stages 06, 07, 10, 11, 12 completed; 61 closed on git).*
 
 ## 9. Decisions logged (user-confirmed, 2026-10-07)

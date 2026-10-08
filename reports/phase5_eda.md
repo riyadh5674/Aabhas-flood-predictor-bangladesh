@@ -94,7 +94,7 @@ Top stations by 72h flood rate (n ≥ 200 labelled days):
 Khulna/Barishal (tidal) flood on tide + surge schedules — essentially standing water;
 Rangpur (Teesta) floods on July–Sep rainfall. Flood risk is dominated by a handful of
 basins, so **station identity is a first-order feature** (MI: `lat`, `lon`, `danger_level`
-all ≤ 0.046 — location matters, but less than water-level state). Choropleth stays BLOCKED.
+all ≤ 0.046 — location matters, but less than water-level state). Choropleth now unblocked — `admin/geoBoundaries-BGD-ADM{1,2}` acquired with Phase 11 (see `reports/phase1_data_inventory.md` D7).
 
 ## 4. Target vs feature analysis (stage 16)
 

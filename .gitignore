@@ -11,5 +11,9 @@ data/processed/flood_dataset.csv
 data/processed/flood_dataset_model_ready*.csv
 data/raw/ffwc/*.html
 
+# --- geospatial bulk data (SRTM/OSM/geoBoundaries) - keep the provenance manifest only ---
+data/raw/geo/*
+!data/raw/geo/README.md
+
 # --- transient outputs ---
 scripts/*.err
