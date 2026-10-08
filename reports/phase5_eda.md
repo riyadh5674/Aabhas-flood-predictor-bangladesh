@@ -183,14 +183,18 @@ instability. The kept set still contains the full *information* (today + rises +
 
 ## 8. Action plan (what the next module does)
 
-| # | Action | Module/stage | Decision |
-| --- | --- | --- | --- |
-| 1 | Formal **data-leakage audit** — `obs_days_*` ban, `n_readings` admissibility ruling (E7/§5), feature-time-bound check; writes the whitelist again | Phase 11 / stage 19 | whitelist to be tracked |
-| 2 | **Split design**: per-station-year rolling origin, monsoon block (JJAS), 2018 hole documented, bootstrap CI protocol | Phase 15 / stages 27–28 | D8 |
-| 3 | **Feature engineering & selection** using the 17-keep list (logreg) vs full set (trees); re-derive cleanly in a notebook | Phase 10–12 / stages 21–25 | keep-17 |
-| 4 | **Baseline fix + run**: persistence (this report's D7 numbers) as reference; fix `baseline_model.py` early-stopping-on-test leak first | Phase 16 / stage 30 | D7 |
-| 5 | Model families (logreg, LightGBM, XGBoost) with **per-year macro+micro PR-AUC, recall at fixed precision, calibration**, monsoon subset, FN analysis | Phases 16–20 | D1/D2/D8 |
+*Reordered 2026-10-08 under **D10** (body Phase order is binding). Item 1 below was
+completed the same day as Phase 11 — see `reports/phase11_spatial_features.md`.*
 
-**Next invitation:** approve marking stages 13–18 DONE (already set in `phase0 §8`) and
-approve Phase 11 (stage 19, leakage audit) — the natural next module, since split/model
-results are only trustworthy after the boundary is formally re-pinned and `n_readings` ruled on.
+| # | Action | Module / body steps (checklist #) | Status |
+| --- | --- | --- | --- |
+| 1 | **Spatial feature engineering** — static + neighbourhood + upstream (19 columns) | Phase 11 / steps 15–17 (21–23) | **DONE 2026-10-08** |
+| 2 | **Feature selection** — re-derive the keep-list with A/B/C groups included: statistical filter, **MI (step 19)**, model-based importance, RFE; keep-17 for logreg vs full set for trees | **Phase 12 / steps 18–21 (24–25)** | **NEXT** |
+| 3 | Formal **data-leakage audit** — `obs_days_*` ban, `n_readings` admissibility ruling (E7/§5), Phase-11 columns whitelist, feature-time-bound check | **Phase 13 / steps 22–24 (19–20)** | after Phase 12 |
+| 4 | **Split design**: per-station-year rolling origin, monsoon block (JJAS), 2018 hole documented, bootstrap CI protocol | Phase 15 / steps 25–27 (27–28) | D8 |
+| 5 | **Baseline fix + run**: persistence (this report's D7 numbers) as reference; fix `baseline_model.py` early-stopping-on-test leak first | Phase 16 / step 28 (30) | D7 |
+| 6 | Model families (logreg, LightGBM, XGBoost) with **per-year macro+micro PR-AUC, recall at fixed precision, calibration**, monsoon subset, FN analysis | Phases 17–20 (31–37) | D1/D2/D8 |
+
+**Next invitation:** approve starting **Phase 12 — feature selection (steps 18–21)** — the
+boundary ruling (Phase 13) follows immediately after and still lands before Phase 14/15, so
+no split or model is touched before both are closed.

@@ -166,6 +166,29 @@ whitelist ruling is stage 19 and may still demote individual columns.
 Status key: **DONE** · **PARTIAL** (started, needs redo/finish) · **TODO** · **BLOCKED**
 (needs data we do not have) · **N/A**
 
+*The `#` column is the **62-stage checklist** numbering (a labelling convenience for this
+table). Execution order follows the **body Phase sequence** per **D10** — use the crosswalk
+below to translate; when the two disagree on order, D10 wins.*
+
+> **Binding structure (decision D10, 2026-10-08):** the workflow file numbers things twice —
+> body `Phase N` headings with their own `## NN.` step numbers, *and* a 62-stage "clean
+> master checklist" at the end. **The body Phase order is law: Phase 0 → … → Phase 40, in
+> numeric order.** Every reference in this project cites **both**, so nothing can drift:
+>
+> | Body (binding) | Steps | Checklist # | Topic |
+> | --- | --- | --- | --- |
+> | Phase 9 | 14 | 18 | multicollinearity / redundancy |
+> | Phase 10–11 | 15–17 | 21–23 | feature engineering (temporal, rain, lag, spatial) |
+> | **Phase 12** | **18–21** | **24–25** | feature selection: statistical filter → **MI (step 19)** → model-based → RFE |
+> | **Phase 13** | **22–24** | **19–20** | critical leakage audit |
+> | Phase 14 | — | 26 | experimental (model-ready) table |
+> | Phase 15 | 25–27 | 27–28 | temporal / spatial / monsoon splits |
+> | Phase 16 | 28 | 30 | baselines |
+>
+> The checklist's own "defensible order" (leakage before selection) is **superseded** by D10:
+> Phase 12 runs before Phase 13. Nothing is lost — Phase 13 still lands before Phase 14/15,
+> i.e. before any split or model, which is what the workflow actually demands.
+
 ### Understand & validate (stages 1–12)
 | # | Stage | Status | Note |
 | --- | --- | --- | --- |
@@ -262,6 +285,7 @@ Status key: **DONE** · **PARTIAL** (started, needs redo/finish) · **TODO** · 
 | D7 | Mandatory reference model from Phase 16 on | Every model result is reported **next to a one-feature persistence baseline (`wl_pct_danger` alone)**; no "our model works" claim without beating it |
 | D8 | Evaluation protocol | **Rolling-origin across years with bootstrap CIs, macro + micro averages**, per-year reporting — never a single global split, never pooled metrics |
 | D9 | Standing water-level QC rule (after EDA review, finding F8) | **Spike filter on read**: a reading >10 m from its local 12-h median (gap-aware) is dropped as a sensor artefact — same raw-immutability pattern as F3; mirrored in builder, audit (A2c) and the independent verifier |
+| D10 | **Binding workflow structure** (user ruling, 2026-10-08) | Follow the workflow file's **body `Phase N` sequence in numeric order**; the 62-stage checklist is a cross-check, not the driver. Every report reference cites *both* (crosswalk in §8). Consequence: **Phase 12 feature selection (steps 18–21, incl. MI step 19) runs before Phase 13 leakage audit (steps 22–24)**; both still close before Phase 14/15 (experimental table + splits) |
 
 ## 10. Definition of "done" for Phase 0
 
@@ -274,7 +298,8 @@ Status key: **DONE** · **PARTIAL** (started, needs redo/finish) · **TODO** · 
 - [x] Phase-0 risks recorded with evidence (§7)
 - [x] All 62 workflow stages mapped (§8)
 
-**Next stage:** Phase 11 closed (stages 21, 23). Next: **stage 19 formal leakage audit**
-(`obs_days_*` ban, `n_readings`/E7 admissibility, Phase-19 columns whitelist) + Phase 15
-split design per F7/F8, D7 and D8 — then Phase 12 feature selection with a re-derived
-keep-list that includes the spatial groups.
+**Next stage:** Phase 11 closed (steps 15–17 / stages 21, 23). Next: **Phase 12 — feature
+selection, body steps 18–21** (statistical filtering → **MI step 19** → model-based
+importance → RFE; checklist 24–25), *then* **Phase 13 — leakage audit, steps 22–24**
+(checklist 19–20: `obs_days_*` ban, `n_readings`/E7 admissibility, whitelist for the 19
+spatial columns), then Phase 15 split design per F7/F8, D7 and D8. Order per **D10**.

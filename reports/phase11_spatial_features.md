@@ -100,16 +100,18 @@ the *station master*, i.e. a different code path from the builder.
 
 ## 7. Open items handed to the next stages
 
-1. **Stage 19 (leakage audit)** — formally whitelist/rule on the 19 new columns;
-   `nb*_n_wl_danger` and `n_readings` are observation-process signals and need an
-   explicit admissibility ruling (phase5 findings E7/conclusion 5).
-2. **Stage 24–25 (selection)** — the 17-feature VIF keep-list predates this group; it must
-   be re-derived with A/B/C included; expect `nb*_wl_pct_danger` to be dropped as a
-   near-duplicate of the station's own `wl_pct_danger` for the *linear* baseline while
+1. **Phase 13 / steps 22–24 (leakage audit, checklist 19–20)** — formally whitelist/rule on
+   the 19 new columns; `nb*_n_wl_danger` and `n_readings` are observation-process signals and
+   need an explicit admissibility ruling (phase5 findings E7/conclusion 5).
+2. **Phase 12 / steps 18–21 (feature selection, checklist 24–25)** — runs **first**, per
+   decision **D10** (body Phase order is binding): the 17-feature VIF keep-list predates this
+   group and must be re-derived with A/B/C included; expect `nb*_wl_pct_danger` to be dropped
+   as a near-duplicate of the station's own `wl_pct_danger` for the *linear* baseline while
    keeping it for trees.
 3. **Missing data** — M4 (land cover / soil) still absent, so the static group is not
    final; risk R8 unchanged.
 4. **Imputation** — 70 % NaN on `up_*` is structural: tree models handle it natively, the
    logistic baseline needs a fold-fitted imputer **plus a "no upstream gauge" indicator**.
 
-**Next:** stage 19 — formal data-leakage audit and the tracked feature whitelist.
+**Next: Phase 12 — feature selection (body steps 18–21: statistical filter → MI → model-based
+→ RFE), then Phase 13 — leakage audit (steps 22–24).** Order per D10.
