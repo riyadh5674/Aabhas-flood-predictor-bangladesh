@@ -1,0 +1,57 @@
+Phase 25 — temporal Transformer (L4-03) | seed=20261008 | 2026-10-13 16:47:14.614186+00:00
+registry OK: L4-03 transformer_temporal, gate=phase25_transformer_gate, budget 16 <= 20, test=frozen_read_at_phase33
+index labels re-checked 1:1 vs experimental_dataset.csv (200,665 rows, 133 stations)
+dev grid OK: ['spatial_fold_1', 'spatial_fold_2', 'spatial_fold_3', 'spatial_fold_4', 'val_2020', 'val_2021', 'val_2022'] — frozen test never scored
+
+=== transformer_bestL (L4-03) — tuning 16/768 configs, cell=val_2022, score=mean PR-AUC over 3 horizons, windows [3, 7, 14, 30] ===
+Phase 25 — temporal Transformer (L4-03) | seed=20261008 | 2026-10-13 16:47:53.422758+00:00
+registry OK: L4-03 transformer_temporal, gate=phase25_transformer_gate, budget 16 <= 20, test=frozen_read_at_phase33
+index labels re-checked 1:1 vs experimental_dataset.csv (200,665 rows, 133 stations)
+dev grid OK: ['spatial_fold_1', 'spatial_fold_2', 'spatial_fold_3', 'spatial_fold_4', 'val_2020', 'val_2021', 'val_2022'] — frozen test never scored
+
+=== transformer_bestL (L4-03) — tuning 16/768 configs, cell=val_2022, score=mean PR-AUC over 3 horizons, windows [3, 7, 14, 30] ===
+  [1/16] transformer_bestL_c00 L=3 mean=0.90014 (24h=0.91141 48h=0.90319 72h=0.88581) on (107s)
+  [2/16] transformer_bestL_c01 L=3 mean=0.91939 (24h=0.93512 48h=0.91983 72h=0.90323) off (272s)
+  [3/16] transformer_bestL_c02 L=3 mean=0.92800 (24h=0.94441 48h=0.92945 72h=0.91015) on (366s)
+  [4/16] transformer_bestL_c03 L=7 mean=0.87593 (24h=0.88377 48h=0.87835 72h=0.86568) on (282s)
+  [5/16] transformer_bestL_c04 L=7 mean=0.92346 (24h=0.93385 48h=0.92992 72h=0.90661) on (1319s)
+  [6/16] transformer_bestL_c05 L=7 mean=0.93168 (24h=0.94371 48h=0.93304 72h=0.91830) off (239s)
+  [7/16] transformer_bestL_c06 L=7 mean=0.92212 (24h=0.93585 48h=0.92430 72h=0.90622) on (625s)
+  [8/16] transformer_bestL_c07 L=7 mean=0.92807 (24h=0.93625 48h=0.93439 72h=0.91358) off (1034s)
+  [9/16] transformer_bestL_c08 L=7 mean=0.92744 (24h=0.94053 48h=0.93049 72h=0.91130) on (486s)
+  [10/16] transformer_bestL_c09 L=14 mean=0.92580 (24h=0.94000 48h=0.92677 72h=0.91065) off (2273s)
+  [11/16] transformer_bestL_c10 L=14 mean=0.91703 (24h=0.94239 48h=0.91822 72h=0.89047) on (2105s)
+  [12/16] transformer_bestL_c11 L=14 mean=0.92748 (24h=0.94442 48h=0.92699 72h=0.91101) off (33617s)
+  [13/16] transformer_bestL_c12 L=30 mean=0.92532 (24h=0.93998 48h=0.91976 72h=0.91623) off (1118s)
+  [14/16] transformer_bestL_c13 L=30 mean=0.91067 (24h=0.93056 48h=0.91695 72h=0.88451) on (1051s)
+  [15/16] transformer_bestL_c14 L=30 mean=0.92288 (24h=0.93934 48h=0.91702 72h=0.91229) off (3368s)
+  [16/16] transformer_bestL_c15 L=30 mean=0.92160 (24h=0.93953 48h=0.91861 72h=0.90666) on (2560s)
+  -> winner transformer_bestL_c05 L=7 mean_pr_auc=0.93168 epochs={'24h': 5, '48h': 7, '72h': 12} n_params=36,353
+=== transformer_bestL — grid with transformer_bestL_c05 (L=7) (8 dev tasks x 3 seasons x 3 horizons) ===
+  P1_temporal_primary train_<2022   label_24h epochs 5 fit 43s
+  P1_temporal_primary train_<2022   label_48h epochs 7 fit 62s
+  P1_temporal_primary train_<2022   label_72h epochs 12 fit 93s
+  P2_rolling_origin  train_<=2019  label_24h epochs 5 fit 22s
+  P2_rolling_origin  train_<=2019  label_48h epochs 7 fit 31s
+  P2_rolling_origin  train_<=2019  label_72h epochs 12 fit 50s
+  P2_rolling_origin  train_<=2020  label_24h epochs 5 fit 34s
+  P2_rolling_origin  train_<=2020  label_48h epochs 7 fit 44s
+  P2_rolling_origin  train_<=2020  label_72h epochs 12 fit 74s
+  P2_rolling_origin  train_<=2021  label_24h epochs 5 fit 43s
+  P2_rolling_origin  train_<=2021  label_48h epochs 7 fit 59s
+  P2_rolling_origin  train_<=2021  label_72h epochs 12 fit 99s
+  P3_spatial_cv      excl_fold_1   label_24h epochs 5 fit 32s
+  P3_spatial_cv      excl_fold_1   label_48h epochs 7 fit 44s
+  P3_spatial_cv      excl_fold_1   label_72h epochs 12 fit 75s
+  P3_spatial_cv      excl_fold_2   label_24h epochs 5 fit 32s
+  P3_spatial_cv      excl_fold_2   label_48h epochs 7 fit 44s
+  P3_spatial_cv      excl_fold_2   label_72h epochs 12 fit 73s
+  P3_spatial_cv      excl_fold_3   label_24h epochs 5 fit 33s
+  P3_spatial_cv      excl_fold_3   label_48h epochs 7 fit 44s
+  P3_spatial_cv      excl_fold_3   label_72h epochs 12 fit 75s
+  P3_spatial_cv      excl_fold_4   label_24h epochs 5 fit 31s
+  P3_spatial_cv      excl_fold_4   label_48h epochs 7 fit 44s
+  P3_spatial_cv      excl_fold_4   label_72h epochs 12 fit 74s
+  checkpoint: phase25_search.csv (16 rows), phase25_metrics.csv (72 rows), phase25_L4-03.pt
+
+TOTAL 52217s — exit=0

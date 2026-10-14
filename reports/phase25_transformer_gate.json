@@ -1,0 +1,62 @@
+{
+  "seed": 20261008,
+  "registry": {
+    "id": "L4-03",
+    "model": "transformer_temporal",
+    "gate": "phase25_transformer_gate",
+    "budget": 20
+  },
+  "window_sweep": {
+    "3": 0.92677,
+    "7": 0.91146,
+    "14": 0.90775,
+    "30": 0.91688
+  },
+  "lstar": 3,
+  "baseline_bars": {
+    "lstm_L3": [
+      0.92677,
+      0.90109,
+      3,
+      12
+    ],
+    "gru_bestL": [
+      0.92362,
+      0.89885,
+      3,
+      12
+    ],
+    "tcn_bestL": [
+      0.92124,
+      0.89744,
+      3,
+      12
+    ],
+    "fusion_L3": [
+      0.93559,
+      0.91757,
+      3,
+      12
+    ],
+    "xgboost": [
+      0.95463,
+      0.96225,
+      3,
+      12
+    ]
+  },
+  "persistence": [
+    0.89465,
+    0.91771,
+    3,
+    12
+  ],
+  "preconditions_ok": true,
+  "rules": {
+    "primary": "temporal Transformer (L4-03), budget<=20, tuned on val_2022 (season=all, mean PR-AUC over 24/48/72h), must beat the best temporal baseline (TCN L3-06 and ideally LSTM L3-01) on val_2022",
+    "secondary": "on P3 spatial CV (unseen stations) the Transformer must not lose to LSTM/TCN; a paired station-bootstrap CI on the difference is reported on identical cells",
+    "kill": "if no meaningful gain (CI spanning 0) over the temporal baselines, stage 40 closes as a documented rejection and no spatiotemporal Transformer is attempted",
+    "expectation": "the window sweep (best at L=3) predicts attention's long-range advantage is unlikely to materialise; a tie-or-loss is a legitimate, reportable outcome"
+  },
+  "decision": "PASS (narrow) - proceed to 25.2 under the pre-registered rules"
+}

@@ -1,0 +1,19 @@
+==============================================================================
+PHASE 25 GATE (stage 40, D13) - temporal Transformer justification
+==============================================================================
+[PASS] G1: registry L4-03 = transformer_temporal, gate=phase25_transformer_gate, status=gated, budget=20, selection=val_2022/pr_auc, test=frozen_read_at_phase33
+[PASS] G2: Phase-21/22/23 baseline artefacts present (5/5) - a Transformer has real bars to beat (LSTM / TCN / fusion)
+[PASS] G3: Phase-21/22 tuning budgets recorded and <= 20 (D14): [('gru_bestL', 10), ('lstm_L14', 8), ('lstm_L3', 12), ('lstm_L30', 6), ('lstm_L7', 10), ('tcn_bestL', 12)]
+[PASS] G4: window-length sweep (val_2022 mean PR-AUC): {3: 0.92677, 7: 0.91146, 14: 0.90775, 30: 0.91688}; L*=3 (best 3); longer windows do NOT help (L30 = 0.91688 <= L* = 0.92677)
+
+-- temporal / feature baselines (season=all) ---------------------------
+model          val_2022   P3 mean
+lstm_L3         0.92677   0.90109
+gru_bestL       0.92362   0.89885
+tcn_bestL       0.92124   0.89744
+fusion_L3       0.93559   0.91757
+xgboost         0.95463   0.96225
+persistence     0.89465   0.91771
+[PASS] G5: the DL bars are finite and ordered sensibly (LSTM val 0.92677 > TCN 0.92124 ~ fusion 0.93559); xgboost is the standing ceiling
+
+figure: figures\phase25_gate.png
