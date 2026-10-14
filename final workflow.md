@@ -5,10 +5,11 @@
 (ML+DL modelling section). Those two files are superseded **in full** by this document; they
 may be deleted once this file is accepted.
 
-**Where we are:** Phases **0–28 are complete** (foundations → baselines → framework → datasets
+**Where we are:** Phases **0–29 are complete** (foundations → baselines → framework → datasets
 → sequence validation → classical ML → LSTM/GRU → TCN → feature fusion → station-graph GNN →
-temporal Transformer → multi-horizon matrix → fair ML-vs-DL comparison → probability calibration;
-checklist **stages 1–47 + 50–52 + 59–61 DONE**). Everything from Phase 29 on is future work —
+temporal Transformer → multi-horizon matrix → fair ML-vs-DL comparison → probability calibration
+→ risk levels & threshold optimization;
+checklist **stages 1–49 + 50–52 + 59–61 DONE**). Everything from Phase 30 on is future work —
 this document is the single map for it.
 
 This file merges the classical research workflow (rigorous labels → leakage → splits →
@@ -82,7 +83,7 @@ interpolated · R7 growing station network (85 → 133) · R8 soil/landcover dat
 
 ---
 
-## 1. Status ledger — Phases 0–28 complete
+## 1. Status ledger — Phases 0–29 complete
 
 | Phase | Body topic | Evidence |
 | --- | --- | --- |
@@ -115,6 +116,8 @@ interpolated · R7 growing station network (85 → 133) · R8 soil/landcover dat
 | 27 | Fair ML vs DL comparison (stage 42 + stages 43–46, 50–52) — **one table, one code path, one set of cells** for all 24 models; fresh P1 `val_2022` re-score through a single load→predict→score path reproduces all 144 val-2022 grid rows **bit-identically** (max Δ = 0.00e+00); master `phase27_metrics.csv` (1,728 rows) = 7 dev cells (val_2020/21/22 + 4 spatial folds) × 3 horizons × 3 seasons (+ `val_2022` repeated under P1/P2, identical fold); **L2 gradient boosting leads every horizon** (lightgbm 24 h 0.9682, xgboost 48 h 0.9549, xgboost_selected 72 h 0.9422), best DL `fusion_L3` 0.016–0.024 behind; D14 group means engineered L1∪L2 ahead of sequence L3∪L4 by 0.010–0.013 (P1), 0.007–0.020 (P2), **0.028–0.033 (P3 unseen locations)**; ML>DL real but **not CI-resolved** (bootstrap CIs overlap), gap is **recall** (ROC-AUC ~0.995 everywhere); operational block (missed floods/FAR/FPR/event recall/lead time, per year/season); cost block (`gnn_lstm` ~80× `xgboost`, no gain); test untouched | `scripts/evaluate_all.py`, `reports/phase27_ml_vs_dl.md`, `reports/phase27_metrics.csv` (1,728), `phase27_p1_rescore.csv` (216), `phase27_operational.csv` (216), `phase27_cost.csv` (24), `phase27_generalisation.csv` (648), `phase27_summary.json`, `figures/phase27_ml_vs_dl.png`, `notebooks/27_ml_vs_dl.ipynb` (12/12), `scripts/build_phase27_notebook.py`, `scripts/phase27_run.log` |
 
 | 28 | Probability calibration (stage 47) — P1 `val_2022` probabilities for all 24 models come from the **same Phase-27 predictor** (`evaluate_all.predict_one`), so the raw Brier/ECE reproduce the Phase-27 re-score (max \|Δ ECE\| = 7.2e-07, clipping only); **raw calibration is good for most** (17/24 clear ECE ≤ 0.02 all-season, median raw ECE 0.0067), miscalibration is **structural and over-confident**, concentrated in the crippled control `static_only` (0.37), the plain recurrent nets (`lstm_L3` 0.072, `lstm_L7` 0.048, `gru_bestL` 0.041, `tcn_bestL` 0.057), `random_forest` (0.035, tree-vote over-confidence) and the no-skill baselines — and it **grows with lead time** and is **worst in monsoon** (`lstm_L3` 0.103 monsoon vs 0.031 off-season); recalibration (Platt/isotonic, fitted **on validation only**) scored **out-of-fold over 5 station folds** brings **every skill** model within tolerance (the control `static_only` stays 0.033); in-sample isotonic ECE = 0.000 by construction is reported only as the optimistic bound; **L1 linear, L2 gradient boosting, L4 transformer/GNN and the fusion models may proceed uncalibrated**, the recurrent nets + `random_forest` need a validation-fitted calibrator before Phase 29; test untouched | `scripts/phase28_calibration.py`, `reports/phase28_calibration.md`, `reports/phase28_calibration.csv` (216), `phase28_summary.json`, `phase28_predictions.npz`, `figures/phase28_reliability.png`, `notebooks/28_calibration.ipynb` (12/12), `scripts/build_phase28_notebook.py`, `scripts/phase28_run.log` |
+
+| 29 | Risk levels & threshold optimization (stages 48, 49) — a pure **decision layer** on the Phase-27/28 probabilities (cached P1 `val_2022` for all 24 models, no retraining); row-level cost with **FN ≫ FP** (`C_FN : C_FP = 10 : 1`, sensitivity 5/20), thresholds swept 0.01–0.60 and chosen by exact cost argmin; leaders by PR-AUC (matched independently) are **lightgbm 24 h (t = 0.060, recall 0.980, missed 18), xgboost 48 h (t = 0.052, recall 0.982, missed 19), xgboost_selected 72 h (t = 0.061, recall 0.966, missed 38)** — a **very-high-recall / moderate-precision** early-warning operating point (FAR 25–37 %); the **Phase-16 lesson is confirmed**: carrying a dry-season threshold into the monsoon loses recall — small for the leaders (≤ 3.2 pts) but **4–9 pts** for weaker tree/recurrent models and **16.6 pts** for the no-skill control `static_only`, so thresholds are **re-derived per period**; the calibrated-posterior fallback `1/(1+C_FN/C_FP)` = 0.091 is a good period-invariant rule at 48/72 h (≤ 11 % cost penalty) but is beaten by re-derivation at 24 h; **risk bands are cost-derived** (watch = ½·t_warn, warning = t_warn, high = precision ≥ 0.90) giving a near-perfect top band (**90 % observed flood rate, 13–18× lift**) while the **quartile default is rejected** (50–75 % of rows fall in zero-flood bands); bands + thresholds **frozen before any test read**; test untouched | `scripts/phase29_thresholds.py`, `reports/phase29_thresholds.md`, `reports/phase29_threshold_sweep.csv` (14,040), `phase29_chosen_thresholds.csv` (216), `phase29_transfer.csv` (837), `phase29_risk_bands.csv` (72), `phase29_pr_auc.csv` (72), `phase29_summary.json`, `figures/phase29_threshold_cost.png`, `figures/phase29_bands_transfer.png`, `notebooks/29_thresholds.ipynb` (12/12), `scripts/build_phase29_notebook.py`, `scripts/phase29_run.log` |
 
 **Discharged without a phase of their own:**
 
@@ -506,7 +509,7 @@ The core scientific result. **One table, one code path, one set of cells** for a
 
 ---
 
-## Phase 29 — Risk levels & threshold optimization · stages 48, 49
+## Phase 29 — Risk levels & threshold optimization · stages 48, 49 · **DONE**
 
 1. **Thresholds:** sweep candidate thresholds (0.05…0.60) on **validation**, plot
    precision–recall / false-alarm–missed-flood trade-off, and choose with an explicit cost
@@ -522,6 +525,36 @@ The core scientific result. **One table, one code path, one set of cells** for a
 
 **DoD:** `reports/phase29_thresholds.md` with the chosen thresholds/bands, their cost
 rationale, and their validation frequencies.
+
+> **Resolved (2026-10-14).** Done. Phase 29 is a **pure decision layer** on the Phase-27/28
+> evidence: it re-uses the cached P1 `val_2022` probabilities (`phase28_predictions.npz`, 24
+> models × 3 horizons) and adds **no new model path**. Cost is explicit and row-level —
+> `cost = C_FN·FN + C_FP·FP` with **`C_FN : C_FP = 10 : 1`** (sensitivity 5 and 20) — reported per
+> 1 000 rows; thresholds are swept over **0.01…0.60** (65 points, extended below the spec's 0.05
+> because the ~5 % base rate puts the optimum at 0.04–0.17) and the chosen value is the **exact
+> cost argmin**. Leaders (selected independently by PR-AUC, matching Phase 27) are **`lightgbm`
+> 24 h** (`t` = 0.0605, recall 0.980, precision 0.746, FAR 0.254, **18 rows missed**, cost 27.25 /
+> 1k), **`xgboost` 48 h** (0.0524, 0.982 / 0.667 / 0.333, **19 missed**, 40.06) and
+> **`xgboost_selected` 72 h** (0.0614, 0.966 / 0.630 / 0.370, **38 missed**, 59.57) — a
+> deliberately **very-high-recall / moderate-precision** early-warning point. The cost ratio is a
+> **policy input**: the threshold moves ~×5 between 5:1 and 20:1 (e.g. lightgbm 0.1244 → 0.0605 →
+> 0.0247). The **Phase-16 lesson is reproduced**: deriving a threshold on the dry season and
+> carrying it into the monsoon loses recall — small for the leaders (≤ 3.2 pts) because their cost
+> curves are flat near an inclusive optimum, but **4–9 pts** for `gradient_boosting`/`tree_depth4`/
+> `lstm_L30`/`persistence` and **16.6 pts** for the no-skill control `static_only` (the reverse,
+> wet→dry, merely over-alarms). **Decision: re-derive thresholds per period.** The
+> calibrated-probability alternative is tested: the fixed posterior line `1/(1+C_FN/C_FP)` = 0.091
+> is a good period-invariant fallback at 48/72 h (≤ 11 % cost penalty) but is beaten by
+> re-derivation at 24 h, and cross-fitted isotonic helps single-threshold transfer only
+> inconsistently — so **period-specific re-derivation is the primary rule**. **Risk bands are
+> cost-derived** (watch = ½·t_warn, warning = t_warn, high = first score with validation
+> precision ≥ 0.90): the top band is near-perfect (**90.0–90.1 % observed flood rate, 13.7–17.7×
+> lift**), the high band ~23 %, and ~90 % of days fall in the low band at < 0.2 %; the **quartile
+> default is rejected** (the near-zero probability mass puts **50–75 % of rows in zero-flood
+> bands** and dumps all floods into the top quartile). Bands and thresholds are **frozen here**;
+> test untouched (frozen to Phase 33). `reports/phase29_thresholds.md` carries the rationale;
+> `phase29_chosen_thresholds.csv` (216), `phase29_transfer.csv` (837) and `phase29_risk_bands.csv`
+> (72) the tables; `notebooks/29_thresholds.ipynb` 12/12.
 
 ---
 
@@ -728,7 +761,7 @@ DONE   Phases 0–16   foundations, data, features, leakage, table, splits, base
        Phase 26  multi-horizon matrix    DONE
        Phase 27  fair ML vs DL comparison  DONE  (+ stages 43–46, 50–52)
        Phase 28  probability calibration  DONE
-       Phase 29 thresholds/bands → Phase 30 error analysis
+       Phase 29  thresholds/bands (risk levels)  DONE  → Phase 30 error analysis
        Phase 31  robustness → Phase 32 ablation matrix (E0–E16) → Phase 33 selection → Phase 34 XAI
        Phases 35–42  system (prototype)
        Phases 43–45  final evaluation, reproducibility, thesis
@@ -775,8 +808,8 @@ Stages **1–30 are frozen** — they record completed work and are mirrored in
 | 45 | Confusion matrix | **DONE** | Phase 27 — `tp/fp/fn/tn` + derived `fnr/far/fpr` on every cell (`phase27_metrics.csv`) |
 | 46 | False-negative + operational analysis | **DONE** | Phase 27 — `phase27_operational.csv`: missed-flood rows, false-alarm rate/FPR, event-level recall, warning lead time, per year/season; Phase 30 deepens the error analysis |
 | 47 | Probability calibration | **DONE** | Phase 28 — P1 `val_2022` probabilities for all 24 models via the Phase-27 predictor; raw Brier/ECE reproduce the Phase-27 re-score (max \|Δ ECE\| = 7.2e-07); 17/24 clear ECE ≤ 0.02 all-season (median 0.0067); miscalibration is over-confidence, growing with lead time and worst in monsoon (recurrent nets + `random_forest`); Platt/isotonic fitted on validation, scored out-of-fold (5 station folds) fix every skill model; `phase28_calibration.csv` (216) + `phase28_reliability.png` |
-| 48 | Risk-level definition | TODO | Phase 29 — derived from validation |
-| 49 | Threshold optimization | TODO | Phase 29 — cost of FN ≫ FP |
+| 48 | Risk-level definition | **DONE** | Phase 29 — cost-derived bands (watch = ½·t_warn, warning = t_warn, high = precision ≥ 0.90) on `val_2022`: top band **90.0–90.1 % observed flood rate, 13.7–17.7× lift**, ~90 % of rows low (< 0.2 %); **quartile default rejected** (50–75 % of rows in zero-flood bands); `phase29_risk_bands.csv` (72) |
+| 49 | Threshold optimization | **DONE** | Phase 29 — row-level cost `C_FN:C_FP = 10:1` (sensitivity 5/20), sweep 0.01–0.60, exact cost argmin; leaders lightgbm 24 h (0.0605, recall 0.980, 18 missed), xgboost 48 h (0.0524, 0.982, 19), xgboost_selected 72 h (0.0614, 0.966, 38); **period-specific re-derivation** (dry→wet carry loses up to 9 pts, 16.6 pts for the control); `phase29_chosen_thresholds.csv` (216) + `phase29_transfer.csv` (837) |
 | 50 | Temporal evaluation | **DONE** | Phase 27 — per-year P2 temporal block (`phase27_generalisation.csv`; engineered L1∪L2 vs sequence L3∪L4 gaps 0.007–0.020) |
 | 51 | Spatial evaluation | **DONE** | Phase 27 — P3 4-fold unseen-location block (gap 0.028–0.033; deep models ~3× more fold-sensitive); `test_unseen`/`new_network` deferred to Phase 33 |
 | 52 | Monsoon evaluation | **DONE** | Phase 27 — D1 monsoon vs non-monsoon (both groups better in monsoon; engineered advantage larger in monsoon) |

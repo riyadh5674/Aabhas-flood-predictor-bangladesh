@@ -1,0 +1,141 @@
+{
+  "phase": 29,
+  "stages": [
+    48,
+    49
+  ],
+  "seed": 20261008,
+  "cost_statement": {
+    "C_FN": 10.0,
+    "C_FP": 1,
+    "sensitivity": [
+      5.0,
+      10.0,
+      20.0
+    ],
+    "note": "row-level proxy; missing a flood is far worse than a false alarm"
+  },
+  "threshold_grid": [
+    0.01,
+    0.6,
+    65
+  ],
+  "leaders": {
+    "24h": "lightgbm",
+    "48h": "xgboost",
+    "72h": "xgboost_selected"
+  },
+  "frozen_thresholds_all_season": {
+    "24h": {
+      "model": "lightgbm",
+      "t_warn": 0.0605,
+      "recall": 0.9798,
+      "precision": 0.7462,
+      "far": 0.2538,
+      "missed_rows": 18,
+      "alarm_rate": 0.0668,
+      "cost_per1k": 27.254
+    },
+    "48h": {
+      "model": "xgboost",
+      "t_warn": 0.0524,
+      "recall": 0.9815,
+      "precision": 0.6671,
+      "far": 0.3329,
+      "missed_rows": 19,
+      "alarm_rate": 0.0873,
+      "cost_per1k": 40.058
+    },
+    "72h": {
+      "model": "xgboost_selected",
+      "t_warn": 0.0614,
+      "recall": 0.9662,
+      "precision": 0.6299,
+      "far": 0.3701,
+      "missed_rows": 38,
+      "alarm_rate": 0.1009,
+      "cost_per1k": 59.57
+    }
+  },
+  "frozen_thresholds_per_period": {
+    "24h": {
+      "all": 0.0605,
+      "monsoon": 0.0689,
+      "non-monsoon": 0.0412
+    },
+    "48h": {
+      "all": 0.0524,
+      "monsoon": 0.0524,
+      "non-monsoon": 0.0645
+    },
+    "72h": {
+      "all": 0.0614,
+      "monsoon": 0.0697,
+      "non-monsoon": 0.1657
+    }
+  },
+  "period_transfer_dry_to_wet_leaders": {
+    "24h": {
+      "recall_loss": -0.0044,
+      "self_recall": 0.978,
+      "carried_recall": 0.9824
+    },
+    "48h": {
+      "recall_loss": 0.0063,
+      "self_recall": 0.9835,
+      "carried_recall": 0.9772
+    },
+    "72h": {
+      "recall_loss": 0.0324,
+      "self_recall": 0.9606,
+      "carried_recall": 0.9282
+    }
+  },
+  "worst_dry_to_wet_transfer_raw": [
+    {
+      "model": "static_only",
+      "horizon": "48h",
+      "recall_loss": 0.166
+    },
+    {
+      "model": "static_only",
+      "horizon": "72h",
+      "recall_loss": 0.1414
+    },
+    {
+      "model": "static_only",
+      "horizon": "24h",
+      "recall_loss": 0.1334
+    },
+    {
+      "model": "persistence",
+      "horizon": "48h",
+      "recall_loss": 0.0862
+    },
+    {
+      "model": "persistence",
+      "horizon": "72h",
+      "recall_loss": 0.0846
+    },
+    {
+      "model": "lstm_L30",
+      "horizon": "24h",
+      "recall_loss": 0.0704
+    }
+  ],
+  "band_separation_ok_leaders": {
+    "24h": true,
+    "48h": true,
+    "72h": true
+  },
+  "n_flagged_needing_calibrated_decision": [
+    "climatology",
+    "gru_bestL",
+    "lstm_L3",
+    "lstm_L7",
+    "random_forest",
+    "static_only",
+    "tcn_bestL"
+  ],
+  "test_rows_read": 0
+}
