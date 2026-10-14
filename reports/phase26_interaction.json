@@ -1,0 +1,109 @@
+{
+  "seed": 20261008,
+  "sha256": "a6748529083fcdceb8bb8a657b067bf12b5c861f3a7a6b09c8977ea63be73c8e",
+  "models": 24,
+  "interaction": {
+    "P1": {
+      "engineered_n": 9,
+      "sequence_n": 13,
+      "engineered_24_48_72": [
+        0.9498,
+        0.93539,
+        0.91983
+      ],
+      "sequence_24_48_72": [
+        0.90515,
+        0.89564,
+        0.87921
+      ],
+      "engineered_drop_mean": -0.02997,
+      "sequence_drop_mean": -0.02594,
+      "interaction_drop_diff_mean": 0.00403,
+      "engineered_drop_median": -0.02801,
+      "sequence_drop_median": -0.02731,
+      "interaction_drop_diff_median": 0.0007,
+      "best_engineered": "xgboost",
+      "best_engineered_curve": [
+        0.96812,
+        0.95494,
+        0.94084
+      ],
+      "best_engineered_drop": -0.02728,
+      "best_sequence": "fusion_L3",
+      "best_sequence_curve": [
+        0.94443,
+        0.93854,
+        0.92381
+      ],
+      "best_sequence_drop": -0.02062
+    },
+    "P2": {
+      "engineered_n": 9,
+      "sequence_n": 13,
+      "engineered_24_48_72": [
+        0.96309,
+        0.95113,
+        0.93626
+      ],
+      "sequence_24_48_72": [
+        0.90767,
+        0.89673,
+        0.8804
+      ],
+      "engineered_drop_mean": -0.02683,
+      "sequence_drop_mean": -0.02727,
+      "interaction_drop_diff_mean": -0.00044,
+      "engineered_drop_median": -0.02601,
+      "sequence_drop_median": -0.02771,
+      "interaction_drop_diff_median": -0.0017,
+      "best_engineered": "xgboost_selected",
+      "best_engineered_curve": [
+        0.97789,
+        0.9669,
+        0.95484
+      ],
+      "best_engineered_drop": -0.02306,
+      "best_sequence": "fusion_L3",
+      "best_sequence_curve": [
+        0.95928,
+        0.9485,
+        0.93157
+      ],
+      "best_sequence_drop": -0.02771
+    },
+    "P3": {
+      "engineered_n": 9,
+      "sequence_n": 13,
+      "engineered_24_48_72": [
+        0.95282,
+        0.93574,
+        0.91848
+      ],
+      "sequence_24_48_72": [
+        0.85866,
+        0.84834,
+        0.8333
+      ],
+      "engineered_drop_mean": -0.03434,
+      "sequence_drop_mean": -0.02536,
+      "interaction_drop_diff_mean": 0.00898,
+      "engineered_drop_median": -0.03014,
+      "sequence_drop_median": -0.02836,
+      "interaction_drop_diff_median": 0.00178,
+      "best_engineered": "xgboost",
+      "best_engineered_curve": [
+        0.97566,
+        0.96178,
+        0.94933
+      ],
+      "best_engineered_drop": -0.02633,
+      "best_sequence": "fusion_L3",
+      "best_sequence_curve": [
+        0.91536,
+        0.9202,
+        0.91714
+      ],
+      "best_sequence_drop": 0.00179
+    }
+  }
+}

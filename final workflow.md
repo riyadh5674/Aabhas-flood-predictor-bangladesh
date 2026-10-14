@@ -5,10 +5,10 @@
 (ML+DL modelling section). Those two files are superseded **in full** by this document; they
 may be deleted once this file is accepted.
 
-**Where we are:** Phases **0–25 are complete** (foundations → baselines → framework → datasets
+**Where we are:** Phases **0–26 are complete** (foundations → baselines → framework → datasets
 → sequence validation → classical ML → LSTM/GRU → TCN → feature fusion → station-graph GNN →
-temporal Transformer; checklist **stages 1–40 DONE**). Everything from Phase 26 on is future
-work — this document is the single map for it.
+temporal Transformer → multi-horizon matrix; checklist **stages 1–41 + 59–61 DONE**). Everything
+from Phase 27 on is future work — this document is the single map for it.
 
 This file merges the classical research workflow (rigorous labels → leakage → splits →
 baselines → evaluation → system) with the deep-learning programme (framework → datasets →
@@ -81,7 +81,7 @@ interpolated · R7 growing station network (85 → 133) · R8 soil/landcover dat
 
 ---
 
-## 1. Status ledger — Phases 0–25 complete
+## 1. Status ledger — Phases 0–26 complete
 
 | Phase | Body topic | Evidence |
 | --- | --- | --- |
@@ -108,6 +108,8 @@ interpolated · R7 growing station network (85 → 133) · R8 soil/landcover dat
 | 24 | Station graph & spatiotemporal GNN — hydrology-first graph (52 river ∪ 375 kNN-fallback edges, 427 total, frozen SHA), GCN (L4-01) / GAT (L4-02) / GNN→LSTM (L4-04); D13 gate **PASS (narrow)**; **P3 unseen-station paired ablation vs the temporal-only LSTM (L3-01)**: no gain at 24 h (GAT Δ −0.013, CI<0), **but significant gain at 48 h (GAT +0.016) and 72 h (GCN +0.018, GAT +0.023)** — qualified positive, horizon-dependent; registry L4-01/02/04 gated→planned; test untouched | `scripts/train_gnn.py`, `scripts/phase24_ablation.py`, `reports/phase24_gnn.md`, `reports/phase24_metrics.csv` (216), `phase24_search.csv` (24), `phase24_ablation.csv` (24) + `phase24_ablation_preds.npz`, `models/phase24_L4-0{1,2,4}.pt`, `notebooks/24_gnn.ipynb` (16/16), `scripts/phase24_run.log` |
 
 | 25 | Temporal Transformer (L4-03) — per-day token → embedding + positional → encoder → masked-mean pool → sigmoid; D13 gate **PASS (narrow)**; budget 16/768 on `val_2022`; **winner L = 7** (not 30), 36,353 params, unweighted; **primary PASS** (val_2022 mean PR-AUC **0.93168** > LSTM 0.92677 > TCN 0.92124); **secondary PASS** (P3 unseen-station mean **0.91247** > LSTM 0.90107 / TCN 0.89743; paired station-bootstrap **gain over TCN at 48/72 h and over LSTM at 72 h**, **no loss at any horizon**) — **qualified positive, modest**; the long-range-attention story did **not** materialise (L=30 weakest); stays below `fusion_L3` (0.93559) and xgboost (0.95463); registry L4-03 gated→planned; test untouched | `scripts/train_transformer.py`, `scripts/phase25_gate.py`, `scripts/phase25_ablation.py`, `reports/phase25_transformer_gate.md`, `reports/phase25_transformer.md`, `reports/phase25_metrics.csv` (72), `phase25_search.csv` (16), `phase25_ablation.csv` (12) + `phase25_ablation_preds.npz`, `models/phase25_L4-03.pt`, `notebooks/25_transformer.ipynb` (12/12), `scripts/phase25_run.log` |
+
+| 26 | Multi-horizon strategy (stage 41 + stages 59–61) — integrates the 7 frozen dev metrics files (Phases 16, 20–25) into one **24-model × 3-horizon** matrix; **difficulty grows with lead time for every competitive model** (monotone P1/P2/P3 decay; only no-skill `climatology` and the `static_only` control rise); the **ML-vs-DL interaction is small on the temporal cells** (P1 group mean Δ −0.030 engineered vs −0.026 sequence) but **real on the unseen-station cell P3** (engineered Δ −0.034 vs sequence −0.025; `fusion_L3` flat, Δ +0.002); gradient boosting leads **every** horizon on **every** protocol (P1 leaders lightgbm/24 h, xgboost/48 h, xgboost_selected/72 h); optional multi-task head **deferred** to the Phase-32 E-matrix; test untouched | `scripts/phase26_matrix.py`, `reports/phase26_multihorizon.md`, `reports/phase26_matrix.csv` (1,728), `phase26_summary.csv` (72), `phase26_interaction.json`, `notebooks/26_multihorizon.ipynb` (12/12), `scripts/build_phase26_notebook.py` |
 
 **Discharged without a phase of their own:**
 
@@ -374,7 +376,7 @@ whether static context helps — a Transformer must be compared *against* someth
 
 ---
 
-## Phase 26 — Multi-horizon strategy · stage 41 (stages 59–61 deliverables)
+## Phase 26 — Multi-horizon strategy · stage 41 (stages 59–61 deliverables) · **DONE**
 
 Every surviving model from L1–L4 is reported as a full matrix:
 
@@ -394,6 +396,21 @@ registry entry, clearly marked.
 
 Stages **59–61** are the horizon-specific deliverables (one report section each: 24 h,
 48 h, 72 h) filled from this matrix — they are not three more training rounds.
+
+> **Resolved (2026-10-14).** Done. `scripts/phase26_matrix.py` integrates the seven frozen
+> dev-cell metrics files (Phases 16, 20–25) into one **24-model × 3-horizon** matrix —
+> `reports/phase26_matrix.csv` (1,728 rows), `phase26_summary.csv` (72 rows) and
+> `phase26_interaction.json`. **Difficulty grows with lead time for every competitive model**
+> (monotone PR-AUC decay on P1/P2/P3; only the no-skill `climatology` and the crippled
+> `static_only` control rise). On the temporal cells the **ML-vs-DL interaction is small**
+> (P1 group mean Δ −0.030 engineered vs −0.026 sequence; medians −0.028 / −0.027); on the
+> **unseen-station cell (P3) it is real** — engineered features decay faster (Δ −0.034) than
+> sequence/DL (−0.025) and `fusion_L3` is **flat across horizons** (Δ +0.002). Gradient boosting
+> still leads every horizon on every protocol (P1 leaders: lightgbm/24 h, xgboost/48 h,
+> xgboost_selected/72 h); the DL contribution lives in the P3 lead-time behaviour, not the P1
+> headline. The optional **multi-task head is deferred** to the Phase-32 ablation matrix (recorded
+> in §9 of the report). Test untouched. Full evidence in `reports/phase26_multihorizon.md`;
+> `notebooks/26_multihorizon.ipynb` 12/12.
 
 ---
 
@@ -654,7 +671,7 @@ DONE   Phases 0–16   foundations, data, features, leakage, table, splits, base
        Phase 23  fusion (temporal + static)            │
        Phase 24  GNN gate → GNN          DONE         │
        Phase 25  gate → Transformer      DONE         ┘
-       Phase 26  multi-horizon matrix
+       Phase 26  multi-horizon matrix    DONE
        Phase 27  fair ML vs DL comparison  (+ stages 43–46, 50–52)
        Phase 28  calibration → Phase 29 thresholds/bands → Phase 30 error analysis
        Phase 31  robustness → Phase 32 ablation matrix (E0–E16) → Phase 33 selection → Phase 34 XAI
@@ -696,7 +713,7 @@ Stages **1–30 are frozen** — they record completed work and are mirrored in
 | 38 | Multi-input / fusion deep learning | **DONE** | Phase 23 — `scripts/build_static.py` (7/7, static 133×15), `scripts/train_fusion.py` (static_only/fusion_L3/hybrid_L3 → registry L3-07/08/09), `scripts/phase23_ablation.py` (matched-capacity + paired station-bootstrap gain CI), `reports/phase23_fusion.md`, `reports/phase23_metrics.csv` (216), `phase23_search.csv` (44), `phase23_ablation.csv` (144) + `phase23_ablation_boot.csv`, `models/phase23_L3-0{7,8,9}.pt`, `notebooks/23_fusion.ipynb` (18/18), `scripts/phase23_run.log`; verdict — static geography adds only marginal, mostly non-significant skill at matched capacity (helps P2/P3, not P1) |
 | 39 | Station graph & GNN | **DONE** | Phase 24 — gate `phase24_graph_gate` **PASS (narrow)** (`scripts/phase24_gate.py`, `reports/phase24_graph_gate.md`, 52 validated river edges, `figures/phase24_gate.png`); `scripts/train_gnn.py` (gcn/gat/gnn_lstm → registry L4-01/02/04), `scripts/phase24_ablation.py` (paired P3 station bootstrap), `reports/phase24_gnn.md`, `reports/phase24_metrics.csv` (216), `phase24_search.csv` (24), `phase24_ablation.csv` (24) + `phase24_ablation_preds.npz`, `models/phase24_L4-0{1,2,4}.pt`, `notebooks/24_gnn.ipynb` (16/16), `scripts/phase24_run.log`; verdict — **qualified positive, horizon-dependent**: no P3 gain at 24 h (GAT Δ −0.013, CI<0), significant gain at 48 h (GAT +0.016) and 72 h (GCN +0.018, GAT +0.023); approved graph = river-upstream ∪ kNN5; registry L4-01/02/04 gated→planned |
 | 40 | Transformer models | **DONE** | Phase 25 — gate `phase25_transformer_gate` **PASS (narrow)** (`scripts/phase25_gate.py`, `reports/phase25_transformer_gate.md`, `figures/phase25_gate.png`); `scripts/train_transformer.py` (L4-03 temporal Transformer: per-day token → embed + positional → encoder → masked-mean pool → sigmoid; budget 16/768, winner **L = 7**, 36,353 params), `scripts/phase25_ablation.py` (paired P1 val_2022 + P3 pooled station bootstrap, 1,000 resamples), `reports/phase25_transformer.md`, `reports/phase25_metrics.csv` (72), `phase25_search.csv` (16), `phase25_ablation.csv` (12) + `phase25_ablation_preds.npz`, `models/phase25_L4-03.pt`, `notebooks/25_transformer.ipynb` (12/12), `scripts/phase25_run.log`; verdict — **qualified positive, modest**: primary PASS (`val_2022` mean **0.93168** > LSTM 0.92677 > TCN 0.92124), secondary PASS (P3 unseen-station mean **0.91247**, significant gains vs TCN at 48/72 h and vs LSTM at 72 h, no loss), win is **short-window** (L=7, L=30 weakest) not long-range; registry L4-03 gated→planned |
-| 41 | Multi-horizon strategy (24/48/72 h) | TODO | Phase 26 |
+| 41 | Multi-horizon strategy (24/48/72 h) | **DONE** | Phase 26 — `scripts/phase26_matrix.py` integrates the 7 frozen dev metrics files into a 24-model × 3-horizon matrix (`reports/phase26_matrix.csv`, 1,728 rows; `phase26_summary.csv`; `phase26_interaction.json`), `reports/phase26_multihorizon.md`, `notebooks/26_multihorizon.ipynb` (12/12); verdict — difficulty grows with lead time for every competitive model; ML-vs-DL interaction small on P1/P2, **real on P3 unseen stations** (engineered Δ −0.034 vs sequence −0.025; `fusion_L3` flat +0.002); gradient boosting leads every horizon; multi-task head deferred to Phase 32 |
 | 42 | ML vs DL comparison | TODO | Phase 27 — fair-comparison table |
 | 43 | ROC-AUC / PR-AUC | TODO | Phase 27 — PR-AUC primary |
 | 44 | Precision / Recall / F1 | TODO | Phase 27 — train-derived thresholds |
@@ -714,9 +731,9 @@ Stages **1–30 are frozen** — they record completed work and are mirrored in
 | 56 | Comparative experiment matrix | TODO | Phase 32 — E0–E16 |
 | 57 | Final model selection | TODO | Phase 33 — scorecard, test read once |
 | 58 | Explainable AI / SHAP | TODO | Phase 34 — needs `shap` install |
-| 59 | 24-hour prediction | TODO | Phase 26 deliverable |
-| 60 | 48-hour prediction | TODO | Phase 26 deliverable |
-| 61 | 72-hour prediction | TODO | Phase 26 deliverable |
+| 59 | 24-hour prediction | **DONE** | Phase 26 §7 — leaders P1 `lightgbm` 0.9682 / xgboost 0.9681; best DL `fusion_L3` 0.9444 |
+| 60 | 48-hour prediction | **DONE** | Phase 26 §7 — leader `xgboost` 0.9549 (P1), `fusion_L3` peaks on P3 at 0.9202 |
+| 61 | 72-hour prediction | **DONE** | Phase 26 §7 — leader `xgboost_selected` 0.9422 (P1); D7 persistence decays to 0.8683 |
 | 62 | Location-based prediction | **BLOCKED** | Phase 35 — needs model + geocode layer |
 | 63 | Bangladesh risk map | **BLOCKED** | Phase 36 — needs Phase-31 map module |
 | 64 | Automatic data acquisition | PARTIAL | Phase 37 — FFWC ingest resumable, weather not |

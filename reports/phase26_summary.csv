@@ -1,0 +1,73 @@
+level,family,registry_id,model,protocol,cell,pr_auc_24h,pr_auc_48h,pr_auc_72h,mean,drop_72_24
+L1,baseline/statistical (engineered),L1-01,climatology,P1,val_2022,0.05091,0.05936,0.06577,0.05868,0.01486
+L1,baseline/statistical (engineered),L1-01,climatology,P2,mean_years,0.08767,0.0967,0.10431,0.09623,0.01664
+L1,baseline/statistical (engineered),L1-01,climatology,P3,mean_folds,0.09599,0.10611,0.11525,0.10578,0.01926
+L1,baseline/statistical (engineered),L1-02,persistence,P1,val_2022,0.92029,0.8954,0.86826,0.89465,-0.05203
+L1,baseline/statistical (engineered),L1-02,persistence,P2,mean_years,0.94293,0.92505,0.90483,0.92427,-0.0381
+L1,baseline/statistical (engineered),L1-02,persistence,P3,mean_folds,0.93702,0.91822,0.89789,0.91771,-0.03913
+L1,baseline/statistical (engineered),L1-03,logreg_linear,P1,val_2022,0.94007,0.92414,0.90528,0.92316,-0.03479
+L1,baseline/statistical (engineered),L1-03,logreg_linear,P2,mean_years,0.95197,0.93644,0.91829,0.93557,-0.03368
+L1,baseline/statistical (engineered),L1-03,logreg_linear,P3,mean_folds,0.92772,0.90322,0.88029,0.90374,-0.04743
+L1,baseline/statistical (engineered),L1-04,logreg_linear_no_up,P1,val_2022,0.94026,0.92416,0.90523,0.92321,-0.03503
+L1,baseline/statistical (engineered),L1-04,logreg_linear_no_up,P2,mean_years,0.95198,0.93664,0.91853,0.93572,-0.03344
+L1,baseline/statistical (engineered),L1-04,logreg_linear_no_up,P3,mean_folds,0.9295,0.90443,0.88211,0.90535,-0.04739
+L1,baseline/statistical (engineered),L1-05,logreg_selected,P1,val_2022,0.93979,0.92065,0.90042,0.92029,-0.03937
+L1,baseline/statistical (engineered),L1-05,logreg_selected,P2,mean_years,0.95351,0.93755,0.91896,0.93667,-0.03454
+L1,baseline/statistical (engineered),L1-05,logreg_selected,P3,mean_folds,0.93358,0.90973,0.88535,0.90955,-0.04823
+L1,baseline/statistical (engineered),L1-06,tree_depth4,P1,val_2022,0.89715,0.89024,0.87347,0.88695,-0.02368
+L1,baseline/statistical (engineered),L1-06,tree_depth4,P2,mean_years,0.93426,0.92483,0.90818,0.92243,-0.02608
+L1,baseline/statistical (engineered),L1-06,tree_depth4,P3,mean_folds,0.94011,0.923,0.90223,0.92178,-0.03788
+L2,classical ML (engineered),L2-01,random_forest,P1,val_2022,0.9665,0.95155,0.93885,0.9523,-0.02765
+L2,classical ML (engineered),L2-01,random_forest,P2,mean_years,0.97698,0.96531,0.95303,0.96511,-0.02395
+L2,classical ML (engineered),L2-01,random_forest,P3,mean_folds,0.97442,0.96064,0.94753,0.96086,-0.0269
+L2,classical ML (engineered),L2-02,gradient_boosting,P1,val_2022,0.96184,0.94569,0.93383,0.94712,-0.02801
+L2,classical ML (engineered),L2-02,gradient_boosting,P2,mean_years,0.96479,0.96014,0.94892,0.95795,-0.01587
+L2,classical ML (engineered),L2-02,gradient_boosting,P3,mean_folds,0.94521,0.93896,0.92582,0.93666,-0.01938
+L2,classical ML (engineered),L2-03,xgboost,P1,val_2022,0.96812,0.95494,0.94084,0.95463,-0.02728
+L2,classical ML (engineered),L2-03,xgboost,P2,mean_years,0.9786,0.96698,0.95376,0.96645,-0.02484
+L2,classical ML (engineered),L2-03,xgboost,P3,mean_folds,0.97566,0.96178,0.94933,0.96225,-0.02633
+L2,classical ML (engineered),L2-04,lightgbm,P1,val_2022,0.96816,0.95379,0.93838,0.95344,-0.02977
+L2,classical ML (engineered),L2-04,lightgbm,P2,mean_years,0.97785,0.96535,0.95184,0.96501,-0.02601
+L2,classical ML (engineered),L2-04,lightgbm,P3,mean_folds,0.97515,0.96101,0.94982,0.96199,-0.02534
+L2,classical ML (engineered),L2-05,xgboost_selected,P1,val_2022,0.96631,0.95333,0.94216,0.95393,-0.02415
+L2,classical ML (engineered),L2-05,xgboost_selected,P2,mean_years,0.97789,0.9669,0.95484,0.96654,-0.02306
+L2,classical ML (engineered),L2-05,xgboost_selected,P3,mean_folds,0.97403,0.95886,0.94389,0.95893,-0.03014
+L3,deep temporal (sequence),L3-01,lstm_L3,P1,val_2022,0.94206,0.92534,0.91291,0.92677,-0.02916
+L3,deep temporal (sequence),L3-01,lstm_L3,P2,mean_years,0.95514,0.93619,0.9193,0.93688,-0.03584
+L3,deep temporal (sequence),L3-01,lstm_L3,P3,mean_folds,0.91964,0.90553,0.87809,0.90109,-0.04155
+L3,deep temporal (sequence),L3-02,lstm_L7,P1,val_2022,0.93091,0.91642,0.88707,0.91146,-0.04383
+L3,deep temporal (sequence),L3-02,lstm_L7,P2,mean_years,0.94494,0.92871,0.90515,0.92627,-0.03979
+L3,deep temporal (sequence),L3-02,lstm_L7,P3,mean_folds,0.91265,0.91167,0.88812,0.90414,-0.02453
+L3,deep temporal (sequence),L3-03,lstm_L14,P1,val_2022,0.93107,0.90983,0.88234,0.90775,-0.04872
+L3,deep temporal (sequence),L3-03,lstm_L14,P2,mean_years,0.94738,0.9257,0.90221,0.9251,-0.04517
+L3,deep temporal (sequence),L3-03,lstm_L14,P3,mean_folds,0.92437,0.91196,0.88765,0.908,-0.03672
+L3,deep temporal (sequence),L3-04,lstm_L30,P1,val_2022,0.93883,0.91827,0.89355,0.91688,-0.04527
+L3,deep temporal (sequence),L3-04,lstm_L30,P2,mean_years,0.95798,0.92628,0.90461,0.92963,-0.05337
+L3,deep temporal (sequence),L3-04,lstm_L30,P3,mean_folds,0.92446,0.90352,0.89403,0.90733,-0.03043
+L3,deep temporal (sequence),L3-05,gru_bestL,P1,val_2022,0.93592,0.92632,0.90861,0.92362,-0.02731
+L3,deep temporal (sequence),L3-05,gru_bestL,P2,mean_years,0.95068,0.9376,0.92306,0.93711,-0.02761
+L3,deep temporal (sequence),L3-05,gru_bestL,P3,mean_folds,0.91386,0.89719,0.8855,0.89885,-0.02836
+L3,deep temporal (sequence),L3-06,tcn_bestL,P1,val_2022,0.94052,0.92236,0.90083,0.92124,-0.03969
+L3,deep temporal (sequence),L3-06,tcn_bestL,P2,mean_years,0.94782,0.93706,0.90631,0.93039,-0.04151
+L3,deep temporal (sequence),L3-06,tcn_bestL,P3,mean_folds,0.92582,0.89493,0.87157,0.89744,-0.05425
+L3,deep temporal (sequence),L3-07,fusion_L3,P1,val_2022,0.94443,0.93854,0.92381,0.93559,-0.02062
+L3,deep temporal (sequence),L3-07,fusion_L3,P2,mean_years,0.95928,0.9485,0.93157,0.94645,-0.02771
+L3,deep temporal (sequence),L3-07,fusion_L3,P3,mean_folds,0.91536,0.9202,0.91714,0.91757,0.00179
+L3,deep temporal (sequence),L3-08,static_only,P1,val_2022,0.50676,0.53858,0.55212,0.53249,0.04536
+L3,deep temporal (sequence),L3-08,static_only,P2,mean_years,0.37491,0.40129,0.41714,0.39778,0.04223
+L3,deep temporal (sequence),L3-08,static_only,P3,mean_folds,0.12406,0.14183,0.14925,0.13838,0.02519
+L3,deep temporal (sequence),L3-09,hybrid_L3,P1,val_2022,0.92747,0.92145,0.90715,0.91869,-0.02032
+L3,deep temporal (sequence),L3-09,hybrid_L3,P2,mean_years,0.94759,0.9357,0.92181,0.93503,-0.02578
+L3,deep temporal (sequence),L3-09,hybrid_L3,P3,mean_folds,0.90652,0.90209,0.88445,0.89769,-0.02207
+L4,spatiotemporal/attention (sequence),L4-01,gcn,P1,val_2022,0.94207,0.93534,0.91414,0.93052,-0.02794
+L4,spatiotemporal/attention (sequence),L4-01,gcn,P2,mean_years,0.9565,0.94575,0.92916,0.94381,-0.02734
+L4,spatiotemporal/attention (sequence),L4-01,gcn,P3,mean_folds,0.91839,0.912,0.89448,0.90829,-0.02391
+L4,spatiotemporal/attention (sequence),L4-02,gat,P1,val_2022,0.94079,0.93145,0.91356,0.9286,-0.02723
+L4,spatiotemporal/attention (sequence),L4-02,gat,P2,mean_years,0.94362,0.94304,0.92759,0.93808,-0.01603
+L4,spatiotemporal/attention (sequence),L4-02,gat,P3,mean_folds,0.91769,0.91623,0.90105,0.91166,-0.01664
+L4,spatiotemporal/attention (sequence),L4-03,transformer_bestL,P1,val_2022,0.94371,0.93304,0.9183,0.93168,-0.02541
+L4,spatiotemporal/attention (sequence),L4-03,transformer_bestL,P2,mean_years,0.95486,0.94833,0.92797,0.94372,-0.02689
+L4,spatiotemporal/attention (sequence),L4-03,transformer_bestL,P3,mean_folds,0.93254,0.90951,0.89543,0.91249,-0.0371
+L4,spatiotemporal/attention (sequence),L4-04,gnn_lstm,P1,val_2022,0.94237,0.9264,0.91529,0.92802,-0.02708
+L4,spatiotemporal/attention (sequence),L4-04,gnn_lstm,P2,mean_years,0.95903,0.94333,0.9293,0.94389,-0.02973
+L4,spatiotemporal/attention (sequence),L4-04,gnn_lstm,P3,mean_folds,0.92721,0.90176,0.88616,0.90504,-0.04105
