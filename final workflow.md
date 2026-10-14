@@ -5,11 +5,12 @@
 (ML+DL modelling section). Those two files are superseded **in full** by this document; they
 may be deleted once this file is accepted.
 
-**Where we are:** Phases **0–31 are complete** (foundations → baselines → framework → datasets
+**Where we are:** Phases **0–32 are complete** (foundations → baselines → framework → datasets
 → sequence validation → classical ML → LSTM/GRU → TCN → feature fusion → station-graph GNN →
 temporal Transformer → multi-horizon matrix → fair ML-vs-DL comparison → probability calibration
-→ risk levels & threshold optimization → error analysis → robustness analysis;
-checklist **stages 1–49 + 50–53 + 54 + 59–61 DONE**). Everything from Phase 32 on is future work —
+→ risk levels & threshold optimization → error analysis → robustness analysis → ablation &
+comparative experiment matrix;
+checklist **stages 1–49 + 50–53 + 54–56 + 59–61 DONE**). Everything from Phase 33 on is future work —
 this document is the single map for it.
 
 This file merges the classical research workflow (rigorous labels → leakage → splits →
@@ -83,7 +84,7 @@ interpolated · R7 growing station network (85 → 133) · R8 soil/landcover dat
 
 ---
 
-## 1. Status ledger — Phases 0–31 complete
+## 1. Status ledger — Phases 0–32 complete
 
 | Phase | Body topic | Evidence |
 | --- | --- | --- |
@@ -122,6 +123,8 @@ interpolated · R7 growing station network (85 → 133) · R8 soil/landcover dat
 | 30 | Error analysis (stage 54; stage-46 evidence) — pure analysis of the **frozen Phase-29 leaders** on the P1 `val_2022` cell (cached Phase-28 probabilities, **no retraining**; the frozen per-period decision `p >= t_warn`); the row order is proven to equal `flatnonzero(p1_eval & ~isnan(y))` before joining features by `(station_id, date)`. Leader operating points: **lightgbm 24 h 16 FN/295 FP (recall 0.982, precision 0.748)**, **xgboost 48 h 19 FN/485 FP (0.982 / 0.675)**, **xgboost_selected 72 h 48 FN/518 FP (0.957 / 0.675)** — the per-period FN equals the sum of the Phase-29 seasonal misses exactly. Ten **named patterns** (top three: **A** missed floods occur while the river is still **below danger but rising** — median `wl_dist_to_danger` **+0.76 m**, **0.0 %** of FN below danger vs 82.5 % of TP, 69 % rising; **F** false alarms fire while the river is **just below danger** — median `wl_pct_danger` 0.983, 80.9 % below danger (the direct price of FN ≫ FP); **E** stations with the **fewest training floods are missed ~14× more** — miss rate 0.230 vs 0.016, Spearman ρ −0.501). Secondary: B misses grow **16 / 19 / 48** with lead time; G short events are over-represented in FN (14.5 % vs 2.8 % in runs ≤ 2 rows); G2 FN sit in **wetter** not drier conditions (`rain_7d` 102 vs 86 mm); I 28.9 % of FN in the Jamuna+Teesta corridor. **Negative results stated:** C the monsoon concentration is a **base-rate effect** (season recall 0.973 vs 0.970, not a defect), D missingness is a **weak** discriminator (medians identical), H the DL "broken sequence window" hypothesis is **not supported** (FN>TP only at 24 h, reversed at 48/72 h). Fixes: target low-prevalence stations (E), add upstream/future-rain signal (A); F is a policy knob. Test untouched | `scripts/phase30_errors.py`, `reports/phase30_errors.md`, `reports/phase30_row_metrics.csv` (18), `phase30_outcome_profile.csv` (72), `phase30_fn_rows.csv` (83), `phase30_fp_rows.csv` (1,095), `phase30_by_station.csv` (756), `phase30_patterns.csv` (12), `phase30_summary.json`, `figures/phase30_errors.png`, `notebooks/30_errors.ipynb` (12/12), `scripts/build_phase30_notebook.py`, `scripts/phase30_run.log` |
 
 | 31 | Robustness analysis (stage 53; phase0 §3) — pure robustness of the **frozen leaders** `lightgbm`/24 h, `xgboost`/48 h, `xgboost_selected`/72 h (+ references `logreg_linear`, `persistence` D7, `climatology`), re-fit on each Phase-15 dev cell, **every result per cell, never pooled (D8)**; no new search, no new architecture. Reuse validated — the fresh six-model re-fit reproduces `phase27_generalisation.csv` **bit-identically** (max \|Δ PR-AUC\| = **1.1e-16** over 126 shared rows), so the 24-model Phase-27 table is sound context for the DL/fusion models not re-fit here. **7 cells** (`val_2020/21/22` + `spatial_fold_1–4`) × {all, monsoon, non-monsoon} × 3 horizons × 6 models = **378 slice rows**, each scored at its own exact 10:1 cost argmin (+ a frozen Phase-29-threshold transfer column). **Temporal/spatial:** leaders beat D7 persistence in **63/63** all-season cell×horizon points (min margin +0.0143), while the best DL `fusion_L3` collapses to **0.7657** on fold-1 24 h (leader min fold 0.9147) — a robustness gap the pooled Phase-27 headline hides; year difficulty val_2020 > val_2021 > val_2022 holds for all leaders. **Season:** temporal monsoon/non-monsoon PR-AUC gap ≤ 0.0435, but on unseen-station folds it reaches **0.2586** (`spatial_fold_1` 72 h: 0.9339 vs 0.7069; non-monsoon base rate collapses to 0.0098–0.0155 vs 0.148–0.179); leaders still ≥ persistence in **126/126** seasonal points. **Rainfall** (cell-relative `rain_7d` q50/q90): the extreme (> p90) bucket **doubles the base rate yet lowers PR-AUC ~0.04–0.05** (the hardest ranking regime) with cost-optimal recall held ≥ 0.89; D7 is competitive there — leaders win only **28/63** extreme-bucket points (losses to −0.035). **Missingness** (NaN fraction over each model's own features): median PR-AUC is **flat** across none/low/high/very-high (0.966–1.000); every low minimum (global 0.5545) is a ≤ 5-positive instance in the hardest station fold — noise, not a collapse. **Stricter issue-time variant** (all features replaced by their within-station previous-calendar-day value, valid 98.5 % of rows; re-fit on shifted train, labels unchanged): loss always negative, **−0.0125…−0.0675** (median −0.0269), growing with horizon and worst in `spatial_fold_1`/`val_2022`; recall stays ≥ 0.9072, but the **D7 margin is not robust** — the stricter variant slips below persistence in **19/63** points (worst −0.0152, `xgboost_selected`/`spatial_fold_1`/48 h), so the Phase-29 "always beats D7" claim is qualified to the standard issue convention (marginal at 24–48 h on unseen stations). Test untouched (`test_rows_read = 0`). Named findings F31-1…F31-8 + limitations in the report | `scripts/phase31_robustness.py`, `reports/phase31_robustness.md`, `reports/phase31_cells.csv` (378), `phase31_rainfall.csv` (378), `phase31_missingness.csv` (336), `phase31_issuetime.csv` (252), `phase31_reuse_check.csv` (126), `phase31_summary.json`, `figures/phase31_robustness.png`, `notebooks/31_robustness.ipynb` (10/10), `scripts/build_phase31_notebook.py`, `scripts/phase31_run.log` |
+
+| 32 | Ablation & comparative experiment matrix (stages 55, 56) — **one** matrix run once and reported as a research story. Core is a **nested feature-group ablation with the learner held fixed**: the five phase-0 layers tile FULL exactly (weather 5 → +rainfall history 7 → +geography 14 → +hydrology 24 → +network/upstream 12), giving cumulative groups `G1_weather` … `G5_full` (== FULL 62) plus `G5_no_up` (58), each fit with the **complete FULL-tuned Phase-20 winners** (`xgboost_c01`, `lightgbm_c00`) and **never re-tuned per subset**; 7 dev cells × 3 seasons × 3 horizons = **756 group rows** (+ 126 reference / 210 increment / 22 matrix / 39 reuse). Temporal macro PR-AUC (xgboost): G1 0.1585/0.1717/0.1852, G2 0.1673/0.1797/0.1986, G3 0.4759/0.4995/0.5095, G4 0.9775/0.9660/0.9520, G5 0.9782/0.9664/0.9534 vs persistence 0.9429/0.9250/0.9048 and climatology 0.0877/0.0967/0.1043. Increments (9 dev points, xgboost): +rain **+0.0101** (3/9 sig), +geo **+0.3131** (9/9), +hydro **+0.4702** (9/9), +network +0.0009 (2/9), drop `up_*` **−0.0001** (2/9). Findings F32-1…F32-8: weather-only ≈ no skill, hydrology carries the skill and clears the D7 bar, network layer marginal, `up_*` redundant (**F14-2 confirmed**, E11), geography high-value/cheap, macro↔micro gap is a strength artefact, leader ordering robust to the fixed-learner choice (both learners within ±0.001), season gap ≤ 0.0155 temporal. Full beats D7 **21/21** (min **+0.0144**, `spatial_fold_2`/24 h). E12 soil/landcover **blocked by R8** (no such features exist); E13–E16 **reused** from frozen Phase-26/27 evidence (no retrain): E13 engineered→XGBoost vs DL temporal +0.0204/+0.0180/+0.0209, spatial +0.0603/+0.0416/+0.0322; E14 L=3 best (0.9519); E15 +location 0.9519→0.9556, +graph GNN 0.9088 vs LSTM 0.9011 (P3); E16 TCN+static **not-run**; multi-task head (Phase-26 §9) declared **out of E0–E16 scope**. Test untouched | `scripts/phase32_ablation.py` (exit 0, 1,658 s, seed `20261008`), `scripts/phase32_run.log`, `reports/phase32_ablation.md`, `reports/phase32_groups.csv` (756), `phase32_reference.csv` (126), `phase32_increments.csv` (210), `phase32_matrix.csv` (22), `phase32_reuse_detail.csv` (39), `phase32_summary.json`, `figures/phase32_ablation.png`, `notebooks/32_ablation.ipynb` (12/12), `scripts/build_phase32_notebook.py` |
 
 **Discharged without a phase of their own:**
 
@@ -659,7 +662,7 @@ pooled), with named findings/limitations, on the frozen leaders, plus a verifyin
 
 ---
 
-## Phase 32 — Ablation & comparative experiment matrix · stages 55, 56
+## Phase 32 — Ablation & comparative experiment matrix · stages 55, 56 · **DONE**
 
 One planned matrix, run once, reported as a research story:
 
@@ -683,6 +686,42 @@ One planned matrix, run once, reported as a research story:
 
 **DoD:** every row filled or explicitly marked *blocked* (with the blocker), one report
 `reports/phase32_ablation.md`, macro + micro + CI.
+
+> **Resolved (2026-10-15).** Done. Phase 32 runs **one** planned matrix once and reports it as a
+> research story. The core is a **nested feature-group ablation with the learner held fixed**: the
+> five phase-0 layers tile FULL exactly (weather 5 → +rainfall history 7 → +geography 14 →
+> +hydrology 24 → +network/upstream 12), giving cumulative groups `G1_weather` … `G5_full`
+> (== FULL 62) plus `G5_no_up` (58); the learner is fixed at the **complete FULL-tuned Phase-20
+> winners** (`xgboost_c01`, `lightgbm_c00`) and **never re-tuned per subset**, so every increment
+> is attributable to the features. 7 dev cells × {all, monsoon, non-monsoon} × 3 horizons =
+> **756 group rows**, each scored micro + macro with a paired station-bootstrap CI on the
+> increments; every result is per cell, nothing pooled (D8).
+>
+> **Headline.** Temporal macro PR-AUC (xgboost) climbs `G1` 0.1585/0.1717/0.1852 → `G2`
+> 0.1673/0.1797/0.1986 → `G3` 0.4759/0.4995/0.5095 → `G4` 0.9775/0.9660/0.9520 → `G5`
+> 0.9782/0.9664/0.9534, against persistence 0.9429/0.9250/0.9048 and climatology
+> 0.0877/0.0967/0.1043. Paired increments (9 temporal points): +rain **+0.0101** (3/9 sig),
+> +geo **+0.3131** (9/9), +hydro **+0.4702** (9/9, the decisive layer), +network +0.0009 (2/9),
+> drop `up_*` **−0.0001** (2/9). So weather-only ≈ no skill, hydrology clears the D7 bar, and the
+> station-network layer is marginal. Full beats D7 **21/21** cell × horizon points (min margin
+> **+0.0144**, `spatial_fold_2`/24 h); persistence > climatology **63/63**; spatial macro `G5`
+> 0.9754/0.9617/0.9490; E7 monsoon 0.9801 vs non-monsoon 0.9695 (24 h). Both learners agree
+> within ±0.001 at every group × horizon.
+>
+> **Reused rows & blockers.** E13–E16 are **reused** from frozen Phase-26/27 evidence (no
+> retrain): E13 engineered→XGBoost vs raw-sequence DL temporal **+0.0204/+0.0180/+0.0209**,
+> widening on unseen stations to **+0.0603/+0.0416/+0.0322**; E14 L=3 best (**0.9519**); E15
+> +location 0.9519 → 0.9556, +graph edges GNN **0.9088** vs LSTM 0.9011 on P3; E16 architecture
+> table (TCN+static **not-run**). E12 soil/landcover is **blocked by R8** — such features do not
+> exist — and the multi-task head (Phase-26 §9) is declared **out of E0–E16 scope**.
+>
+> Eight named findings (F32-1…F32-8), three stated limitations, provenance and the full
+> E0–E16 matrix are in the report; the test period stays frozen (`test_rows_read = 0`). Artefacts:
+> `scripts/phase32_ablation.py` (exit 0, 1,658 s, seed `20261008`), `scripts/phase32_run.log`,
+> `reports/phase32_ablation.md`, `phase32_groups.csv` (756), `phase32_reference.csv` (126),
+> `phase32_increments.csv` (210), `phase32_matrix.csv` (22), `phase32_reuse_detail.csv` (39),
+> `phase32_summary.json`, `figures/phase32_ablation.png`, and `notebooks/32_ablation.ipynb`
+> (**12/12** checks, built by `scripts/build_phase32_notebook.py`).
 
 ---
 
@@ -839,7 +878,8 @@ DONE   Phases 0–16   foundations, data, features, leakage, table, splits, base
        Phase 28  probability calibration  DONE
        Phase 29  thresholds/bands (risk levels)  DONE
        Phase 30  error analysis (FN/FP patterns)  DONE
-       Phase 31  robustness analysis             DONE  → Phase 32 ablation matrix (E0–E16) → Phase 33 selection → Phase 34 XAI
+       Phase 31  robustness analysis             DONE
+       Phase 32  ablation & comparative matrix   DONE  → Phase 33 selection → Phase 34 XAI
        Phases 35–42  system (prototype)
        Phases 43–45  final evaluation, reproducibility, thesis
 ```
@@ -892,8 +932,8 @@ Stages **1–30 are frozen** — they record completed work and are mirrored in
 | 52 | Monsoon evaluation | **DONE** | Phase 27 — D1 monsoon vs non-monsoon (both groups better in monsoon; engineered advantage larger in monsoon) |
 | 53 | Robustness analysis | **DONE** | Phase 31 — `reports/phase31_robustness.md`: 7 dev cells × {all, monsoon, non-monsoon} × 3 horizons × 6 models = **378 slice rows** at per-slice 10:1 cost argmin, leaders `lightgbm`/`xgboost`/`xgboost_selected` re-fit (+ `logreg_linear`, `persistence`, `climatology`). Reuse of `phase27_generalisation.csv` is bit-identical (max \|Δ PR-AUC\| = **1.1e-16**, 126 rows). **Temporal/spatial:** leaders ≥ D7 in **63/63** (min +0.0143); DL `fusion_L3` collapses to 0.7657 on fold-1 24 h vs leader min fold 0.9147. **Season:** temporal gap ≤ 0.0435 but **0.2586** on unseen-station folds (non-monsoon base rate 0.0098–0.0155); leaders ≥ D7 **126/126**. **Rainfall:** extreme (> p90) doubles base rate yet drops PR-AUC ~0.04–0.05 with recall held ≥ 0.89; D7 wins 28/63 extreme points. **Missingness:** median PR-AUC flat across buckets (0.966–1.000), minima ≤ 5-positive noise. **Stricter issue-time** (within-station `t-1`, 98.5 % rows): loss −0.0125…−0.0675 (median −0.0269), D7 margin not robust (19/63 below, worst −0.0152). Tables `phase31_cells.csv` (378), `phase31_rainfall.csv`, `phase31_missingness.csv`, `phase31_issuetime.csv`, `phase31_reuse_check.csv`, `phase31_summary.json`; `notebooks/31_robustness.ipynb` 10/10; test untouched |
 | 54 | Error analysis | **DONE** | Phase 30 — `reports/phase30_errors.md`: leader FN/FP tables + 10 quantified named patterns. Top three: (A) misses occur while the river is **still below danger but rising** (FN median `wl_dist_to_danger` +0.76 m; 0.0 % of FN below danger vs 82.5 % of TP) — response-lag limitation; (F) false alarms fire **just below danger** (median `wl_pct_danger` 0.983; 80.9 % below danger) — the price of FN ≫ FP, a policy knob; (E) stations with the **fewest training floods are missed ~14× more** (0.230 vs 0.016, ρ −0.501) — a fix (target low-prevalence stations). Secondary B (16/19/48 with lead time), G (short events 14.5 % vs 2.8 %), G2 (wetter not drier), I (28.9 % in Jamuna+Teesta); negative results C/D/H. Tables `phase30_row_metrics.csv`, `phase30_fn_rows.csv`, `phase30_fp_rows.csv`, `phase30_outcome_profile.csv`, `phase30_by_station.csv`, `phase30_patterns.csv`; `notebooks/30_errors.ipynb` 12/12; test untouched |
-| 55 | Ablation study | PARTIAL | Phase 32 — E1–E16; soil/landcover row blocked by R8 |
-| 56 | Comparative experiment matrix | TODO | Phase 32 — E0–E16 |
+| 55 | Ablation study | **DONE** | Phase 32 — `reports/phase32_ablation.md`: nested feature-group ablation (G1 weather 5 → +rain 12 → +geo 26 → +hydro 50 → +network 62 = FULL; `G5_no_up` 58) with the learner **fixed** (Phase-20 winners `xgboost_c01` / `lightgbm_c00`, not re-tuned per subset), 7 dev cells × 3 seasons × 3 horizons = **756 rows**, micro + macro + paired station-bootstrap CI on the increments: +rain **+0.0101** (3/9 sig), +geo **+0.3131** (9/9), +hydro **+0.4702** (9/9), +network +0.0009 (2/9), drop `up_*` **−0.0001** (E11, F14-2 confirmed); weather-only 0.16–0.19 ≈ no skill, hydrology clears the D7 bar; both learners within ±0.001; E12 soil/landcover **blocked by R8** |
+| 56 | Comparative experiment matrix | **DONE** | Phase 32 — `reports/phase32_matrix.csv` (E0–E16, 22 rows): E0 D7 bars re-fit (persistence > climatology 63/63); E1–E5/E11 new nested runs; E6 spatial 0.9754/0.9617/0.9490; E7 monsoon 0.9801 vs non-monsoon 0.9695 (24 h); E8–E10 **0.9782** [0.9570,0.9895] / 0.9664 / 0.9534; full beats D7 **21/21** (min +0.0144); E13 engineered→XGBoost vs DL temporal +0.0204/+0.0180/+0.0209, spatial +0.0603/+0.0416/+0.0322; E14 L=3 best (0.9519); E15 +location 0.9519→0.9556, +graph GNN 0.9088 vs LSTM 0.9011 (P3, Δ+0.0077); E16 architecture table (TCN+static *not-run*); `notebooks/32_ablation.ipynb` 12/12; test untouched |
 | 57 | Final model selection | TODO | Phase 33 — scorecard, test read once |
 | 58 | Explainable AI / SHAP | TODO | Phase 34 — needs `shap` install |
 | 59 | 24-hour prediction | **DONE** | Phase 26 §7 — leaders P1 `lightgbm` 0.9682 / xgboost 0.9681; best DL `fusion_L3` 0.9444 |

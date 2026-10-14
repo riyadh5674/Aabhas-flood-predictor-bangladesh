@@ -1,0 +1,198 @@
+{
+  "phase": 32,
+  "seed": 20261008,
+  "sha256": "a6748529083fcdceb8bb8a657b067bf12b5c861f3a7a6b09c8977ea63be73c8e",
+  "test_rows_read": 0,
+  "cells": [
+    "val_2020",
+    "val_2021",
+    "val_2022",
+    "spatial_fold_1",
+    "spatial_fold_2",
+    "spatial_fold_3",
+    "spatial_fold_4"
+  ],
+  "horizons": [
+    "24h",
+    "48h",
+    "72h"
+  ],
+  "seasons": [
+    "all",
+    "monsoon",
+    "non-monsoon"
+  ],
+  "learners": [
+    "xgboost",
+    "lightgbm"
+  ],
+  "groups": {
+    "G1_weather": 5,
+    "G2_weather_rainhist": 12,
+    "G3_plus_geography": 26,
+    "G4_plus_hydrology": 50,
+    "G5_full": 62,
+    "G5_no_up": 58
+  },
+  "n_group_rows": 756,
+  "n_reference_rows": 126,
+  "n_increment_rows": 210,
+  "n_matrix_rows": 22,
+  "temporal_macro_pr_auc_xgboost": {
+    "G1_weather": {
+      "24h": 0.15852,
+      "48h": 0.17166,
+      "72h": 0.18519
+    },
+    "G2_weather_rainhist": {
+      "24h": 0.1673,
+      "48h": 0.17968,
+      "72h": 0.1986
+    },
+    "G3_plus_geography": {
+      "24h": 0.47588,
+      "48h": 0.4995,
+      "72h": 0.50946
+    },
+    "G4_plus_hydrology": {
+      "24h": 0.9775,
+      "48h": 0.96596,
+      "72h": 0.95199
+    },
+    "G5_full": {
+      "24h": 0.97824,
+      "48h": 0.96643,
+      "72h": 0.95344
+    },
+    "G5_no_up": {
+      "24h": 0.97828,
+      "48h": 0.96654,
+      "72h": 0.95311
+    }
+  },
+  "spatial_macro_pr_auc_xgboost": {
+    "G1_weather": {
+      "24h": 0.3189,
+      "48h": 0.34041,
+      "72h": 0.3581
+    },
+    "G2_weather_rainhist": {
+      "24h": 0.39396,
+      "48h": 0.41493,
+      "72h": 0.43398
+    },
+    "G3_plus_geography": {
+      "24h": 0.41475,
+      "48h": 0.42664,
+      "72h": 0.45568
+    },
+    "G4_plus_hydrology": {
+      "24h": 0.97565,
+      "48h": 0.96294,
+      "72h": 0.95061
+    },
+    "G5_full": {
+      "24h": 0.97544,
+      "48h": 0.96165,
+      "72h": 0.94904
+    },
+    "G5_no_up": {
+      "24h": 0.97567,
+      "48h": 0.96193,
+      "72h": 0.94942
+    }
+  },
+  "increments": {
+    "G2_weather_rainhist_minus_G1_weather": {
+      "mean_diff": 0.010070417674785635,
+      "diffs": [
+        -0.01206,
+        -0.00958,
+        -0.00118,
+        -0.00368,
+        -0.00789,
+        -0.00854,
+        0.04209,
+        0.04151,
+        0.04996
+      ],
+      "n_significant": 3,
+      "n_cells": 9,
+      "ci_lo_min": -0.044131406303310285,
+      "ci_hi_max": 0.09933872971399225
+    },
+    "G3_plus_geography_minus_G2_weather_rainhist": {
+      "mean_diff": 0.31308574525397603,
+      "diffs": [
+        0.19757,
+        0.19734,
+        0.18524,
+        0.31892,
+        0.3377,
+        0.33939,
+        0.40924,
+        0.42442,
+        0.40795
+      ],
+      "n_significant": 9,
+      "n_cells": 9,
+      "ci_lo_min": 0.067302407800522,
+      "ci_hi_max": 0.6561985316857429
+    },
+    "G4_plus_hydrology_minus_G3_plus_geography": {
+      "mean_diff": 0.4702031311280482,
+      "diffs": [
+        0.51889,
+        0.49412,
+        0.46811,
+        0.53853,
+        0.49891,
+        0.47028,
+        0.44745,
+        0.40635,
+        0.3892
+      ],
+      "n_significant": 9,
+      "n_cells": 9,
+      "ci_lo_min": 0.19381354964954653,
+      "ci_hi_max": 0.7648569554440755
+    },
+    "G5_full_minus_G4_plus_hydrology": {
+      "mean_diff": 0.0008845686209111427,
+      "diffs": [
+        0.00017,
+        0.00026,
+        0.00062,
+        0.00047,
+        -0.00023,
+        1e-05,
+        0.00156,
+        0.0014,
+        0.00371
+      ],
+      "n_significant": 2,
+      "n_cells": 9,
+      "ci_lo_min": -0.0012241264019310278,
+      "ci_hi_max": 0.00976370017728089
+    },
+    "G5_no_up_minus_G5_full": {
+      "mean_diff": -5.61217831564425e-05,
+      "diffs": [
+        0.0004,
+        0.00034,
+        -1e-05,
+        -0.00037,
+        -0.00041,
+        -0.00105,
+        0.00011,
+        0.00041,
+        7e-05
+      ],
+      "n_significant": 2,
+      "n_cells": 9,
+      "ci_lo_min": -0.002325724983405611,
+      "ci_hi_max": 0.001566946428272725
+    }
+  },
+  "wall_s": 1658.3
+}
