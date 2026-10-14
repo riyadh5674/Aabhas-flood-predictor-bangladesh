@@ -1,0 +1,167 @@
+{
+  "phase": 31,
+  "stage": 53,
+  "seed": 20261008,
+  "test_rows_read": 0,
+  "dataset_sha256": "a6748529083fcdceb8bb8a657b067bf12b5c861f3a7a6b09c8977ea63be73c8e",
+  "hardware": "CPU AMD64 Windows",
+  "n_cells": 7,
+  "n_models": 6,
+  "leaders": [
+    "lightgbm",
+    "xgboost",
+    "xgboost_selected"
+  ],
+  "references": [
+    "logreg_linear",
+    "persistence",
+    "climatology"
+  ],
+  "thresholds": {
+    "objective": "C_FN*FN + C_FP*FP",
+    "primary_ratio": 10.0
+  },
+  "rain_buckets": [
+    "low",
+    "high",
+    "extreme"
+  ],
+  "nan_buckets": [
+    "none",
+    "low",
+    "high",
+    "very-high"
+  ],
+  "reuse_vs_phase27": {
+    "rows": 126,
+    "max_abs_delta_pr_auc": 1.1102230246251565e-16
+  },
+  "headline_leaders_P1_all_season": {
+    "lightgbm::24h": {
+      "min": 0.9610866816081939,
+      "median": 0.9802074140866761,
+      "max": 0.9909535519802661,
+      "cells": {
+        "val_2022": 0.96816,
+        "val_2020": 0.98519,
+        "val_2021": 0.98021,
+        "spatial_fold_1": 0.96276,
+        "spatial_fold_2": 0.99095,
+        "spatial_fold_3": 0.98581,
+        "spatial_fold_4": 0.96109
+      }
+    },
+    "xgboost::24h": {
+      "min": 0.9592449968403441,
+      "median": 0.9814653431471068,
+      "max": 0.9909826100105709,
+      "cells": {
+        "val_2022": 0.96812,
+        "val_2020": 0.98623,
+        "val_2021": 0.98147,
+        "spatial_fold_1": 0.96585,
+        "spatial_fold_2": 0.99098,
+        "spatial_fold_3": 0.98656,
+        "spatial_fold_4": 0.95924
+      }
+    },
+    "xgboost_selected::24h": {
+      "min": 0.957712962527923,
+      "median": 0.981927004079026,
+      "max": 0.9908598404620904,
+      "cells": {
+        "val_2022": 0.96631,
+        "val_2020": 0.98544,
+        "val_2021": 0.98193,
+        "spatial_fold_1": 0.96139,
+        "spatial_fold_2": 0.99086,
+        "spatial_fold_3": 0.98614,
+        "spatial_fold_4": 0.95771
+      }
+    },
+    "lightgbm::48h": {
+      "min": 0.9353351050880877,
+      "median": 0.9672486135939102,
+      "max": 0.9840867856458402,
+      "cells": {
+        "val_2022": 0.95379,
+        "val_2020": 0.97503,
+        "val_2021": 0.96725,
+        "spatial_fold_1": 0.93534,
+        "spatial_fold_2": 0.98409,
+        "spatial_fold_3": 0.97546,
+        "spatial_fold_4": 0.94917
+      }
+    },
+    "xgboost::48h": {
+      "min": 0.9409251414924977,
+      "median": 0.9688321600740877,
+      "max": 0.9828975751673812,
+      "cells": {
+        "val_2022": 0.95494,
+        "val_2020": 0.97715,
+        "val_2021": 0.96883,
+        "spatial_fold_1": 0.94093,
+        "spatial_fold_2": 0.9829,
+        "spatial_fold_3": 0.97575,
+        "spatial_fold_4": 0.94753
+      }
+    },
+    "xgboost_selected::48h": {
+      "min": 0.9352075953162431,
+      "median": 0.9716749892113922,
+      "max": 0.982271955432622,
+      "cells": {
+        "val_2022": 0.95333,
+        "val_2020": 0.97569,
+        "val_2021": 0.97167,
+        "spatial_fold_1": 0.93521,
+        "spatial_fold_2": 0.98227,
+        "spatial_fold_3": 0.97427,
+        "spatial_fold_4": 0.9437
+      }
+    },
+    "lightgbm::72h": {
+      "min": 0.922227785389121,
+      "median": 0.9526215738454427,
+      "max": 0.9760973171599895,
+      "cells": {
+        "val_2022": 0.93838,
+        "val_2020": 0.96452,
+        "val_2021": 0.95262,
+        "spatial_fold_1": 0.92223,
+        "spatial_fold_2": 0.9761,
+        "spatial_fold_3": 0.96511,
+        "spatial_fold_4": 0.93582
+      }
+    },
+    "xgboost::72h": {
+      "min": 0.9268628262017475,
+      "median": 0.9534167671327646,
+      "max": 0.9753571681502223,
+      "cells": {
+        "val_2022": 0.94084,
+        "val_2020": 0.96702,
+        "val_2021": 0.95342,
+        "spatial_fold_1": 0.92686,
+        "spatial_fold_2": 0.97536,
+        "spatial_fold_3": 0.96373,
+        "spatial_fold_4": 0.93135
+      }
+    },
+    "xgboost_selected::72h": {
+      "min": 0.9147390149724214,
+      "median": 0.9579503465530461,
+      "max": 0.9709857528570371,
+      "cells": {
+        "val_2022": 0.94216,
+        "val_2020": 0.9644,
+        "val_2021": 0.95795,
+        "spatial_fold_1": 0.91474,
+        "spatial_fold_2": 0.97099,
+        "spatial_fold_3": 0.9606,
+        "spatial_fold_4": 0.92922
+      }
+    }
+  }
+}
