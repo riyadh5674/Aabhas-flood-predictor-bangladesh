@@ -5,10 +5,11 @@
 (ML+DL modelling section). Those two files are superseded **in full** by this document; they
 may be deleted once this file is accepted.
 
-**Where we are:** Phases **0–26 are complete** (foundations → baselines → framework → datasets
+**Where we are:** Phases **0–27 are complete** (foundations → baselines → framework → datasets
 → sequence validation → classical ML → LSTM/GRU → TCN → feature fusion → station-graph GNN →
-temporal Transformer → multi-horizon matrix; checklist **stages 1–41 + 59–61 DONE**). Everything
-from Phase 27 on is future work — this document is the single map for it.
+temporal Transformer → multi-horizon matrix → fair ML-vs-DL comparison; checklist **stages
+1–46 + 50–52 + 59–61 DONE**). Everything from Phase 28 on is future work — this document is the
+single map for it.
 
 This file merges the classical research workflow (rigorous labels → leakage → splits →
 baselines → evaluation → system) with the deep-learning programme (framework → datasets →
@@ -81,7 +82,7 @@ interpolated · R7 growing station network (85 → 133) · R8 soil/landcover dat
 
 ---
 
-## 1. Status ledger — Phases 0–26 complete
+## 1. Status ledger — Phases 0–27 complete
 
 | Phase | Body topic | Evidence |
 | --- | --- | --- |
@@ -110,6 +111,8 @@ interpolated · R7 growing station network (85 → 133) · R8 soil/landcover dat
 | 25 | Temporal Transformer (L4-03) — per-day token → embedding + positional → encoder → masked-mean pool → sigmoid; D13 gate **PASS (narrow)**; budget 16/768 on `val_2022`; **winner L = 7** (not 30), 36,353 params, unweighted; **primary PASS** (val_2022 mean PR-AUC **0.93168** > LSTM 0.92677 > TCN 0.92124); **secondary PASS** (P3 unseen-station mean **0.91247** > LSTM 0.90107 / TCN 0.89743; paired station-bootstrap **gain over TCN at 48/72 h and over LSTM at 72 h**, **no loss at any horizon**) — **qualified positive, modest**; the long-range-attention story did **not** materialise (L=30 weakest); stays below `fusion_L3` (0.93559) and xgboost (0.95463); registry L4-03 gated→planned; test untouched | `scripts/train_transformer.py`, `scripts/phase25_gate.py`, `scripts/phase25_ablation.py`, `reports/phase25_transformer_gate.md`, `reports/phase25_transformer.md`, `reports/phase25_metrics.csv` (72), `phase25_search.csv` (16), `phase25_ablation.csv` (12) + `phase25_ablation_preds.npz`, `models/phase25_L4-03.pt`, `notebooks/25_transformer.ipynb` (12/12), `scripts/phase25_run.log` |
 
 | 26 | Multi-horizon strategy (stage 41 + stages 59–61) — integrates the 7 frozen dev metrics files (Phases 16, 20–25) into one **24-model × 3-horizon** matrix; **difficulty grows with lead time for every competitive model** (monotone P1/P2/P3 decay; only no-skill `climatology` and the `static_only` control rise); the **ML-vs-DL interaction is small on the temporal cells** (P1 group mean Δ −0.030 engineered vs −0.026 sequence) but **real on the unseen-station cell P3** (engineered Δ −0.034 vs sequence −0.025; `fusion_L3` flat, Δ +0.002); gradient boosting leads **every** horizon on **every** protocol (P1 leaders lightgbm/24 h, xgboost/48 h, xgboost_selected/72 h); optional multi-task head **deferred** to the Phase-32 E-matrix; test untouched | `scripts/phase26_matrix.py`, `reports/phase26_multihorizon.md`, `reports/phase26_matrix.csv` (1,728), `phase26_summary.csv` (72), `phase26_interaction.json`, `notebooks/26_multihorizon.ipynb` (12/12), `scripts/build_phase26_notebook.py` |
+
+| 27 | Fair ML vs DL comparison (stage 42 + stages 43–46, 50–52) — **one table, one code path, one set of cells** for all 24 models; fresh P1 `val_2022` re-score through a single load→predict→score path reproduces all 144 val-2022 grid rows **bit-identically** (max Δ = 0.00e+00); master `phase27_metrics.csv` (1,728 rows) = 7 dev cells (val_2020/21/22 + 4 spatial folds) × 3 horizons × 3 seasons (+ `val_2022` repeated under P1/P2, identical fold); **L2 gradient boosting leads every horizon** (lightgbm 24 h 0.9682, xgboost 48 h 0.9549, xgboost_selected 72 h 0.9422), best DL `fusion_L3` 0.016–0.024 behind; D14 group means engineered L1∪L2 ahead of sequence L3∪L4 by 0.010–0.013 (P1), 0.007–0.020 (P2), **0.028–0.033 (P3 unseen locations)**; ML>DL real but **not CI-resolved** (bootstrap CIs overlap), gap is **recall** (ROC-AUC ~0.995 everywhere); operational block (missed floods/FAR/FPR/event recall/lead time, per year/season); cost block (`gnn_lstm` ~80× `xgboost`, no gain); test untouched | `scripts/evaluate_all.py`, `reports/phase27_ml_vs_dl.md`, `reports/phase27_metrics.csv` (1,728), `phase27_p1_rescore.csv` (216), `phase27_operational.csv` (216), `phase27_cost.csv` (24), `phase27_generalisation.csv` (648), `phase27_summary.json`, `figures/phase27_ml_vs_dl.png`, `notebooks/27_ml_vs_dl.ipynb` (12/12), `scripts/build_phase27_notebook.py`, `scripts/phase27_run.log` |
 
 **Discharged without a phase of their own:**
 
@@ -414,7 +417,7 @@ Stages **59–61** are the horizon-specific deliverables (one report section eac
 
 ---
 
-## Phase 27 — Fair ML vs DL comparison · stage 42 (+ 43–46, 50–52)
+## Phase 27 — Fair ML vs DL comparison · stage 42 (+ 43–46, 50–52) · **DONE**
 
 The core scientific result. **One table, one code path, one set of cells** for all families.
 
@@ -438,6 +441,29 @@ The core scientific result. **One table, one code path, one set of cells** for a
 **Deliverable:** `scripts/evaluate_all.py`, `reports/phase27_ml_vs_dl.md`,
 `reports/phase27_metrics.csv`. **DoD:** the master comparison table is complete for L1–L3
 (and L4 where gated), with CIs and cost columns; D7 row present.
+
+> **Resolved (2026-10-14).** Done. **One table, one code path, one set of cells.** Phase 27
+> re-scores the P1 primary cell (`val_2022`) **fresh for all 24 models** through a single
+> load → predict → score path and reproduces all **144** `val_2022` grid rows **bit-identically**
+> (max |Δ PR-AUC| = **0.00e+00**), then consolidates the seven frozen dev grids into
+> `reports/phase27_metrics.csv` (**1,728 rows** = 7 dev cells × 3 horizons × 3 seasons ×
+> 24 models, with `val_2022` repeated under the P1 and P2 protocol labels — identical training
+> fold). **The L2 gradient-boosting family wins outright on every horizon** (lightgbm 24 h
+> **0.9682**, xgboost 48 h **0.9549**, xgboost_selected 72 h **0.9422**); the best deep model,
+> `fusion_L3`, is 0.016–0.024 behind. D14 group means put engineered-feature (L1∪L2) models
+> ahead of sequence/DL (L3∪L4) by 0.010–0.013 (P1), 0.007–0.020 (P2 years) and **0.028–0.033
+> (P3 unseen locations)** — largest where generalisation is hardest. The ML>DL gap is **real but
+> not CI-resolved** (bootstrap CIs overlap) and is one of **recall, not ranking** (ROC-AUC ~0.995
+> for every competitive model; trees miss ~100 flood rows, fusion/transformer ~155–165). New
+> **operational** block (missed floods, FAR/FPR, event-level recall, warning lead time, per
+> year/season — `phase27_operational.csv`), **cost** block (`gnn_lstm` ≈ 80× `xgboost` for no
+> gain — `phase27_cost.csv`), **generalisation** blocks (temporal/spatial/monsoon —
+> `phase27_generalisation.csv`), `phase27_summary.json` and `figures/phase27_ml_vs_dl.png`.
+> One occasional-logic note: only **P1-trained** checkpoints are persisted, so P1 rows come from
+> the fresh re-score and **P2/P3 rows are consolidated from the per-phase grids** (same metric
+> code, provenance tagged); the frozen `unseen`/`new_network` **test** buckets stay deferred to
+> Phase 33, and dev-time unseen-location transfer is reported as **P3**. Test untouched. Full
+> evidence in `reports/phase27_ml_vs_dl.md`; `notebooks/27_ml_vs_dl.ipynb` 12/12.
 
 ---
 
@@ -672,7 +698,7 @@ DONE   Phases 0–16   foundations, data, features, leakage, table, splits, base
        Phase 24  GNN gate → GNN          DONE         │
        Phase 25  gate → Transformer      DONE         ┘
        Phase 26  multi-horizon matrix    DONE
-       Phase 27  fair ML vs DL comparison  (+ stages 43–46, 50–52)
+       Phase 27  fair ML vs DL comparison  DONE  (+ stages 43–46, 50–52)
        Phase 28  calibration → Phase 29 thresholds/bands → Phase 30 error analysis
        Phase 31  robustness → Phase 32 ablation matrix (E0–E16) → Phase 33 selection → Phase 34 XAI
        Phases 35–42  system (prototype)
@@ -714,17 +740,17 @@ Stages **1–30 are frozen** — they record completed work and are mirrored in
 | 39 | Station graph & GNN | **DONE** | Phase 24 — gate `phase24_graph_gate` **PASS (narrow)** (`scripts/phase24_gate.py`, `reports/phase24_graph_gate.md`, 52 validated river edges, `figures/phase24_gate.png`); `scripts/train_gnn.py` (gcn/gat/gnn_lstm → registry L4-01/02/04), `scripts/phase24_ablation.py` (paired P3 station bootstrap), `reports/phase24_gnn.md`, `reports/phase24_metrics.csv` (216), `phase24_search.csv` (24), `phase24_ablation.csv` (24) + `phase24_ablation_preds.npz`, `models/phase24_L4-0{1,2,4}.pt`, `notebooks/24_gnn.ipynb` (16/16), `scripts/phase24_run.log`; verdict — **qualified positive, horizon-dependent**: no P3 gain at 24 h (GAT Δ −0.013, CI<0), significant gain at 48 h (GAT +0.016) and 72 h (GCN +0.018, GAT +0.023); approved graph = river-upstream ∪ kNN5; registry L4-01/02/04 gated→planned |
 | 40 | Transformer models | **DONE** | Phase 25 — gate `phase25_transformer_gate` **PASS (narrow)** (`scripts/phase25_gate.py`, `reports/phase25_transformer_gate.md`, `figures/phase25_gate.png`); `scripts/train_transformer.py` (L4-03 temporal Transformer: per-day token → embed + positional → encoder → masked-mean pool → sigmoid; budget 16/768, winner **L = 7**, 36,353 params), `scripts/phase25_ablation.py` (paired P1 val_2022 + P3 pooled station bootstrap, 1,000 resamples), `reports/phase25_transformer.md`, `reports/phase25_metrics.csv` (72), `phase25_search.csv` (16), `phase25_ablation.csv` (12) + `phase25_ablation_preds.npz`, `models/phase25_L4-03.pt`, `notebooks/25_transformer.ipynb` (12/12), `scripts/phase25_run.log`; verdict — **qualified positive, modest**: primary PASS (`val_2022` mean **0.93168** > LSTM 0.92677 > TCN 0.92124), secondary PASS (P3 unseen-station mean **0.91247**, significant gains vs TCN at 48/72 h and vs LSTM at 72 h, no loss), win is **short-window** (L=7, L=30 weakest) not long-range; registry L4-03 gated→planned |
 | 41 | Multi-horizon strategy (24/48/72 h) | **DONE** | Phase 26 — `scripts/phase26_matrix.py` integrates the 7 frozen dev metrics files into a 24-model × 3-horizon matrix (`reports/phase26_matrix.csv`, 1,728 rows; `phase26_summary.csv`; `phase26_interaction.json`), `reports/phase26_multihorizon.md`, `notebooks/26_multihorizon.ipynb` (12/12); verdict — difficulty grows with lead time for every competitive model; ML-vs-DL interaction small on P1/P2, **real on P3 unseen stations** (engineered Δ −0.034 vs sequence −0.025; `fusion_L3` flat +0.002); gradient boosting leads every horizon; multi-task head deferred to Phase 32 |
-| 42 | ML vs DL comparison | TODO | Phase 27 — fair-comparison table |
-| 43 | ROC-AUC / PR-AUC | TODO | Phase 27 — PR-AUC primary |
-| 44 | Precision / Recall / F1 | TODO | Phase 27 — train-derived thresholds |
-| 45 | Confusion matrix | TODO | Phase 27 |
-| 46 | False-negative + operational analysis | TODO | Phases 27/30 — missed floods, lead time |
+| 42 | ML vs DL comparison | **DONE** | Phase 27 — fair-comparison master table `reports/phase27_metrics.csv` (1,728 rows); fresh P1 re-score reproduces all 144 `val_2022` grid rows bit-identically (Δ = 0.00e+00); L2 leads every horizon, D14 group means + best-DL within 0.016–0.024; test untouched |
+| 43 | ROC-AUC / PR-AUC | **DONE** | Phase 27 — PR-AUC primary; ROC-AUC ~0.995 for all competitive models (negatives dominate); `phase27_metrics.csv` + `phase27_p1_rescore.csv` |
+| 44 | Precision / Recall / F1 | **DONE** | Phase 27 — best-F1 threshold derived on the **train** fold per model; precision/recall/F1/specificity/FNR for all 24 × 3 horizons |
+| 45 | Confusion matrix | **DONE** | Phase 27 — `tp/fp/fn/tn` + derived `fnr/far/fpr` on every cell (`phase27_metrics.csv`) |
+| 46 | False-negative + operational analysis | **DONE** | Phase 27 — `phase27_operational.csv`: missed-flood rows, false-alarm rate/FPR, event-level recall, warning lead time, per year/season; Phase 30 deepens the error analysis |
 | 47 | Probability calibration | TODO | Phase 28 |
 | 48 | Risk-level definition | TODO | Phase 29 — derived from validation |
 | 49 | Threshold optimization | TODO | Phase 29 — cost of FN ≫ FP |
-| 50 | Temporal evaluation | TODO | Phase 27 — per year |
-| 51 | Spatial evaluation | TODO | Phase 27 — P3 + unseen buckets |
-| 52 | Monsoon evaluation | TODO | Phase 27 — JJAS per D1 |
+| 50 | Temporal evaluation | **DONE** | Phase 27 — per-year P2 temporal block (`phase27_generalisation.csv`; engineered L1∪L2 vs sequence L3∪L4 gaps 0.007–0.020) |
+| 51 | Spatial evaluation | **DONE** | Phase 27 — P3 4-fold unseen-location block (gap 0.028–0.033; deep models ~3× more fold-sensitive); `test_unseen`/`new_network` deferred to Phase 33 |
+| 52 | Monsoon evaluation | **DONE** | Phase 27 — D1 monsoon vs non-monsoon (both groups better in monsoon; engineered advantage larger in monsoon) |
 | 53 | Robustness analysis | TODO | Phase 31 |
 | 54 | Error analysis | TODO | Phase 30 |
 | 55 | Ablation study | PARTIAL | Phase 32 — E1–E16; soil/landcover row blocked by R8 |

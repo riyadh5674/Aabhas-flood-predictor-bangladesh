@@ -1,0 +1,385 @@
+{
+  "phase": 27,
+  "seed": 20261008,
+  "hardware": "CPU \u00b7 AMD64 \u00b7 Windows \u00b7 torch 2.14.1+cpu",
+  "n_models": 24,
+  "n_master_rows": 1728,
+  "parity_max_abs_delta_pr_auc_P1": 0.0,
+  "test_rows_read": 0,
+  "headline_P1_val2022_all": {
+    "label_24h": {
+      "lightgbm": 0.96816,
+      "xgboost": 0.96812,
+      "random_forest": 0.9665,
+      "xgboost_selected": 0.96631,
+      "gradient_boosting": 0.96184,
+      "fusion_L3": 0.94443,
+      "transformer_bestL": 0.94371,
+      "gnn_lstm": 0.94237,
+      "gcn": 0.94207,
+      "lstm_L3": 0.94206,
+      "gat": 0.94079,
+      "tcn_bestL": 0.94052,
+      "logreg_linear_no_up": 0.94026,
+      "logreg_linear": 0.94007,
+      "logreg_selected": 0.93979,
+      "lstm_L30": 0.93883,
+      "gru_bestL": 0.93592,
+      "lstm_L14": 0.93107,
+      "lstm_L7": 0.93091,
+      "hybrid_L3": 0.92747,
+      "persistence": 0.92029,
+      "tree_depth4": 0.89715,
+      "static_only": 0.50676,
+      "climatology": 0.05091
+    },
+    "label_48h": {
+      "xgboost": 0.95494,
+      "lightgbm": 0.95379,
+      "xgboost_selected": 0.95333,
+      "random_forest": 0.95155,
+      "gradient_boosting": 0.94569,
+      "fusion_L3": 0.93854,
+      "gcn": 0.93534,
+      "transformer_bestL": 0.93304,
+      "gat": 0.93145,
+      "gnn_lstm": 0.9264,
+      "gru_bestL": 0.92632,
+      "lstm_L3": 0.92534,
+      "logreg_linear_no_up": 0.92416,
+      "logreg_linear": 0.92414,
+      "tcn_bestL": 0.92236,
+      "hybrid_L3": 0.92145,
+      "logreg_selected": 0.92065,
+      "lstm_L30": 0.91827,
+      "lstm_L7": 0.91642,
+      "lstm_L14": 0.90983,
+      "persistence": 0.8954,
+      "tree_depth4": 0.89024,
+      "static_only": 0.53858,
+      "climatology": 0.05936
+    },
+    "label_72h": {
+      "xgboost_selected": 0.94216,
+      "xgboost": 0.94084,
+      "random_forest": 0.93885,
+      "lightgbm": 0.93838,
+      "gradient_boosting": 0.93383,
+      "fusion_L3": 0.92381,
+      "transformer_bestL": 0.9183,
+      "gnn_lstm": 0.91529,
+      "gcn": 0.91414,
+      "gat": 0.91356,
+      "lstm_L3": 0.91291,
+      "gru_bestL": 0.90861,
+      "hybrid_L3": 0.90715,
+      "logreg_linear": 0.90528,
+      "logreg_linear_no_up": 0.90523,
+      "tcn_bestL": 0.90083,
+      "logreg_selected": 0.90042,
+      "lstm_L30": 0.89355,
+      "lstm_L7": 0.88707,
+      "lstm_L14": 0.88234,
+      "tree_depth4": 0.87347,
+      "persistence": 0.86826,
+      "static_only": 0.55212,
+      "climatology": 0.06577
+    }
+  },
+  "ci_P1_val2022_all": {
+    "label_24h": {
+      "climatology": [
+        0.0269,
+        0.0851
+      ],
+      "persistence": [
+        0.8163,
+        0.9661
+      ],
+      "logreg_linear": [
+        0.8549,
+        0.9764
+      ],
+      "logreg_linear_no_up": [
+        0.8546,
+        0.9766
+      ],
+      "logreg_selected": [
+        0.8562,
+        0.976
+      ],
+      "tree_depth4": [
+        0.8183,
+        0.9415
+      ],
+      "random_forest": [
+        0.9266,
+        0.986
+      ],
+      "gradient_boosting": [
+        0.9228,
+        0.9833
+      ],
+      "xgboost": [
+        0.9324,
+        0.987
+      ],
+      "lightgbm": [
+        0.9298,
+        0.9879
+      ],
+      "xgboost_selected": [
+        0.9251,
+        0.9866
+      ],
+      "lstm_L3": [
+        0.8654,
+        0.9787
+      ],
+      "lstm_L7": [
+        0.8362,
+        0.972
+      ],
+      "lstm_L14": [
+        0.8394,
+        0.9715
+      ],
+      "lstm_L30": [
+        0.8599,
+        0.9767
+      ],
+      "gru_bestL": [
+        0.842,
+        0.9772
+      ],
+      "tcn_bestL": [
+        0.8537,
+        0.9763
+      ],
+      "fusion_L3": [
+        0.872,
+        0.978
+      ],
+      "static_only": [
+        0.1508,
+        0.768
+      ],
+      "hybrid_L3": [
+        0.8348,
+        0.9706
+      ],
+      "gcn": [
+        0.8749,
+        0.9744
+      ],
+      "gat": [
+        0.853,
+        0.9767
+      ],
+      "transformer_bestL": [
+        0.8552,
+        0.9811
+      ],
+      "gnn_lstm": [
+        0.8691,
+        0.9766
+      ]
+    },
+    "label_48h": {
+      "climatology": [
+        0.0328,
+        0.0971
+      ],
+      "persistence": [
+        0.7909,
+        0.9503
+      ],
+      "logreg_linear": [
+        0.8441,
+        0.9668
+      ],
+      "logreg_linear_no_up": [
+        0.8441,
+        0.9668
+      ],
+      "logreg_selected": [
+        0.8366,
+        0.964
+      ],
+      "tree_depth4": [
+        0.8131,
+        0.9388
+      ],
+      "random_forest": [
+        0.9052,
+        0.978
+      ],
+      "gradient_boosting": [
+        0.8967,
+        0.9772
+      ],
+      "xgboost": [
+        0.9075,
+        0.98
+      ],
+      "lightgbm": [
+        0.9059,
+        0.9794
+      ],
+      "xgboost_selected": [
+        0.9015,
+        0.9799
+      ],
+      "lstm_L3": [
+        0.8467,
+        0.9675
+      ],
+      "lstm_L7": [
+        0.8243,
+        0.9622
+      ],
+      "lstm_L14": [
+        0.8084,
+        0.9598
+      ],
+      "lstm_L30": [
+        0.8333,
+        0.9636
+      ],
+      "gru_bestL": [
+        0.8443,
+        0.9696
+      ],
+      "tcn_bestL": [
+        0.85,
+        0.962
+      ],
+      "fusion_L3": [
+        0.871,
+        0.9733
+      ],
+      "static_only": [
+        0.1803,
+        0.7752
+      ],
+      "hybrid_L3": [
+        0.8457,
+        0.9659
+      ],
+      "gcn": [
+        0.8717,
+        0.9711
+      ],
+      "gat": [
+        0.8591,
+        0.97
+      ],
+      "transformer_bestL": [
+        0.8626,
+        0.9736
+      ],
+      "gnn_lstm": [
+        0.8481,
+        0.9677
+      ]
+    },
+    "label_72h": {
+      "climatology": [
+        0.0377,
+        0.1058
+      ],
+      "persistence": [
+        0.7617,
+        0.93
+      ],
+      "logreg_linear": [
+        0.8247,
+        0.9515
+      ],
+      "logreg_linear_no_up": [
+        0.8247,
+        0.9515
+      ],
+      "logreg_selected": [
+        0.8123,
+        0.9482
+      ],
+      "tree_depth4": [
+        0.7951,
+        0.9293
+      ],
+      "random_forest": [
+        0.8844,
+        0.9686
+      ],
+      "gradient_boosting": [
+        0.8767,
+        0.9668
+      ],
+      "xgboost": [
+        0.8848,
+        0.9692
+      ],
+      "lightgbm": [
+        0.8805,
+        0.968
+      ],
+      "xgboost_selected": [
+        0.8862,
+        0.9718
+      ],
+      "lstm_L3": [
+        0.8377,
+        0.9539
+      ],
+      "lstm_L7": [
+        0.7932,
+        0.941
+      ],
+      "lstm_L14": [
+        0.7702,
+        0.9449
+      ],
+      "lstm_L30": [
+        0.7903,
+        0.9488
+      ],
+      "gru_bestL": [
+        0.8214,
+        0.9561
+      ],
+      "tcn_bestL": [
+        0.8178,
+        0.9469
+      ],
+      "fusion_L3": [
+        0.8541,
+        0.9625
+      ],
+      "static_only": [
+        0.2066,
+        0.765
+      ],
+      "hybrid_L3": [
+        0.8357,
+        0.9534
+      ],
+      "gcn": [
+        0.8433,
+        0.958
+      ],
+      "gat": [
+        0.8391,
+        0.959
+      ],
+      "transformer_bestL": [
+        0.8431,
+        0.9618
+      ],
+      "gnn_lstm": [
+        0.8438,
+        0.9579
+      ]
+    }
+  }
+}

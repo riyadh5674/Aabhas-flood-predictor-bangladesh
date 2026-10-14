@@ -1,0 +1,25 @@
+model,level,registry_id,n_params,params_kind,p1_train_s,infer_ms_per_1k,hardware,family,grid_fit_s_3h
+climatology,L1,L1-01,1,coefficients,0.0,0.0,CPU · AMD64 · Windows · torch 2.14.1+cpu,simple statistical,0.0
+persistence,L1,L1-02,2,coefficients,0.47,0.027,CPU · AMD64 · Windows · torch 2.14.1+cpu,simple statistical,0.48
+logreg_linear,L1,L1-03,36,coefficients,2.25,0.129,CPU · AMD64 · Windows · torch 2.14.1+cpu,simple statistical,2.62
+logreg_linear_no_up,L1,L1-04,34,coefficients,2.23,0.127,CPU · AMD64 · Windows · torch 2.14.1+cpu,simple statistical,3.14
+logreg_selected,L1,L1-05,11,coefficients,1.03,0.059,CPU · AMD64 · Windows · torch 2.14.1+cpu,simple statistical,0.99
+tree_depth4,L1,L1-06,23,tree_nodes,4.78,0.273,CPU · AMD64 · Windows · torch 2.14.1+cpu,simple statistical,5.83
+random_forest,L2,L2-01,62456,tree_nodes,2.11,0.12,CPU · AMD64 · Windows · torch 2.14.1+cpu,classical ML,242.3
+gradient_boosting,L2,L2-02,1420,tree_nodes,1.24,0.071,CPU · AMD64 · Windows · torch 2.14.1+cpu,classical ML,230.7
+xgboost,L2,L2-03,15002,tree_nodes,1.15,0.066,CPU · AMD64 · Windows · torch 2.14.1+cpu,classical ML,27.0
+lightgbm,L2,L2-04,18300,tree_nodes,0.75,0.043,CPU · AMD64 · Windows · torch 2.14.1+cpu,classical ML,19.3
+xgboost_selected,L2,L2-05,23650,tree_nodes,0.33,0.019,CPU · AMD64 · Windows · torch 2.14.1+cpu,classical ML,11.7
+lstm_L3,L3,L3-01,14497,weights,0.37,0.021,CPU · AMD64 · Windows · torch 2.14.1+cpu,deep temporal,90.2
+lstm_L7,L3,L3-02,6049,weights,1.22,0.07,CPU · AMD64 · Windows · torch 2.14.1+cpu,deep temporal,368.29999999999995
+lstm_L14,L3,L3-03,6049,weights,1.91,0.109,CPU · AMD64 · Windows · torch 2.14.1+cpu,deep temporal,391.5
+lstm_L30,L3,L3-04,14497,weights,3.95,0.226,CPU · AMD64 · Windows · torch 2.14.1+cpu,deep temporal,178.7
+gru_bestL,L3,L3-05,4545,weights,1.0,0.057,CPU · AMD64 · Windows · torch 2.14.1+cpu,deep temporal,211.2
+tcn_bestL,L3,L3-06,11329,weights,0.52,0.03,CPU · AMD64 · Windows · torch 2.14.1+cpu,deep temporal,124.3
+fusion_L3,L3,L3-07,58817,weights,0.89,0.051,CPU · AMD64 · Windows · torch 2.14.1+cpu,feature fusion,170.0
+static_only,L3,L3-08,1089,weights,0.24,0.014,CPU · AMD64 · Windows · torch 2.14.1+cpu,feature fusion,14.2
+hybrid_L3,L3,L3-09,16132,weights,1.24,0.071,CPU · AMD64 · Windows · torch 2.14.1+cpu,feature fusion,85.6
+gcn,L4,L4-01,15553,weights,1.33,0.076,CPU · AMD64 · Windows · torch 2.14.1+cpu,advanced spatiotemporal,236.9
+gat,L4,L4-02,15617,weights,1.39,0.08,CPU · AMD64 · Windows · torch 2.14.1+cpu,advanced spatiotemporal,224.8
+transformer_bestL,L4,L4-03,36353,weights,2.46,0.14,CPU · AMD64 · Windows · torch 2.14.1+cpu,advanced spatiotemporal,197.1
+gnn_lstm,L4,L4-04,18433,weights,0.86,0.049,CPU · AMD64 · Windows · torch 2.14.1+cpu,advanced spatiotemporal,2191.7000000000003
