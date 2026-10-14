@@ -5,11 +5,11 @@
 (ML+DL modelling section). Those two files are superseded **in full** by this document; they
 may be deleted once this file is accepted.
 
-**Where we are:** Phases **0–29 are complete** (foundations → baselines → framework → datasets
+**Where we are:** Phases **0–30 are complete** (foundations → baselines → framework → datasets
 → sequence validation → classical ML → LSTM/GRU → TCN → feature fusion → station-graph GNN →
 temporal Transformer → multi-horizon matrix → fair ML-vs-DL comparison → probability calibration
-→ risk levels & threshold optimization;
-checklist **stages 1–49 + 50–52 + 59–61 DONE**). Everything from Phase 30 on is future work —
+→ risk levels & threshold optimization → error analysis;
+checklist **stages 1–49 + 50–52 + 54 + 59–61 DONE**). Everything from Phase 31 on is future work —
 this document is the single map for it.
 
 This file merges the classical research workflow (rigorous labels → leakage → splits →
@@ -83,7 +83,7 @@ interpolated · R7 growing station network (85 → 133) · R8 soil/landcover dat
 
 ---
 
-## 1. Status ledger — Phases 0–29 complete
+## 1. Status ledger — Phases 0–30 complete
 
 | Phase | Body topic | Evidence |
 | --- | --- | --- |
@@ -118,6 +118,8 @@ interpolated · R7 growing station network (85 → 133) · R8 soil/landcover dat
 | 28 | Probability calibration (stage 47) — P1 `val_2022` probabilities for all 24 models come from the **same Phase-27 predictor** (`evaluate_all.predict_one`), so the raw Brier/ECE reproduce the Phase-27 re-score (max \|Δ ECE\| = 7.2e-07, clipping only); **raw calibration is good for most** (17/24 clear ECE ≤ 0.02 all-season, median raw ECE 0.0067), miscalibration is **structural and over-confident**, concentrated in the crippled control `static_only` (0.37), the plain recurrent nets (`lstm_L3` 0.072, `lstm_L7` 0.048, `gru_bestL` 0.041, `tcn_bestL` 0.057), `random_forest` (0.035, tree-vote over-confidence) and the no-skill baselines — and it **grows with lead time** and is **worst in monsoon** (`lstm_L3` 0.103 monsoon vs 0.031 off-season); recalibration (Platt/isotonic, fitted **on validation only**) scored **out-of-fold over 5 station folds** brings **every skill** model within tolerance (the control `static_only` stays 0.033); in-sample isotonic ECE = 0.000 by construction is reported only as the optimistic bound; **L1 linear, L2 gradient boosting, L4 transformer/GNN and the fusion models may proceed uncalibrated**, the recurrent nets + `random_forest` need a validation-fitted calibrator before Phase 29; test untouched | `scripts/phase28_calibration.py`, `reports/phase28_calibration.md`, `reports/phase28_calibration.csv` (216), `phase28_summary.json`, `phase28_predictions.npz`, `figures/phase28_reliability.png`, `notebooks/28_calibration.ipynb` (12/12), `scripts/build_phase28_notebook.py`, `scripts/phase28_run.log` |
 
 | 29 | Risk levels & threshold optimization (stages 48, 49) — a pure **decision layer** on the Phase-27/28 probabilities (cached P1 `val_2022` for all 24 models, no retraining); row-level cost with **FN ≫ FP** (`C_FN : C_FP = 10 : 1`, sensitivity 5/20), thresholds swept 0.01–0.60 and chosen by exact cost argmin; leaders by PR-AUC (matched independently) are **lightgbm 24 h (t = 0.060, recall 0.980, missed 18), xgboost 48 h (t = 0.052, recall 0.982, missed 19), xgboost_selected 72 h (t = 0.061, recall 0.966, missed 38)** — a **very-high-recall / moderate-precision** early-warning operating point (FAR 25–37 %); the **Phase-16 lesson is confirmed**: carrying a dry-season threshold into the monsoon loses recall — small for the leaders (≤ 3.2 pts) but **4–9 pts** for weaker tree/recurrent models and **16.6 pts** for the no-skill control `static_only`, so thresholds are **re-derived per period**; the calibrated-posterior fallback `1/(1+C_FN/C_FP)` = 0.091 is a good period-invariant rule at 48/72 h (≤ 11 % cost penalty) but is beaten by re-derivation at 24 h; **risk bands are cost-derived** (watch = ½·t_warn, warning = t_warn, high = precision ≥ 0.90) giving a near-perfect top band (**90 % observed flood rate, 13–18× lift**) while the **quartile default is rejected** (50–75 % of rows fall in zero-flood bands); bands + thresholds **frozen before any test read**; test untouched | `scripts/phase29_thresholds.py`, `reports/phase29_thresholds.md`, `reports/phase29_threshold_sweep.csv` (14,040), `phase29_chosen_thresholds.csv` (216), `phase29_transfer.csv` (837), `phase29_risk_bands.csv` (72), `phase29_pr_auc.csv` (72), `phase29_summary.json`, `figures/phase29_threshold_cost.png`, `figures/phase29_bands_transfer.png`, `notebooks/29_thresholds.ipynb` (12/12), `scripts/build_phase29_notebook.py`, `scripts/phase29_run.log` |
+
+| 30 | Error analysis (stage 54; stage-46 evidence) — pure analysis of the **frozen Phase-29 leaders** on the P1 `val_2022` cell (cached Phase-28 probabilities, **no retraining**; the frozen per-period decision `p >= t_warn`); the row order is proven to equal `flatnonzero(p1_eval & ~isnan(y))` before joining features by `(station_id, date)`. Leader operating points: **lightgbm 24 h 16 FN/295 FP (recall 0.982, precision 0.748)**, **xgboost 48 h 19 FN/485 FP (0.982 / 0.675)**, **xgboost_selected 72 h 48 FN/518 FP (0.957 / 0.675)** — the per-period FN equals the sum of the Phase-29 seasonal misses exactly. Ten **named patterns** (top three: **A** missed floods occur while the river is still **below danger but rising** — median `wl_dist_to_danger` **+0.76 m**, **0.0 %** of FN below danger vs 82.5 % of TP, 69 % rising; **F** false alarms fire while the river is **just below danger** — median `wl_pct_danger` 0.983, 80.9 % below danger (the direct price of FN ≫ FP); **E** stations with the **fewest training floods are missed ~14× more** — miss rate 0.230 vs 0.016, Spearman ρ −0.501). Secondary: B misses grow **16 / 19 / 48** with lead time; G short events are over-represented in FN (14.5 % vs 2.8 % in runs ≤ 2 rows); G2 FN sit in **wetter** not drier conditions (`rain_7d` 102 vs 86 mm); I 28.9 % of FN in the Jamuna+Teesta corridor. **Negative results stated:** C the monsoon concentration is a **base-rate effect** (season recall 0.973 vs 0.970, not a defect), D missingness is a **weak** discriminator (medians identical), H the DL "broken sequence window" hypothesis is **not supported** (FN>TP only at 24 h, reversed at 48/72 h). Fixes: target low-prevalence stations (E), add upstream/future-rain signal (A); F is a policy knob. Test untouched | `scripts/phase30_errors.py`, `reports/phase30_errors.md`, `reports/phase30_row_metrics.csv` (18), `phase30_outcome_profile.csv` (72), `phase30_fn_rows.csv` (83), `phase30_fp_rows.csv` (1,095), `phase30_by_station.csv` (756), `phase30_patterns.csv` (12), `phase30_summary.json`, `figures/phase30_errors.png`, `notebooks/30_errors.ipynb` (12/12), `scripts/build_phase30_notebook.py`, `scripts/phase30_run.log` |
 
 **Discharged without a phase of their own:**
 
@@ -558,7 +560,7 @@ rationale, and their validation frequencies.
 
 ---
 
-## Phase 30 — Error analysis · stage 54 (stage 46 evidence)
+## Phase 30 — Error analysis · stage 54 (stage 46 evidence) · **DONE**
 
 On validation first (test only after Phase 33 freezes a model):
 
@@ -571,6 +573,33 @@ On validation first (test only after Phase 33 freezes a model):
 
 **DoD:** `reports/phase30_errors.md` with FN/FP tables and at least the top three named
 patterns quantified.
+
+> **Resolved (2026-10-14).** Done. Phase 30 is a **pure error analysis** of the frozen Phase-29
+> leaders on the P1 `val_2022` cell — it re-uses the cached Phase-28 probabilities and the
+> Phase-29 per-period thresholds and adds **no new model path and no retraining**. The row order
+> is proven to equal `flatnonzero(p1_eval & ~isnan(y))` (17 502 / 17 300 / 17 089 rows, 84
+> stations) before joining `experimental_dataset.csv` features by `(station_id, date)`; the
+> leader per-period FN equals the sum of the Phase-29 seasonal misses exactly. Operating points
+> (per-period decision, 10:1): **lightgbm 24 h** 16 FN / 295 FP (recall 0.982, precision 0.748),
+> **xgboost 48 h** 19 FN / 485 FP (0.982 / 0.675), **xgboost_selected 72 h** 48 FN / 518 FP
+> (0.957 / 0.675); the all-season-threshold sensitivity is reported alongside (72 h trades ~10
+> misses for ~120 fewer false alarms). **Ten named patterns** are quantified; the top three are:
+> **(A)** missed floods occur while the river is still **below danger but rising** (FN median
+> `wl_dist_to_danger` **+0.76 m**, **0.0 %** of FN below danger vs 82.5 % of TP, 69 % rising) — a
+> response-lag *limitation*; **(F)** false alarms fire while the river is **just below danger**
+> (median `wl_pct_danger` 0.983, 80.9 % below danger) — the direct price of `FN ≫ FP`, a policy
+> knob not a defect; **(E)** stations with the **fewest training-fold floods are missed ~14× more**
+> (miss rate 0.230 vs 0.016, Spearman ρ −0.501) — a *fix* (target low-prevalence stations).
+> Secondary patterns: **B** misses grow **16 / 19 / 48** with lead time; **G** short/isolated
+> events are over-represented in FN (14.5 % vs 2.8 % in runs ≤ 2 rows); **G2** FN sit in **wetter**
+> not drier conditions (`rain_7d` 102 vs 86 mm); **I** 28.9 % of FN in the Jamuna+Teesta corridor.
+> **Negative results stated:** **C** the monsoon concentration is a **base-rate effect** (season
+> recall 0.973 vs 0.970, not a defect); **D** missingness is a **weak** discriminator (medians
+> identical); **H** the DL "broken sequence window" hypothesis is **not supported** (FN > TP only
+> at 24 h, reversed at 48/72 h). No phase is invalidated; the test period stays frozen
+> (`test_rows_read = 0`). `reports/phase30_errors.md` carries the rationale; `phase30_fn_rows.csv`
+> (83), `phase30_fp_rows.csv` (1 095) and `phase30_patterns.csv` (12) the tables;
+> `notebooks/30_errors.ipynb` 12/12.
 
 ---
 
@@ -761,7 +790,8 @@ DONE   Phases 0–16   foundations, data, features, leakage, table, splits, base
        Phase 26  multi-horizon matrix    DONE
        Phase 27  fair ML vs DL comparison  DONE  (+ stages 43–46, 50–52)
        Phase 28  probability calibration  DONE
-       Phase 29  thresholds/bands (risk levels)  DONE  → Phase 30 error analysis
+       Phase 29  thresholds/bands (risk levels)  DONE
+       Phase 30  error analysis (FN/FP patterns)  DONE  → Phase 31 robustness
        Phase 31  robustness → Phase 32 ablation matrix (E0–E16) → Phase 33 selection → Phase 34 XAI
        Phases 35–42  system (prototype)
        Phases 43–45  final evaluation, reproducibility, thesis
@@ -814,7 +844,7 @@ Stages **1–30 are frozen** — they record completed work and are mirrored in
 | 51 | Spatial evaluation | **DONE** | Phase 27 — P3 4-fold unseen-location block (gap 0.028–0.033; deep models ~3× more fold-sensitive); `test_unseen`/`new_network` deferred to Phase 33 |
 | 52 | Monsoon evaluation | **DONE** | Phase 27 — D1 monsoon vs non-monsoon (both groups better in monsoon; engineered advantage larger in monsoon) |
 | 53 | Robustness analysis | TODO | Phase 31 |
-| 54 | Error analysis | TODO | Phase 30 |
+| 54 | Error analysis | **DONE** | Phase 30 — `reports/phase30_errors.md`: leader FN/FP tables + 10 quantified named patterns. Top three: (A) misses occur while the river is **still below danger but rising** (FN median `wl_dist_to_danger` +0.76 m; 0.0 % of FN below danger vs 82.5 % of TP) — response-lag limitation; (F) false alarms fire **just below danger** (median `wl_pct_danger` 0.983; 80.9 % below danger) — the price of FN ≫ FP, a policy knob; (E) stations with the **fewest training floods are missed ~14× more** (0.230 vs 0.016, ρ −0.501) — a fix (target low-prevalence stations). Secondary B (16/19/48 with lead time), G (short events 14.5 % vs 2.8 %), G2 (wetter not drier), I (28.9 % in Jamuna+Teesta); negative results C/D/H. Tables `phase30_row_metrics.csv`, `phase30_fn_rows.csv`, `phase30_fp_rows.csv`, `phase30_outcome_profile.csv`, `phase30_by_station.csv`, `phase30_patterns.csv`; `notebooks/30_errors.ipynb` 12/12; test untouched |
 | 55 | Ablation study | PARTIAL | Phase 32 — E1–E16; soil/landcover row blocked by R8 |
 | 56 | Comparative experiment matrix | TODO | Phase 32 — E0–E16 |
 | 57 | Final model selection | TODO | Phase 33 — scorecard, test read once |

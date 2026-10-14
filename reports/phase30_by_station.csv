@@ -1,0 +1,757 @@
+model,horizon,station_id,river,n,n_pos,fn,fp,miss_rate,tr_pos,tr_n
+lightgbm,24h,2,Matamuhuri,209,0,0,0,,14,847
+lightgbm,24h,4,Sangu,188,0,0,0,,12,711
+lightgbm,24h,6,Sangu,228,0,0,0,,9,877
+lightgbm,24h,8,Pashure,217,211,0,5,0.0,328,330
+lightgbm,24h,10,Halda,223,0,0,0,,12,951
+lightgbm,24h,11,Lower Meghna,171,84,2,54,0.023809523809523808,175,311
+lightgbm,24h,13,Halda,203,0,0,0,,24,862
+lightgbm,24h,15,Betna,198,0,0,0,,251,370
+lightgbm,24h,17,Feni,209,0,0,0,,0,724
+lightgbm,24h,19,Arialkhan,209,0,0,0,,64,905
+lightgbm,24h,20,Lower Meghna,226,6,0,6,0.0,151,938
+lightgbm,24h,21,Muhuri,222,1,1,1,1.0,25,837
+lightgbm,24h,22,Padma,182,122,1,7,0.00819672131147541,280,795
+lightgbm,24h,23,Gumti,224,0,0,0,,3,917
+lightgbm,24h,24,Gorai,169,5,0,4,0.0,105,752
+lightgbm,24h,25,Padma,218,0,0,0,,161,870
+lightgbm,24h,27,Kumar,170,0,0,0,,0,765
+lightgbm,24h,28,Buriganga,209,0,0,0,,7,334
+lightgbm,24h,30,Mathabhanga,195,0,0,0,,0,713
+lightgbm,24h,31,Lakhya,214,0,0,0,,140,826
+lightgbm,24h,32,Buriganga,216,0,0,0,,0,852
+lightgbm,24h,33,Balu,216,0,0,0,,61,806
+lightgbm,24h,34,Padma,228,22,0,11,0.0,210,978
+lightgbm,24h,35,Turag,214,0,0,0,,63,818
+lightgbm,24h,37,Kaliganga,211,0,0,0,,88,853
+lightgbm,24h,38,Jamuna,218,0,0,0,,145,853
+lightgbm,24h,39,Old Dhaleswari,216,0,0,0,,59,495
+lightgbm,24h,40,Gorai,228,0,0,0,,13,958
+lightgbm,24h,42,Upper Meghna,230,0,0,0,,15,974
+lightgbm,24h,44,Bangshi,214,0,0,0,,20,862
+lightgbm,24h,45,Ganges,209,0,0,0,,6,850
+lightgbm,24h,46,Khowai,216,1,1,1,1.0,21,900
+lightgbm,24h,47,Manu,215,0,0,2,,14,935
+lightgbm,24h,48,Jamuna,226,10,0,11,0.0,190,879
+lightgbm,24h,49,Manu,214,2,0,0,0.0,30,881
+lightgbm,24h,50,Atrai,173,1,0,1,0.0,65,332
+lightgbm,24h,51,Mohananda,224,0,0,0,,27,926
+lightgbm,24h,53,Old Brahmaputra,226,0,0,0,,16,934
+lightgbm,24h,54,Atrai,214,0,0,1,,18,902
+lightgbm,24h,55,Karatoa,193,0,0,0,,0,840
+lightgbm,24h,57,Little Jamuna,214,0,0,0,,41,891
+lightgbm,24h,58,Punarvaba,203,0,0,0,,19,810
+lightgbm,24h,59,Surma,223,14,1,8,0.07142857142857142,78,959
+lightgbm,24h,61,Kushiyara,226,28,0,4,0.0,119,948
+lightgbm,24h,62,Old Brahmaputra,228,0,0,0,,33,969
+lightgbm,24h,64,Surma,226,37,0,6,0.0,149,960
+lightgbm,24h,65,Surma,211,10,0,10,0.0,92,910
+lightgbm,24h,66,Jamuna,230,8,0,1,0.0,146,973
+lightgbm,24h,70,Jadukata,217,5,1,4,0.2,28,888
+lightgbm,24h,71,Ghagot,198,7,0,1,0.0,116,812
+lightgbm,24h,72,Brahmaputra,212,15,1,3,0.06666666666666667,138,869
+lightgbm,24h,73,Upper Atrai,230,3,1,2,0.3333333333333333,14,838
+lightgbm,24h,74,Punarbhaba,207,0,0,0,,8,842
+lightgbm,24h,75,Teesta,226,0,0,1,,10,913
+lightgbm,24h,76,Jamuneswari,210,0,0,0,,25,800
+lightgbm,24h,77,Dharla,225,17,1,5,0.058823529411764705,130,914
+lightgbm,24h,78,Brahmaputra,210,6,0,3,0.0,87,871
+lightgbm,24h,79,Ichamati-Jamuna,207,0,0,0,,6,849
+lightgbm,24h,80,Teesta,217,74,3,38,0.04054054054054054,323,858
+lightgbm,24h,82,Ganges,209,0,0,0,,13,860
+lightgbm,24h,86,Dhalai,215,0,0,2,,20,899
+lightgbm,24h,87,Jamuna,193,12,0,12,0.0,171,766
+lightgbm,24h,89,Meghna,222,0,0,0,,14,829
+lightgbm,24h,90,Jamuna,211,6,0,1,0.0,13,155
+lightgbm,24h,91,Dhaleswari,214,0,0,0,,51,856
+lightgbm,24h,92,Ganges,167,0,0,0,,7,311
+lightgbm,24h,93,Tangon,170,0,0,0,,5,862
+lightgbm,24h,95,Jamuna,191,13,0,7,0.0,166,840
+lightgbm,24h,96,Surma Old Course,218,17,0,1,0.0,107,766
+lightgbm,24h,97,Atrai,227,8,0,6,0.0,188,864
+lightgbm,24h,99,Kushiyara,214,6,0,7,0.0,175,845
+lightgbm,24h,100,Dhanu,215,11,1,1,0.09090909090909091,75,770
+lightgbm,24h,101,Lakhya,214,0,0,0,,90,800
+lightgbm,24h,102,Jamuna,169,2,0,3,0.0,25,170
+lightgbm,24h,103,Dhaleswari,228,0,0,0,,208,942
+lightgbm,24h,108,Titas,219,10,0,4,0.0,83,911
+lightgbm,24h,109,Dudkumar,204,16,0,8,0.0,15,136
+lightgbm,24h,110,Jamuna,215,6,1,1,0.16666666666666666,15,180
+lightgbm,24h,111,Bangali,166,0,0,0,,0,168
+lightgbm,24h,112,Turag,166,0,0,0,,33,138
+lightgbm,24h,113,Kirtonkhola,196,71,1,45,0.014084507042253521,67,186
+lightgbm,24h,114,Madaripur Beel Route,218,0,0,0,,9,138
+lightgbm,24h,117,Brahmaputra,186,24,0,7,0.0,9,135
+lightgbm,24h,119,Karnaphuli,150,0,0,0,,0,113
+xgboost,24h,2,Matamuhuri,209,0,0,1,,14,847
+xgboost,24h,4,Sangu,188,0,0,0,,12,711
+xgboost,24h,6,Sangu,228,0,0,0,,9,877
+xgboost,24h,8,Pashure,217,211,0,5,0.0,328,330
+xgboost,24h,10,Halda,223,0,0,0,,12,951
+xgboost,24h,11,Lower Meghna,171,84,1,56,0.011904761904761904,175,311
+xgboost,24h,13,Halda,203,0,0,0,,24,862
+xgboost,24h,15,Betna,198,0,0,0,,251,370
+xgboost,24h,17,Feni,209,0,0,0,,0,724
+xgboost,24h,19,Arialkhan,209,0,0,0,,64,905
+xgboost,24h,20,Lower Meghna,226,6,0,6,0.0,151,938
+xgboost,24h,21,Muhuri,222,1,0,1,0.0,25,837
+xgboost,24h,22,Padma,182,122,1,8,0.00819672131147541,280,795
+xgboost,24h,23,Gumti,224,0,0,0,,3,917
+xgboost,24h,24,Gorai,169,5,0,3,0.0,105,752
+xgboost,24h,25,Padma,218,0,0,0,,161,870
+xgboost,24h,27,Kumar,170,0,0,0,,0,765
+xgboost,24h,28,Buriganga,209,0,0,0,,7,334
+xgboost,24h,30,Mathabhanga,195,0,0,0,,0,713
+xgboost,24h,31,Lakhya,214,0,0,0,,140,826
+xgboost,24h,32,Buriganga,216,0,0,0,,0,852
+xgboost,24h,33,Balu,216,0,0,0,,61,806
+xgboost,24h,34,Padma,228,22,0,12,0.0,210,978
+xgboost,24h,35,Turag,214,0,0,0,,63,818
+xgboost,24h,37,Kaliganga,211,0,0,0,,88,853
+xgboost,24h,38,Jamuna,218,0,0,0,,145,853
+xgboost,24h,39,Old Dhaleswari,216,0,0,0,,59,495
+xgboost,24h,40,Gorai,228,0,0,0,,13,958
+xgboost,24h,42,Upper Meghna,230,0,0,0,,15,974
+xgboost,24h,44,Bangshi,214,0,0,0,,20,862
+xgboost,24h,45,Ganges,209,0,0,0,,6,850
+xgboost,24h,46,Khowai,216,1,1,2,1.0,21,900
+xgboost,24h,47,Manu,215,0,0,2,,14,935
+xgboost,24h,48,Jamuna,226,10,0,10,0.0,190,879
+xgboost,24h,49,Manu,214,2,0,0,0.0,30,881
+xgboost,24h,50,Atrai,173,1,0,1,0.0,65,332
+xgboost,24h,51,Mohananda,224,0,0,0,,27,926
+xgboost,24h,53,Old Brahmaputra,226,0,0,0,,16,934
+xgboost,24h,54,Atrai,214,0,0,1,,18,902
+xgboost,24h,55,Karatoa,193,0,0,0,,0,840
+xgboost,24h,57,Little Jamuna,214,0,0,0,,41,891
+xgboost,24h,58,Punarvaba,203,0,0,0,,19,810
+xgboost,24h,59,Surma,223,14,1,9,0.07142857142857142,78,959
+xgboost,24h,61,Kushiyara,226,28,0,3,0.0,119,948
+xgboost,24h,62,Old Brahmaputra,228,0,0,0,,33,969
+xgboost,24h,64,Surma,226,37,0,7,0.0,149,960
+xgboost,24h,65,Surma,211,10,0,8,0.0,92,910
+xgboost,24h,66,Jamuna,230,8,1,1,0.125,146,973
+xgboost,24h,70,Jadukata,217,5,1,4,0.2,28,888
+xgboost,24h,71,Ghagot,198,7,0,3,0.0,116,812
+xgboost,24h,72,Brahmaputra,212,15,0,3,0.0,138,869
+xgboost,24h,73,Upper Atrai,230,3,1,2,0.3333333333333333,14,838
+xgboost,24h,74,Punarbhaba,207,0,0,0,,8,842
+xgboost,24h,75,Teesta,226,0,0,5,,10,913
+xgboost,24h,76,Jamuneswari,210,0,0,0,,25,800
+xgboost,24h,77,Dharla,225,17,1,5,0.058823529411764705,130,914
+xgboost,24h,78,Brahmaputra,210,6,0,6,0.0,87,871
+xgboost,24h,79,Ichamati-Jamuna,207,0,0,0,,6,849
+xgboost,24h,80,Teesta,217,74,3,34,0.04054054054054054,323,858
+xgboost,24h,82,Ganges,209,0,0,0,,13,860
+xgboost,24h,86,Dhalai,215,0,0,2,,20,899
+xgboost,24h,87,Jamuna,193,12,0,11,0.0,171,766
+xgboost,24h,89,Meghna,222,0,0,0,,14,829
+xgboost,24h,90,Jamuna,211,6,0,1,0.0,13,155
+xgboost,24h,91,Dhaleswari,214,0,0,0,,51,856
+xgboost,24h,92,Ganges,167,0,0,0,,7,311
+xgboost,24h,93,Tangon,170,0,0,0,,5,862
+xgboost,24h,95,Jamuna,191,13,0,5,0.0,166,840
+xgboost,24h,96,Surma Old Course,218,17,1,4,0.058823529411764705,107,766
+xgboost,24h,97,Atrai,227,8,0,6,0.0,188,864
+xgboost,24h,99,Kushiyara,214,6,0,8,0.0,175,845
+xgboost,24h,100,Dhanu,215,11,1,2,0.09090909090909091,75,770
+xgboost,24h,101,Lakhya,214,0,0,0,,90,800
+xgboost,24h,102,Jamuna,169,2,0,2,0.0,25,170
+xgboost,24h,103,Dhaleswari,228,0,0,0,,208,942
+xgboost,24h,108,Titas,219,10,0,4,0.0,83,911
+xgboost,24h,109,Dudkumar,204,16,0,10,0.0,15,136
+xgboost,24h,110,Jamuna,215,6,1,1,0.16666666666666666,15,180
+xgboost,24h,111,Bangali,166,0,0,0,,0,168
+xgboost,24h,112,Turag,166,0,0,0,,33,138
+xgboost,24h,113,Kirtonkhola,196,71,2,46,0.028169014084507043,67,186
+xgboost,24h,114,Madaripur Beel Route,218,0,0,0,,9,138
+xgboost,24h,117,Brahmaputra,186,24,0,6,0.0,9,135
+xgboost,24h,119,Karnaphuli,150,0,0,0,,0,113
+xgboost_selected,24h,2,Matamuhuri,209,0,0,1,,14,847
+xgboost_selected,24h,4,Sangu,188,0,0,0,,12,711
+xgboost_selected,24h,6,Sangu,228,0,0,0,,9,877
+xgboost_selected,24h,8,Pashure,217,211,0,5,0.0,328,330
+xgboost_selected,24h,10,Halda,223,0,0,0,,12,951
+xgboost_selected,24h,11,Lower Meghna,171,84,3,46,0.03571428571428571,175,311
+xgboost_selected,24h,13,Halda,203,0,0,0,,24,862
+xgboost_selected,24h,15,Betna,198,0,0,0,,251,370
+xgboost_selected,24h,17,Feni,209,0,0,0,,0,724
+xgboost_selected,24h,19,Arialkhan,209,0,0,0,,64,905
+xgboost_selected,24h,20,Lower Meghna,226,6,0,7,0.0,151,938
+xgboost_selected,24h,21,Muhuri,222,1,1,1,1.0,25,837
+xgboost_selected,24h,22,Padma,182,122,1,7,0.00819672131147541,280,795
+xgboost_selected,24h,23,Gumti,224,0,0,0,,3,917
+xgboost_selected,24h,24,Gorai,169,5,0,4,0.0,105,752
+xgboost_selected,24h,25,Padma,218,0,0,0,,161,870
+xgboost_selected,24h,27,Kumar,170,0,0,0,,0,765
+xgboost_selected,24h,28,Buriganga,209,0,0,0,,7,334
+xgboost_selected,24h,30,Mathabhanga,195,0,0,0,,0,713
+xgboost_selected,24h,31,Lakhya,214,0,0,0,,140,826
+xgboost_selected,24h,32,Buriganga,216,0,0,0,,0,852
+xgboost_selected,24h,33,Balu,216,0,0,0,,61,806
+xgboost_selected,24h,34,Padma,228,22,0,11,0.0,210,978
+xgboost_selected,24h,35,Turag,214,0,0,0,,63,818
+xgboost_selected,24h,37,Kaliganga,211,0,0,0,,88,853
+xgboost_selected,24h,38,Jamuna,218,0,0,0,,145,853
+xgboost_selected,24h,39,Old Dhaleswari,216,0,0,0,,59,495
+xgboost_selected,24h,40,Gorai,228,0,0,0,,13,958
+xgboost_selected,24h,42,Upper Meghna,230,0,0,0,,15,974
+xgboost_selected,24h,44,Bangshi,214,0,0,0,,20,862
+xgboost_selected,24h,45,Ganges,209,0,0,0,,6,850
+xgboost_selected,24h,46,Khowai,216,1,0,2,0.0,21,900
+xgboost_selected,24h,47,Manu,215,0,0,2,,14,935
+xgboost_selected,24h,48,Jamuna,226,10,0,10,0.0,190,879
+xgboost_selected,24h,49,Manu,214,2,0,0,0.0,30,881
+xgboost_selected,24h,50,Atrai,173,1,0,1,0.0,65,332
+xgboost_selected,24h,51,Mohananda,224,0,0,0,,27,926
+xgboost_selected,24h,53,Old Brahmaputra,226,0,0,0,,16,934
+xgboost_selected,24h,54,Atrai,214,0,0,1,,18,902
+xgboost_selected,24h,55,Karatoa,193,0,0,0,,0,840
+xgboost_selected,24h,57,Little Jamuna,214,0,0,1,,41,891
+xgboost_selected,24h,58,Punarvaba,203,0,0,0,,19,810
+xgboost_selected,24h,59,Surma,223,14,2,9,0.14285714285714285,78,959
+xgboost_selected,24h,61,Kushiyara,226,28,0,3,0.0,119,948
+xgboost_selected,24h,62,Old Brahmaputra,228,0,0,0,,33,969
+xgboost_selected,24h,64,Surma,226,37,0,7,0.0,149,960
+xgboost_selected,24h,65,Surma,211,10,0,9,0.0,92,910
+xgboost_selected,24h,66,Jamuna,230,8,0,1,0.0,146,973
+xgboost_selected,24h,70,Jadukata,217,5,1,6,0.2,28,888
+xgboost_selected,24h,71,Ghagot,198,7,0,2,0.0,116,812
+xgboost_selected,24h,72,Brahmaputra,212,15,1,3,0.06666666666666667,138,869
+xgboost_selected,24h,73,Upper Atrai,230,3,0,2,0.0,14,838
+xgboost_selected,24h,74,Punarbhaba,207,0,0,1,,8,842
+xgboost_selected,24h,75,Teesta,226,0,0,5,,10,913
+xgboost_selected,24h,76,Jamuneswari,210,0,0,1,,25,800
+xgboost_selected,24h,77,Dharla,225,17,1,4,0.058823529411764705,130,914
+xgboost_selected,24h,78,Brahmaputra,210,6,0,4,0.0,87,871
+xgboost_selected,24h,79,Ichamati-Jamuna,207,0,0,0,,6,849
+xgboost_selected,24h,80,Teesta,217,74,4,34,0.05405405405405406,323,858
+xgboost_selected,24h,82,Ganges,209,0,0,0,,13,860
+xgboost_selected,24h,86,Dhalai,215,0,0,2,,20,899
+xgboost_selected,24h,87,Jamuna,193,12,0,12,0.0,171,766
+xgboost_selected,24h,89,Meghna,222,0,0,0,,14,829
+xgboost_selected,24h,90,Jamuna,211,6,0,1,0.0,13,155
+xgboost_selected,24h,91,Dhaleswari,214,0,0,0,,51,856
+xgboost_selected,24h,92,Ganges,167,0,0,0,,7,311
+xgboost_selected,24h,93,Tangon,170,0,0,0,,5,862
+xgboost_selected,24h,95,Jamuna,191,13,0,5,0.0,166,840
+xgboost_selected,24h,96,Surma Old Course,218,17,0,2,0.0,107,766
+xgboost_selected,24h,97,Atrai,227,8,0,6,0.0,188,864
+xgboost_selected,24h,99,Kushiyara,214,6,0,8,0.0,175,845
+xgboost_selected,24h,100,Dhanu,215,11,1,1,0.09090909090909091,75,770
+xgboost_selected,24h,101,Lakhya,214,0,0,0,,90,800
+xgboost_selected,24h,102,Jamuna,169,2,0,2,0.0,25,170
+xgboost_selected,24h,103,Dhaleswari,228,0,0,0,,208,942
+xgboost_selected,24h,108,Titas,219,10,0,3,0.0,83,911
+xgboost_selected,24h,109,Dudkumar,204,16,1,8,0.0625,15,136
+xgboost_selected,24h,110,Jamuna,215,6,0,1,0.0,15,180
+xgboost_selected,24h,111,Bangali,166,0,0,0,,0,168
+xgboost_selected,24h,112,Turag,166,0,0,0,,33,138
+xgboost_selected,24h,113,Kirtonkhola,196,71,2,46,0.028169014084507043,67,186
+xgboost_selected,24h,114,Madaripur Beel Route,218,0,0,0,,9,138
+xgboost_selected,24h,117,Brahmaputra,186,24,0,7,0.0,9,135
+xgboost_selected,24h,119,Karnaphuli,150,0,0,0,,0,113
+lightgbm,48h,2,Matamuhuri,206,0,0,0,,22,834
+lightgbm,48h,4,Sangu,180,0,0,0,,15,699
+lightgbm,48h,6,Sangu,226,0,0,0,,13,851
+lightgbm,48h,8,Pashure,222,220,0,2,0.0,335,335
+lightgbm,48h,10,Halda,219,0,0,0,,18,926
+lightgbm,48h,11,Lower Meghna,171,104,0,53,0.0,206,307
+lightgbm,48h,13,Halda,200,0,0,1,,34,850
+lightgbm,48h,15,Betna,195,0,0,1,,254,369
+lightgbm,48h,17,Feni,206,0,0,0,,0,713
+lightgbm,48h,19,Arialkhan,206,0,0,0,,68,888
+lightgbm,48h,20,Lower Meghna,223,8,1,7,0.125,170,917
+lightgbm,48h,21,Muhuri,217,1,1,1,1.0,41,807
+lightgbm,48h,22,Padma,183,129,1,13,0.007751937984496124,298,786
+lightgbm,48h,23,Gumti,220,0,0,0,,3,904
+lightgbm,48h,24,Gorai,166,6,0,4,0.0,111,741
+lightgbm,48h,25,Padma,217,0,0,0,,169,862
+lightgbm,48h,27,Kumar,168,0,0,0,,0,757
+lightgbm,48h,28,Buriganga,205,0,0,0,,9,330
+lightgbm,48h,30,Mathabhanga,193,0,0,0,,0,705
+lightgbm,48h,31,Lakhya,211,0,0,0,,153,816
+lightgbm,48h,32,Buriganga,214,0,0,0,,0,844
+lightgbm,48h,33,Balu,214,0,0,0,,66,793
+lightgbm,48h,34,Padma,226,25,1,18,0.04,217,955
+lightgbm,48h,35,Turag,211,0,0,0,,67,808
+lightgbm,48h,37,Kaliganga,207,0,0,0,,92,844
+lightgbm,48h,38,Jamuna,217,0,0,0,,153,843
+lightgbm,48h,39,Old Dhaleswari,214,0,0,0,,62,488
+lightgbm,48h,40,Gorai,226,0,0,0,,15,932
+lightgbm,48h,42,Upper Meghna,229,0,0,0,,17,949
+lightgbm,48h,44,Bangshi,211,0,0,0,,21,853
+lightgbm,48h,45,Ganges,206,0,0,0,,7,840
+lightgbm,48h,46,Khowai,214,1,0,1,0.0,30,885
+lightgbm,48h,47,Manu,212,0,0,3,,23,925
+lightgbm,48h,48,Jamuna,226,14,1,10,0.07142857142857142,200,863
+lightgbm,48h,49,Manu,211,2,0,1,0.0,42,872
+lightgbm,48h,50,Atrai,172,2,1,1,0.5,69,328
+lightgbm,48h,51,Mohananda,220,0,0,0,,30,913
+lightgbm,48h,53,Old Brahmaputra,223,0,0,0,,18,913
+lightgbm,48h,54,Atrai,211,0,0,1,,22,885
+lightgbm,48h,55,Karatoa,191,0,0,0,,0,832
+lightgbm,48h,57,Little Jamuna,211,0,0,1,,47,876
+lightgbm,48h,58,Punarvaba,198,0,0,0,,20,790
+lightgbm,48h,59,Surma,223,17,0,14,0.0,90,939
+lightgbm,48h,61,Kushiyara,227,32,0,4,0.0,126,930
+lightgbm,48h,62,Old Brahmaputra,226,0,0,0,,36,946
+lightgbm,48h,64,Surma,227,42,1,9,0.023809523809523808,165,940
+lightgbm,48h,65,Surma,210,14,2,11,0.14285714285714285,106,899
+lightgbm,48h,66,Jamuna,229,9,1,2,0.1111111111111111,154,953
+lightgbm,48h,70,Jadukata,215,8,3,9,0.375,43,875
+lightgbm,48h,71,Ghagot,197,9,1,5,0.1111111111111111,123,804
+lightgbm,48h,72,Brahmaputra,212,18,2,6,0.1111111111111111,147,860
+lightgbm,48h,73,Upper Atrai,229,4,1,2,0.25,18,826
+lightgbm,48h,74,Punarbhaba,204,0,0,0,,10,830
+lightgbm,48h,75,Teesta,223,0,0,5,,14,894
+lightgbm,48h,76,Jamuneswari,209,0,0,3,,33,792
+lightgbm,48h,77,Dharla,225,21,0,6,0.0,142,887
+lightgbm,48h,78,Brahmaputra,209,8,0,5,0.0,93,863
+lightgbm,48h,79,Ichamati-Jamuna,204,0,0,0,,7,839
+lightgbm,48h,80,Teesta,217,88,5,38,0.056818181818181816,359,852
+lightgbm,48h,82,Ganges,206,0,0,0,,15,851
+lightgbm,48h,86,Dhalai,212,0,0,4,,32,890
+lightgbm,48h,87,Jamuna,193,16,0,11,0.0,183,759
+lightgbm,48h,89,Meghna,218,0,0,0,,16,813
+lightgbm,48h,90,Jamuna,210,7,1,4,0.14285714285714285,15,152
+lightgbm,48h,91,Dhaleswari,211,0,0,0,,57,849
+lightgbm,48h,92,Ganges,163,0,0,0,,9,305
+lightgbm,48h,93,Tangon,166,0,0,0,,7,853
+lightgbm,48h,95,Jamuna,191,16,2,8,0.125,174,832
+lightgbm,48h,96,Surma Old Course,216,19,1,4,0.05263157894736842,110,755
+lightgbm,48h,97,Atrai,225,9,0,16,0.0,196,850
+lightgbm,48h,99,Kushiyara,213,7,0,7,0.0,180,838
+lightgbm,48h,100,Dhanu,216,14,2,3,0.14285714285714285,79,761
+lightgbm,48h,101,Lakhya,211,0,0,0,,95,784
+lightgbm,48h,102,Jamuna,166,3,0,2,0.0,26,168
+lightgbm,48h,103,Dhaleswari,226,0,0,0,,215,917
+lightgbm,48h,108,Titas,218,11,1,7,0.09090909090909091,86,894
+lightgbm,48h,109,Dudkumar,202,20,1,7,0.05,18,134
+lightgbm,48h,110,Jamuna,213,8,2,1,0.25,17,176
+lightgbm,48h,111,Bangali,162,0,0,0,,0,165
+lightgbm,48h,112,Turag,162,0,0,0,,34,136
+lightgbm,48h,113,Kirtonkhola,193,86,1,50,0.011627906976744186,78,185
+lightgbm,48h,114,Madaripur Beel Route,212,0,0,0,,10,136
+lightgbm,48h,117,Brahmaputra,186,29,1,8,0.034482758620689655,10,133
+lightgbm,48h,119,Karnaphuli,125,0,0,0,,0,99
+xgboost,48h,2,Matamuhuri,206,0,0,2,,22,834
+xgboost,48h,4,Sangu,180,0,0,1,,15,699
+xgboost,48h,6,Sangu,226,0,0,2,,13,851
+xgboost,48h,8,Pashure,222,220,0,2,0.0,335,335
+xgboost,48h,10,Halda,219,0,0,2,,18,926
+xgboost,48h,11,Lower Meghna,171,104,0,56,0.0,206,307
+xgboost,48h,13,Halda,200,0,0,2,,34,850
+xgboost,48h,15,Betna,195,0,0,1,,254,369
+xgboost,48h,17,Feni,206,0,0,0,,0,713
+xgboost,48h,19,Arialkhan,206,0,0,0,,68,888
+xgboost,48h,20,Lower Meghna,223,8,0,11,0.0,170,917
+xgboost,48h,21,Muhuri,217,1,0,1,0.0,41,807
+xgboost,48h,22,Padma,183,129,1,15,0.007751937984496124,298,786
+xgboost,48h,23,Gumti,220,0,0,0,,3,904
+xgboost,48h,24,Gorai,166,6,0,5,0.0,111,741
+xgboost,48h,25,Padma,217,0,0,0,,169,862
+xgboost,48h,27,Kumar,168,0,0,0,,0,757
+xgboost,48h,28,Buriganga,205,0,0,0,,9,330
+xgboost,48h,30,Mathabhanga,193,0,0,0,,0,705
+xgboost,48h,31,Lakhya,211,0,0,0,,153,816
+xgboost,48h,32,Buriganga,214,0,0,0,,0,844
+xgboost,48h,33,Balu,214,0,0,0,,66,793
+xgboost,48h,34,Padma,226,25,1,18,0.04,217,955
+xgboost,48h,35,Turag,211,0,0,0,,67,808
+xgboost,48h,37,Kaliganga,207,0,0,0,,92,844
+xgboost,48h,38,Jamuna,217,0,0,0,,153,843
+xgboost,48h,39,Old Dhaleswari,214,0,0,0,,62,488
+xgboost,48h,40,Gorai,226,0,0,0,,15,932
+xgboost,48h,42,Upper Meghna,229,0,0,0,,17,949
+xgboost,48h,44,Bangshi,211,0,0,0,,21,853
+xgboost,48h,45,Ganges,206,0,0,0,,7,840
+xgboost,48h,46,Khowai,214,1,0,3,0.0,30,885
+xgboost,48h,47,Manu,212,0,0,5,,23,925
+xgboost,48h,48,Jamuna,226,14,1,12,0.07142857142857142,200,863
+xgboost,48h,49,Manu,211,2,0,3,0.0,42,872
+xgboost,48h,50,Atrai,172,2,1,2,0.5,69,328
+xgboost,48h,51,Mohananda,220,0,0,0,,30,913
+xgboost,48h,53,Old Brahmaputra,223,0,0,0,,18,913
+xgboost,48h,54,Atrai,211,0,0,2,,22,885
+xgboost,48h,55,Karatoa,191,0,0,0,,0,832
+xgboost,48h,57,Little Jamuna,211,0,0,1,,47,876
+xgboost,48h,58,Punarvaba,198,0,0,0,,20,790
+xgboost,48h,59,Surma,223,17,0,17,0.0,90,939
+xgboost,48h,61,Kushiyara,227,32,0,8,0.0,126,930
+xgboost,48h,62,Old Brahmaputra,226,0,0,0,,36,946
+xgboost,48h,64,Surma,227,42,1,11,0.023809523809523808,165,940
+xgboost,48h,65,Surma,210,14,1,17,0.07142857142857142,106,899
+xgboost,48h,66,Jamuna,229,9,1,2,0.1111111111111111,154,953
+xgboost,48h,70,Jadukata,215,8,2,14,0.25,43,875
+xgboost,48h,71,Ghagot,197,9,0,6,0.0,123,804
+xgboost,48h,72,Brahmaputra,212,18,0,13,0.0,147,860
+xgboost,48h,73,Upper Atrai,229,4,1,2,0.25,18,826
+xgboost,48h,74,Punarbhaba,204,0,0,0,,10,830
+xgboost,48h,75,Teesta,223,0,0,9,,14,894
+xgboost,48h,76,Jamuneswari,209,0,0,3,,33,792
+xgboost,48h,77,Dharla,225,21,0,8,0.0,142,887
+xgboost,48h,78,Brahmaputra,209,8,0,12,0.0,93,863
+xgboost,48h,79,Ichamati-Jamuna,204,0,0,0,,7,839
+xgboost,48h,80,Teesta,217,88,2,46,0.022727272727272728,359,852
+xgboost,48h,82,Ganges,206,0,0,0,,15,851
+xgboost,48h,86,Dhalai,212,0,0,4,,32,890
+xgboost,48h,87,Jamuna,193,16,0,14,0.0,183,759
+xgboost,48h,89,Meghna,218,0,0,0,,16,813
+xgboost,48h,90,Jamuna,210,7,1,5,0.14285714285714285,15,152
+xgboost,48h,91,Dhaleswari,211,0,0,0,,57,849
+xgboost,48h,92,Ganges,163,0,0,0,,9,305
+xgboost,48h,93,Tangon,166,0,0,1,,7,853
+xgboost,48h,95,Jamuna,191,16,0,10,0.0,174,832
+xgboost,48h,96,Surma Old Course,216,19,1,9,0.05263157894736842,110,755
+xgboost,48h,97,Atrai,225,9,0,15,0.0,196,850
+xgboost,48h,99,Kushiyara,213,7,0,10,0.0,180,838
+xgboost,48h,100,Dhanu,216,14,2,5,0.14285714285714285,79,761
+xgboost,48h,101,Lakhya,211,0,0,0,,95,784
+xgboost,48h,102,Jamuna,166,3,0,2,0.0,26,168
+xgboost,48h,103,Dhaleswari,226,0,0,0,,215,917
+xgboost,48h,108,Titas,218,11,1,7,0.09090909090909091,86,894
+xgboost,48h,109,Dudkumar,202,20,1,10,0.05,18,134
+xgboost,48h,110,Jamuna,213,8,1,2,0.125,17,176
+xgboost,48h,111,Bangali,162,0,0,0,,0,165
+xgboost,48h,112,Turag,162,0,0,0,,34,136
+xgboost,48h,113,Kirtonkhola,193,86,0,65,0.0,78,185
+xgboost,48h,114,Madaripur Beel Route,212,0,0,0,,10,136
+xgboost,48h,117,Brahmaputra,186,29,0,12,0.0,10,133
+xgboost,48h,119,Karnaphuli,125,0,0,0,,0,99
+xgboost_selected,48h,2,Matamuhuri,206,0,0,0,,22,834
+xgboost_selected,48h,4,Sangu,180,0,0,0,,15,699
+xgboost_selected,48h,6,Sangu,226,0,0,0,,13,851
+xgboost_selected,48h,8,Pashure,222,220,1,2,0.004545454545454545,335,335
+xgboost_selected,48h,10,Halda,219,0,0,0,,18,926
+xgboost_selected,48h,11,Lower Meghna,171,104,3,46,0.028846153846153848,206,307
+xgboost_selected,48h,13,Halda,200,0,0,1,,34,850
+xgboost_selected,48h,15,Betna,195,0,0,2,,254,369
+xgboost_selected,48h,17,Feni,206,0,0,1,,0,713
+xgboost_selected,48h,19,Arialkhan,206,0,0,0,,68,888
+xgboost_selected,48h,20,Lower Meghna,223,8,1,8,0.125,170,917
+xgboost_selected,48h,21,Muhuri,217,1,0,1,0.0,41,807
+xgboost_selected,48h,22,Padma,183,129,1,8,0.007751937984496124,298,786
+xgboost_selected,48h,23,Gumti,220,0,0,0,,3,904
+xgboost_selected,48h,24,Gorai,166,6,0,6,0.0,111,741
+xgboost_selected,48h,25,Padma,217,0,0,0,,169,862
+xgboost_selected,48h,27,Kumar,168,0,0,0,,0,757
+xgboost_selected,48h,28,Buriganga,205,0,0,0,,9,330
+xgboost_selected,48h,30,Mathabhanga,193,0,0,0,,0,705
+xgboost_selected,48h,31,Lakhya,211,0,0,0,,153,816
+xgboost_selected,48h,32,Buriganga,214,0,0,0,,0,844
+xgboost_selected,48h,33,Balu,214,0,0,0,,66,793
+xgboost_selected,48h,34,Padma,226,25,1,14,0.04,217,955
+xgboost_selected,48h,35,Turag,211,0,0,0,,67,808
+xgboost_selected,48h,37,Kaliganga,207,0,0,0,,92,844
+xgboost_selected,48h,38,Jamuna,217,0,0,0,,153,843
+xgboost_selected,48h,39,Old Dhaleswari,214,0,0,0,,62,488
+xgboost_selected,48h,40,Gorai,226,0,0,0,,15,932
+xgboost_selected,48h,42,Upper Meghna,229,0,0,0,,17,949
+xgboost_selected,48h,44,Bangshi,211,0,0,0,,21,853
+xgboost_selected,48h,45,Ganges,206,0,0,0,,7,840
+xgboost_selected,48h,46,Khowai,214,1,0,2,0.0,30,885
+xgboost_selected,48h,47,Manu,212,0,0,3,,23,925
+xgboost_selected,48h,48,Jamuna,226,14,1,11,0.07142857142857142,200,863
+xgboost_selected,48h,49,Manu,211,2,0,2,0.0,42,872
+xgboost_selected,48h,50,Atrai,172,2,1,1,0.5,69,328
+xgboost_selected,48h,51,Mohananda,220,0,0,0,,30,913
+xgboost_selected,48h,53,Old Brahmaputra,223,0,0,0,,18,913
+xgboost_selected,48h,54,Atrai,211,0,0,1,,22,885
+xgboost_selected,48h,55,Karatoa,191,0,0,0,,0,832
+xgboost_selected,48h,57,Little Jamuna,211,0,0,1,,47,876
+xgboost_selected,48h,58,Punarvaba,198,0,0,0,,20,790
+xgboost_selected,48h,59,Surma,223,17,0,14,0.0,90,939
+xgboost_selected,48h,61,Kushiyara,227,32,0,4,0.0,126,930
+xgboost_selected,48h,62,Old Brahmaputra,226,0,0,0,,36,946
+xgboost_selected,48h,64,Surma,227,42,1,7,0.023809523809523808,165,940
+xgboost_selected,48h,65,Surma,210,14,1,10,0.07142857142857142,106,899
+xgboost_selected,48h,66,Jamuna,229,9,1,2,0.1111111111111111,154,953
+xgboost_selected,48h,70,Jadukata,215,8,3,12,0.375,43,875
+xgboost_selected,48h,71,Ghagot,197,9,0,4,0.0,123,804
+xgboost_selected,48h,72,Brahmaputra,212,18,1,11,0.05555555555555555,147,860
+xgboost_selected,48h,73,Upper Atrai,229,4,1,2,0.25,18,826
+xgboost_selected,48h,74,Punarbhaba,204,0,0,0,,10,830
+xgboost_selected,48h,75,Teesta,223,0,0,8,,14,894
+xgboost_selected,48h,76,Jamuneswari,209,0,0,3,,33,792
+xgboost_selected,48h,77,Dharla,225,21,2,7,0.09523809523809523,142,887
+xgboost_selected,48h,78,Brahmaputra,209,8,0,6,0.0,93,863
+xgboost_selected,48h,79,Ichamati-Jamuna,204,0,0,0,,7,839
+xgboost_selected,48h,80,Teesta,217,88,4,38,0.045454545454545456,359,852
+xgboost_selected,48h,82,Ganges,206,0,0,0,,15,851
+xgboost_selected,48h,86,Dhalai,212,0,0,4,,32,890
+xgboost_selected,48h,87,Jamuna,193,16,0,10,0.0,183,759
+xgboost_selected,48h,89,Meghna,218,0,0,0,,16,813
+xgboost_selected,48h,90,Jamuna,210,7,1,2,0.14285714285714285,15,152
+xgboost_selected,48h,91,Dhaleswari,211,0,0,0,,57,849
+xgboost_selected,48h,92,Ganges,163,0,0,0,,9,305
+xgboost_selected,48h,93,Tangon,166,0,0,0,,7,853
+xgboost_selected,48h,95,Jamuna,191,16,2,8,0.125,174,832
+xgboost_selected,48h,96,Surma Old Course,216,19,1,6,0.05263157894736842,110,755
+xgboost_selected,48h,97,Atrai,225,9,0,13,0.0,196,850
+xgboost_selected,48h,99,Kushiyara,213,7,0,7,0.0,180,838
+xgboost_selected,48h,100,Dhanu,216,14,2,1,0.14285714285714285,79,761
+xgboost_selected,48h,101,Lakhya,211,0,0,0,,95,784
+xgboost_selected,48h,102,Jamuna,166,3,0,1,0.0,26,168
+xgboost_selected,48h,103,Dhaleswari,226,0,0,0,,215,917
+xgboost_selected,48h,108,Titas,218,11,1,4,0.09090909090909091,86,894
+xgboost_selected,48h,109,Dudkumar,202,20,1,8,0.05,18,134
+xgboost_selected,48h,110,Jamuna,213,8,1,1,0.125,17,176
+xgboost_selected,48h,111,Bangali,162,0,0,0,,0,165
+xgboost_selected,48h,112,Turag,162,0,0,0,,34,136
+xgboost_selected,48h,113,Kirtonkhola,193,86,4,48,0.046511627906976744,78,185
+xgboost_selected,48h,114,Madaripur Beel Route,212,0,0,0,,10,136
+xgboost_selected,48h,117,Brahmaputra,186,29,0,10,0.0,10,133
+xgboost_selected,48h,119,Karnaphuli,125,0,0,0,,0,99
+lightgbm,72h,2,Matamuhuri,203,0,0,0,,28,824
+lightgbm,72h,4,Sangu,172,0,0,0,,18,687
+lightgbm,72h,6,Sangu,224,0,0,0,,17,827
+lightgbm,72h,8,Pashure,223,222,0,1,0.0,335,335
+lightgbm,72h,10,Halda,215,0,0,0,,24,907
+lightgbm,72h,11,Lower Meghna,170,118,0,49,0.0,226,304
+lightgbm,72h,13,Halda,197,0,0,1,,42,841
+lightgbm,72h,15,Betna,192,0,0,1,,256,368
+lightgbm,72h,17,Feni,203,0,0,0,,0,702
+lightgbm,72h,19,Arialkhan,203,0,0,0,,72,874
+lightgbm,72h,20,Lower Meghna,220,10,1,12,0.1,188,901
+lightgbm,72h,21,Muhuri,213,2,2,12,1.0,58,787
+lightgbm,72h,22,Padma,182,133,3,14,0.022556390977443608,313,778
+lightgbm,72h,23,Gumti,216,0,0,0,,3,894
+lightgbm,72h,24,Gorai,163,7,0,7,0.0,117,730
+lightgbm,72h,25,Padma,216,0,0,0,,177,854
+lightgbm,72h,27,Kumar,166,0,0,0,,0,750
+lightgbm,72h,28,Buriganga,201,0,0,0,,10,326
+lightgbm,72h,30,Mathabhanga,191,0,0,0,,0,697
+lightgbm,72h,31,Lakhya,208,0,0,0,,164,806
+lightgbm,72h,32,Buriganga,212,0,0,0,,0,836
+lightgbm,72h,33,Balu,212,0,0,0,,71,780
+lightgbm,72h,34,Padma,224,27,1,17,0.037037037037037035,224,939
+lightgbm,72h,35,Turag,208,0,0,0,,71,798
+lightgbm,72h,37,Kaliganga,203,0,0,0,,96,835
+lightgbm,72h,38,Jamuna,216,0,0,0,,161,833
+lightgbm,72h,39,Old Dhaleswari,212,0,0,0,,65,481
+lightgbm,72h,40,Gorai,224,0,0,0,,17,913
+lightgbm,72h,42,Upper Meghna,228,0,0,0,,19,933
+lightgbm,72h,44,Bangshi,208,0,0,0,,22,844
+lightgbm,72h,45,Ganges,203,0,0,0,,8,832
+lightgbm,72h,46,Khowai,213,2,1,4,0.5,38,872
+lightgbm,72h,47,Manu,209,0,0,5,,30,915
+lightgbm,72h,48,Jamuna,225,17,1,11,0.058823529411764705,208,853
+lightgbm,72h,49,Manu,209,3,0,2,0.0,53,863
+lightgbm,72h,50,Atrai,171,3,2,2,0.6666666666666666,73,325
+lightgbm,72h,51,Mohananda,216,0,0,0,,33,905
+lightgbm,72h,53,Old Brahmaputra,220,0,0,0,,20,899
+lightgbm,72h,54,Atrai,208,0,0,1,,26,871
+lightgbm,72h,55,Karatoa,189,0,0,0,,0,824
+lightgbm,72h,57,Little Jamuna,208,0,0,1,,53,861
+lightgbm,72h,58,Punarvaba,193,0,0,0,,21,771
+lightgbm,72h,59,Surma,223,20,0,20,0.0,100,923
+lightgbm,72h,61,Kushiyara,226,34,1,15,0.029411764705882353,132,920
+lightgbm,72h,62,Old Brahmaputra,224,0,0,0,,39,928
+lightgbm,72h,64,Surma,226,45,3,17,0.06666666666666667,179,923
+lightgbm,72h,65,Surma,209,17,2,22,0.11764705882352941,119,888
+lightgbm,72h,66,Jamuna,228,10,2,4,0.2,162,939
+lightgbm,72h,70,Jadukata,213,11,5,15,0.45454545454545453,57,864
+lightgbm,72h,71,Ghagot,195,10,1,7,0.1,129,796
+lightgbm,72h,72,Brahmaputra,211,20,1,13,0.05,155,851
+lightgbm,72h,73,Upper Atrai,228,5,2,2,0.4,22,814
+lightgbm,72h,74,Punarbhaba,201,0,0,0,,12,818
+lightgbm,72h,75,Teesta,220,0,0,4,,18,882
+lightgbm,72h,76,Jamuneswari,208,0,0,2,,41,785
+lightgbm,72h,77,Dharla,224,23,0,6,0.0,152,865
+lightgbm,72h,78,Brahmaputra,208,9,0,10,0.0,99,855
+lightgbm,72h,79,Ichamati-Jamuna,201,0,0,0,,8,829
+lightgbm,72h,80,Teesta,216,99,4,50,0.04040404040404041,385,845
+lightgbm,72h,82,Ganges,203,0,0,0,,17,843
+lightgbm,72h,86,Dhalai,209,0,0,4,,42,881
+lightgbm,72h,87,Jamuna,192,19,2,15,0.10526315789473684,195,752
+lightgbm,72h,89,Meghna,215,0,0,0,,17,797
+lightgbm,72h,90,Jamuna,209,8,2,8,0.25,17,149
+lightgbm,72h,91,Dhaleswari,208,0,0,0,,61,842
+lightgbm,72h,92,Ganges,159,0,0,0,,11,299
+lightgbm,72h,93,Tangon,162,0,0,0,,9,844
+lightgbm,72h,95,Jamuna,190,18,2,10,0.1111111111111111,182,824
+lightgbm,72h,96,Surma Old Course,214,21,2,8,0.09523809523809523,113,745
+lightgbm,72h,97,Atrai,223,10,1,17,0.1,204,838
+lightgbm,72h,99,Kushiyara,212,8,0,17,0.0,185,831
+lightgbm,72h,100,Dhanu,215,15,3,6,0.2,82,752
+lightgbm,72h,101,Lakhya,208,0,0,0,,100,772
+lightgbm,72h,102,Jamuna,163,4,1,6,0.25,27,166
+lightgbm,72h,103,Dhaleswari,224,0,0,0,,222,896
+lightgbm,72h,108,Titas,217,12,2,7,0.16666666666666666,89,878
+lightgbm,72h,109,Dudkumar,199,22,2,7,0.09090909090909091,21,132
+lightgbm,72h,110,Jamuna,212,9,2,3,0.2222222222222222,19,173
+lightgbm,72h,111,Bangali,158,0,0,0,,0,162
+lightgbm,72h,112,Turag,158,0,0,0,,35,134
+lightgbm,72h,113,Kirtonkhola,190,99,1,59,0.010101010101010102,88,184
+lightgbm,72h,114,Madaripur Beel Route,206,0,0,0,,11,134
+lightgbm,72h,117,Brahmaputra,184,32,1,9,0.03125,11,131
+lightgbm,72h,119,Karnaphuli,109,0,0,0,,0,85
+xgboost,72h,2,Matamuhuri,203,0,0,1,,28,824
+xgboost,72h,4,Sangu,172,0,0,1,,18,687
+xgboost,72h,6,Sangu,224,0,0,0,,17,827
+xgboost,72h,8,Pashure,223,222,0,1,0.0,335,335
+xgboost,72h,10,Halda,215,0,0,0,,24,907
+xgboost,72h,11,Lower Meghna,170,118,0,48,0.0,226,304
+xgboost,72h,13,Halda,197,0,0,1,,42,841
+xgboost,72h,15,Betna,192,0,0,1,,256,368
+xgboost,72h,17,Feni,203,0,0,0,,0,702
+xgboost,72h,19,Arialkhan,203,0,0,1,,72,874
+xgboost,72h,20,Lower Meghna,220,10,1,11,0.1,188,901
+xgboost,72h,21,Muhuri,213,2,1,4,0.5,58,787
+xgboost,72h,22,Padma,182,133,1,13,0.007518796992481203,313,778
+xgboost,72h,23,Gumti,216,0,0,0,,3,894
+xgboost,72h,24,Gorai,163,7,0,5,0.0,117,730
+xgboost,72h,25,Padma,216,0,0,0,,177,854
+xgboost,72h,27,Kumar,166,0,0,0,,0,750
+xgboost,72h,28,Buriganga,201,0,0,0,,10,326
+xgboost,72h,30,Mathabhanga,191,0,0,0,,0,697
+xgboost,72h,31,Lakhya,208,0,0,0,,164,806
+xgboost,72h,32,Buriganga,212,0,0,0,,0,836
+xgboost,72h,33,Balu,212,0,0,0,,71,780
+xgboost,72h,34,Padma,224,27,2,17,0.07407407407407407,224,939
+xgboost,72h,35,Turag,208,0,0,0,,71,798
+xgboost,72h,37,Kaliganga,203,0,0,0,,96,835
+xgboost,72h,38,Jamuna,216,0,0,0,,161,833
+xgboost,72h,39,Old Dhaleswari,212,0,0,0,,65,481
+xgboost,72h,40,Gorai,224,0,0,0,,17,913
+xgboost,72h,42,Upper Meghna,228,0,0,0,,19,933
+xgboost,72h,44,Bangshi,208,0,0,0,,22,844
+xgboost,72h,45,Ganges,203,0,0,0,,8,832
+xgboost,72h,46,Khowai,213,2,1,3,0.5,38,872
+xgboost,72h,47,Manu,209,0,0,5,,30,915
+xgboost,72h,48,Jamuna,225,17,1,12,0.058823529411764705,208,853
+xgboost,72h,49,Manu,209,3,0,3,0.0,53,863
+xgboost,72h,50,Atrai,171,3,2,3,0.6666666666666666,73,325
+xgboost,72h,51,Mohananda,216,0,0,0,,33,905
+xgboost,72h,53,Old Brahmaputra,220,0,0,0,,20,899
+xgboost,72h,54,Atrai,208,0,0,2,,26,871
+xgboost,72h,55,Karatoa,189,0,0,0,,0,824
+xgboost,72h,57,Little Jamuna,208,0,0,1,,53,861
+xgboost,72h,58,Punarvaba,193,0,0,0,,21,771
+xgboost,72h,59,Surma,223,20,1,19,0.05,100,923
+xgboost,72h,61,Kushiyara,226,34,2,12,0.058823529411764705,132,920
+xgboost,72h,62,Old Brahmaputra,224,0,0,0,,39,928
+xgboost,72h,64,Surma,226,45,3,15,0.06666666666666667,179,923
+xgboost,72h,65,Surma,209,17,2,17,0.11764705882352941,119,888
+xgboost,72h,66,Jamuna,228,10,2,4,0.2,162,939
+xgboost,72h,70,Jadukata,213,11,4,14,0.36363636363636365,57,864
+xgboost,72h,71,Ghagot,195,10,1,7,0.1,129,796
+xgboost,72h,72,Brahmaputra,211,20,1,11,0.05,155,851
+xgboost,72h,73,Upper Atrai,228,5,2,2,0.4,22,814
+xgboost,72h,74,Punarbhaba,201,0,0,0,,12,818
+xgboost,72h,75,Teesta,220,0,0,8,,18,882
+xgboost,72h,76,Jamuneswari,208,0,0,3,,41,785
+xgboost,72h,77,Dharla,224,23,0,5,0.0,152,865
+xgboost,72h,78,Brahmaputra,208,9,0,10,0.0,99,855
+xgboost,72h,79,Ichamati-Jamuna,201,0,0,0,,8,829
+xgboost,72h,80,Teesta,216,99,4,41,0.04040404040404041,385,845
+xgboost,72h,82,Ganges,203,0,0,0,,17,843
+xgboost,72h,86,Dhalai,209,0,0,3,,42,881
+xgboost,72h,87,Jamuna,192,19,1,14,0.05263157894736842,195,752
+xgboost,72h,89,Meghna,215,0,0,0,,17,797
+xgboost,72h,90,Jamuna,209,8,2,9,0.25,17,149
+xgboost,72h,91,Dhaleswari,208,0,0,0,,61,842
+xgboost,72h,92,Ganges,159,0,0,0,,11,299
+xgboost,72h,93,Tangon,162,0,0,1,,9,844
+xgboost,72h,95,Jamuna,190,18,2,7,0.1111111111111111,182,824
+xgboost,72h,96,Surma Old Course,214,21,3,9,0.14285714285714285,113,745
+xgboost,72h,97,Atrai,223,10,1,17,0.1,204,838
+xgboost,72h,99,Kushiyara,212,8,0,15,0.0,185,831
+xgboost,72h,100,Dhanu,215,15,3,6,0.2,82,752
+xgboost,72h,101,Lakhya,208,0,0,0,,100,772
+xgboost,72h,102,Jamuna,163,4,0,5,0.0,27,166
+xgboost,72h,103,Dhaleswari,224,0,0,0,,222,896
+xgboost,72h,108,Titas,217,12,2,8,0.16666666666666666,89,878
+xgboost,72h,109,Dudkumar,199,22,2,7,0.09090909090909091,21,132
+xgboost,72h,110,Jamuna,212,9,2,4,0.2222222222222222,19,173
+xgboost,72h,111,Bangali,158,0,0,0,,0,162
+xgboost,72h,112,Turag,158,0,0,0,,35,134
+xgboost,72h,113,Kirtonkhola,190,99,1,60,0.010101010101010102,88,184
+xgboost,72h,114,Madaripur Beel Route,206,0,0,0,,11,134
+xgboost,72h,117,Brahmaputra,184,32,3,10,0.09375,11,131
+xgboost,72h,119,Karnaphuli,109,0,0,0,,0,85
+xgboost_selected,72h,2,Matamuhuri,203,0,0,1,,28,824
+xgboost_selected,72h,4,Sangu,172,0,0,0,,18,687
+xgboost_selected,72h,6,Sangu,224,0,0,2,,17,827
+xgboost_selected,72h,8,Pashure,223,222,0,1,0.0,335,335
+xgboost_selected,72h,10,Halda,215,0,0,1,,24,907
+xgboost_selected,72h,11,Lower Meghna,170,118,0,42,0.0,226,304
+xgboost_selected,72h,13,Halda,197,0,0,1,,42,841
+xgboost_selected,72h,15,Betna,192,0,0,2,,256,368
+xgboost_selected,72h,17,Feni,203,0,0,1,,0,702
+xgboost_selected,72h,19,Arialkhan,203,0,0,1,,72,874
+xgboost_selected,72h,20,Lower Meghna,220,10,1,14,0.1,188,901
+xgboost_selected,72h,21,Muhuri,213,2,1,3,0.5,58,787
+xgboost_selected,72h,22,Padma,182,133,1,13,0.007518796992481203,313,778
+xgboost_selected,72h,23,Gumti,216,0,0,0,,3,894
+xgboost_selected,72h,24,Gorai,163,7,0,10,0.0,117,730
+xgboost_selected,72h,25,Padma,216,0,0,0,,177,854
+xgboost_selected,72h,27,Kumar,166,0,0,0,,0,750
+xgboost_selected,72h,28,Buriganga,201,0,0,0,,10,326
+xgboost_selected,72h,30,Mathabhanga,191,0,0,0,,0,697
+xgboost_selected,72h,31,Lakhya,208,0,0,0,,164,806
+xgboost_selected,72h,32,Buriganga,212,0,0,0,,0,836
+xgboost_selected,72h,33,Balu,212,0,0,0,,71,780
+xgboost_selected,72h,34,Padma,224,27,1,22,0.037037037037037035,224,939
+xgboost_selected,72h,35,Turag,208,0,0,0,,71,798
+xgboost_selected,72h,37,Kaliganga,203,0,0,0,,96,835
+xgboost_selected,72h,38,Jamuna,216,0,0,0,,161,833
+xgboost_selected,72h,39,Old Dhaleswari,212,0,0,0,,65,481
+xgboost_selected,72h,40,Gorai,224,0,0,0,,17,913
+xgboost_selected,72h,42,Upper Meghna,228,0,0,0,,19,933
+xgboost_selected,72h,44,Bangshi,208,0,0,0,,22,844
+xgboost_selected,72h,45,Ganges,203,0,0,0,,8,832
+xgboost_selected,72h,46,Khowai,213,2,1,6,0.5,38,872
+xgboost_selected,72h,47,Manu,209,0,0,4,,30,915
+xgboost_selected,72h,48,Jamuna,225,17,1,13,0.058823529411764705,208,853
+xgboost_selected,72h,49,Manu,209,3,0,3,0.0,53,863
+xgboost_selected,72h,50,Atrai,171,3,1,3,0.3333333333333333,73,325
+xgboost_selected,72h,51,Mohananda,216,0,0,0,,33,905
+xgboost_selected,72h,53,Old Brahmaputra,220,0,0,0,,20,899
+xgboost_selected,72h,54,Atrai,208,0,0,1,,26,871
+xgboost_selected,72h,55,Karatoa,189,0,0,0,,0,824
+xgboost_selected,72h,57,Little Jamuna,208,0,0,2,,53,861
+xgboost_selected,72h,58,Punarvaba,193,0,0,0,,21,771
+xgboost_selected,72h,59,Surma,223,20,0,19,0.0,100,923
+xgboost_selected,72h,61,Kushiyara,226,34,2,12,0.058823529411764705,132,920
+xgboost_selected,72h,62,Old Brahmaputra,224,0,0,0,,39,928
+xgboost_selected,72h,64,Surma,226,45,3,14,0.06666666666666667,179,923
+xgboost_selected,72h,65,Surma,209,17,2,15,0.11764705882352941,119,888
+xgboost_selected,72h,66,Jamuna,228,10,2,3,0.2,162,939
+xgboost_selected,72h,70,Jadukata,213,11,4,17,0.36363636363636365,57,864
+xgboost_selected,72h,71,Ghagot,195,10,0,10,0.0,129,796
+xgboost_selected,72h,72,Brahmaputra,211,20,2,14,0.1,155,851
+xgboost_selected,72h,73,Upper Atrai,228,5,2,4,0.4,22,814
+xgboost_selected,72h,74,Punarbhaba,201,0,0,1,,12,818
+xgboost_selected,72h,75,Teesta,220,0,0,11,,18,882
+xgboost_selected,72h,76,Jamuneswari,208,0,0,5,,41,785
+xgboost_selected,72h,77,Dharla,224,23,0,7,0.0,152,865
+xgboost_selected,72h,78,Brahmaputra,208,9,0,11,0.0,99,855
+xgboost_selected,72h,79,Ichamati-Jamuna,201,0,0,0,,8,829
+xgboost_selected,72h,80,Teesta,216,99,4,41,0.04040404040404041,385,845
+xgboost_selected,72h,82,Ganges,203,0,0,0,,17,843
+xgboost_selected,72h,86,Dhalai,209,0,0,6,,42,881
+xgboost_selected,72h,87,Jamuna,192,19,1,16,0.05263157894736842,195,752
+xgboost_selected,72h,89,Meghna,215,0,0,0,,17,797
+xgboost_selected,72h,90,Jamuna,209,8,1,9,0.125,17,149
+xgboost_selected,72h,91,Dhaleswari,208,0,0,0,,61,842
+xgboost_selected,72h,92,Ganges,159,0,0,1,,11,299
+xgboost_selected,72h,93,Tangon,162,0,0,2,,9,844
+xgboost_selected,72h,95,Jamuna,190,18,2,10,0.1111111111111111,182,824
+xgboost_selected,72h,96,Surma Old Course,214,21,2,11,0.09523809523809523,113,745
+xgboost_selected,72h,97,Atrai,223,10,0,21,0.0,204,838
+xgboost_selected,72h,99,Kushiyara,212,8,0,14,0.0,185,831
+xgboost_selected,72h,100,Dhanu,215,15,3,6,0.2,82,752
+xgboost_selected,72h,101,Lakhya,208,0,0,0,,100,772
+xgboost_selected,72h,102,Jamuna,163,4,1,6,0.25,27,166
+xgboost_selected,72h,103,Dhaleswari,224,0,0,0,,222,896
+xgboost_selected,72h,108,Titas,217,12,1,8,0.08333333333333333,89,878
+xgboost_selected,72h,109,Dudkumar,199,22,2,9,0.09090909090909091,21,132
+xgboost_selected,72h,110,Jamuna,212,9,2,4,0.2222222222222222,19,173
+xgboost_selected,72h,111,Bangali,158,0,0,0,,0,162
+xgboost_selected,72h,112,Turag,158,0,0,0,,35,134
+xgboost_selected,72h,113,Kirtonkhola,190,99,4,50,0.04040404040404041,88,184
+xgboost_selected,72h,114,Madaripur Beel Route,206,0,0,0,,11,134
+xgboost_selected,72h,117,Brahmaputra,184,32,1,15,0.03125,11,131
+xgboost_selected,72h,119,Karnaphuli,109,0,0,0,,0,85

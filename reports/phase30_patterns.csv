@@ -1,0 +1,13 @@
+pattern_id,scope,finding,metric,value,comparator,n_rows,disposition,detail
+A,frozen leaders pooled,Missed floods occur while the river is still below danger but rising,median wl_dist_to_danger (m below danger),0.76,TP -0.350,83,limitation (response-lag),0.0% of FN had wl<=danger vs 82.5% of TP; 68.7% of FN were rising (wl_rise_3d>0)
+B,frozen leaders,Misses grow with lead time (signal horizon decay),leader missed rows 24/48/72 h,16 / 19 / 48,recall 0.982 / 0.981 / 0.957,83,limitation,leader recall falls 72 h out; extra 72 h misses are monsoon-dominated
+C,frozen leaders pooled,Misses are monsoon-concentrated only because floods are (season recall near-equal),FN monsoon share,0.747,positive-row monsoon share 0.767,83,not a defect,recall monsoon 0.973 vs non-monsoon 0.970 (leaders are season-neutral)
+D,frozen leaders pooled,Missingness is a weak discriminator (median identical),median NaN fraction (FULL features),0.0645,TP 0.0645,83,limitation (weak),share with >0 NaN: FN 0.735 vs TP 0.657; means 0.0476 vs 0.0437
+E,frozen leaders pooled,Stations seen with fewer training floods are missed more,"mean miss rate, low vs high train-flood quartile",0.230 vs 0.016,Spearman rho -0.501,36,limitation,worst: 21/Muhuri(0.50); 46/Khowai(0.50); 50/Atrai(0.33); 73/Upper Atrai(0.33); 70/Jadukata(0.29)
+F,frozen leaders pooled,False alarms fire while the river is still below danger at t,median wl % of danger,0.9832,TN 0.7092,1298,limitation (over-alarm),FP with wl_pct_danger < 1: 0.809 vs TN 1.000
+G,frozen leaders pooled,Short/isolated flood events are the hard labels,median consecutive positive-label run,7.0,TP 14.00,83,limitation,FN in runs <= 2 rows 0.145 vs TP 0.028
+G2,frozen leaders pooled,"Misses sit in WETTER conditions, not drier (rain without river response)",median 7-day rainfall (mm),102.15,TP 86.00,83,limitation,"rain_30d median FN 477.3 vs TP 377.7 - heavy antecedent rain, river not yet up"
+H24h,fusion_L3,Broken sequence window is NOT a consistent DL-miss driver,share with incomplete window (FN vs TP),0.143 vs 0.082,24h,21,limitation not supported,FN>=TP only at 24 h; reversed at 48/72 h
+H48h,fusion_L3,Broken sequence window is NOT a consistent DL-miss driver,share with incomplete window (FN vs TP),0.034 vs 0.080,48h,29,limitation not supported,FN>=TP only at 24 h; reversed at 48/72 h
+H72h,fusion_L3,Broken sequence window is NOT a consistent DL-miss driver,share with incomplete window (FN vs TP),0.034 vs 0.077,72h,59,limitation not supported,FN>=TP only at 24 h; reversed at 48/72 h
+I,frozen leaders pooled,Misses cluster in a few rivers/basins,FN share in top-2 rivers,0.289,"top-2 = Jamuna, Teesta",83,limitation,concentrated -> targeted station fixes possible
