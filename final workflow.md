@@ -5,11 +5,11 @@
 (ML+DL modelling section). Those two files are superseded **in full** by this document; they
 may be deleted once this file is accepted.
 
-**Where we are:** Phases **0–27 are complete** (foundations → baselines → framework → datasets
+**Where we are:** Phases **0–28 are complete** (foundations → baselines → framework → datasets
 → sequence validation → classical ML → LSTM/GRU → TCN → feature fusion → station-graph GNN →
-temporal Transformer → multi-horizon matrix → fair ML-vs-DL comparison; checklist **stages
-1–46 + 50–52 + 59–61 DONE**). Everything from Phase 28 on is future work — this document is the
-single map for it.
+temporal Transformer → multi-horizon matrix → fair ML-vs-DL comparison → probability calibration;
+checklist **stages 1–47 + 50–52 + 59–61 DONE**). Everything from Phase 29 on is future work —
+this document is the single map for it.
 
 This file merges the classical research workflow (rigorous labels → leakage → splits →
 baselines → evaluation → system) with the deep-learning programme (framework → datasets →
@@ -82,7 +82,7 @@ interpolated · R7 growing station network (85 → 133) · R8 soil/landcover dat
 
 ---
 
-## 1. Status ledger — Phases 0–27 complete
+## 1. Status ledger — Phases 0–28 complete
 
 | Phase | Body topic | Evidence |
 | --- | --- | --- |
@@ -113,6 +113,8 @@ interpolated · R7 growing station network (85 → 133) · R8 soil/landcover dat
 | 26 | Multi-horizon strategy (stage 41 + stages 59–61) — integrates the 7 frozen dev metrics files (Phases 16, 20–25) into one **24-model × 3-horizon** matrix; **difficulty grows with lead time for every competitive model** (monotone P1/P2/P3 decay; only no-skill `climatology` and the `static_only` control rise); the **ML-vs-DL interaction is small on the temporal cells** (P1 group mean Δ −0.030 engineered vs −0.026 sequence) but **real on the unseen-station cell P3** (engineered Δ −0.034 vs sequence −0.025; `fusion_L3` flat, Δ +0.002); gradient boosting leads **every** horizon on **every** protocol (P1 leaders lightgbm/24 h, xgboost/48 h, xgboost_selected/72 h); optional multi-task head **deferred** to the Phase-32 E-matrix; test untouched | `scripts/phase26_matrix.py`, `reports/phase26_multihorizon.md`, `reports/phase26_matrix.csv` (1,728), `phase26_summary.csv` (72), `phase26_interaction.json`, `notebooks/26_multihorizon.ipynb` (12/12), `scripts/build_phase26_notebook.py` |
 
 | 27 | Fair ML vs DL comparison (stage 42 + stages 43–46, 50–52) — **one table, one code path, one set of cells** for all 24 models; fresh P1 `val_2022` re-score through a single load→predict→score path reproduces all 144 val-2022 grid rows **bit-identically** (max Δ = 0.00e+00); master `phase27_metrics.csv` (1,728 rows) = 7 dev cells (val_2020/21/22 + 4 spatial folds) × 3 horizons × 3 seasons (+ `val_2022` repeated under P1/P2, identical fold); **L2 gradient boosting leads every horizon** (lightgbm 24 h 0.9682, xgboost 48 h 0.9549, xgboost_selected 72 h 0.9422), best DL `fusion_L3` 0.016–0.024 behind; D14 group means engineered L1∪L2 ahead of sequence L3∪L4 by 0.010–0.013 (P1), 0.007–0.020 (P2), **0.028–0.033 (P3 unseen locations)**; ML>DL real but **not CI-resolved** (bootstrap CIs overlap), gap is **recall** (ROC-AUC ~0.995 everywhere); operational block (missed floods/FAR/FPR/event recall/lead time, per year/season); cost block (`gnn_lstm` ~80× `xgboost`, no gain); test untouched | `scripts/evaluate_all.py`, `reports/phase27_ml_vs_dl.md`, `reports/phase27_metrics.csv` (1,728), `phase27_p1_rescore.csv` (216), `phase27_operational.csv` (216), `phase27_cost.csv` (24), `phase27_generalisation.csv` (648), `phase27_summary.json`, `figures/phase27_ml_vs_dl.png`, `notebooks/27_ml_vs_dl.ipynb` (12/12), `scripts/build_phase27_notebook.py`, `scripts/phase27_run.log` |
+
+| 28 | Probability calibration (stage 47) — P1 `val_2022` probabilities for all 24 models come from the **same Phase-27 predictor** (`evaluate_all.predict_one`), so the raw Brier/ECE reproduce the Phase-27 re-score (max \|Δ ECE\| = 7.2e-07, clipping only); **raw calibration is good for most** (17/24 clear ECE ≤ 0.02 all-season, median raw ECE 0.0067), miscalibration is **structural and over-confident**, concentrated in the crippled control `static_only` (0.37), the plain recurrent nets (`lstm_L3` 0.072, `lstm_L7` 0.048, `gru_bestL` 0.041, `tcn_bestL` 0.057), `random_forest` (0.035, tree-vote over-confidence) and the no-skill baselines — and it **grows with lead time** and is **worst in monsoon** (`lstm_L3` 0.103 monsoon vs 0.031 off-season); recalibration (Platt/isotonic, fitted **on validation only**) scored **out-of-fold over 5 station folds** brings **every skill** model within tolerance (the control `static_only` stays 0.033); in-sample isotonic ECE = 0.000 by construction is reported only as the optimistic bound; **L1 linear, L2 gradient boosting, L4 transformer/GNN and the fusion models may proceed uncalibrated**, the recurrent nets + `random_forest` need a validation-fitted calibrator before Phase 29; test untouched | `scripts/phase28_calibration.py`, `reports/phase28_calibration.md`, `reports/phase28_calibration.csv` (216), `phase28_summary.json`, `phase28_predictions.npz`, `figures/phase28_reliability.png`, `notebooks/28_calibration.ipynb` (12/12), `scripts/build_phase28_notebook.py`, `scripts/phase28_run.log` |
 
 **Discharged without a phase of their own:**
 
@@ -467,7 +469,7 @@ The core scientific result. **One table, one code path, one set of cells** for a
 
 ---
 
-## Phase 28 — Probability calibration · stage 47
+## Phase 28 — Probability calibration · stage 47 · **DONE**
 
 * Reliability diagrams + Brier + ECE per family, per horizon, on validation; recalibration
   (Platt / isotonic) fitted **on validation only** if needed, then reported as a separate
@@ -475,6 +477,32 @@ The core scientific result. **One table, one code path, one set of cells** for a
 * Phase 16 found ECE ≤ 0.007 for linear models — the question is whether DL calibration is
   as good, and whether recalibration is needed before any risk band exists (Phase 29).
 * **DoD:** calibrated-vs-raw table; statement of which models may proceed uncalibrated.
+
+> **Resolved (2026-10-14).** Done. Probabilities for all **24 models × 3 horizons** on the P1
+> primary cell (`val_2022`) are produced by the **same Phase-27 predictor**
+> (`evaluate_all.predict_one`) — so the raw Brier/ECE reproduce the Phase-27 fresh re-score
+> (max |Δ ECE| = **7.2e-07**, from probability clipping only). **Raw calibration is already good
+> for most models:** **17 / 24** clear the **ECE ≤ 0.02** bar at every horizon on all-season
+> data (median raw ECE **0.0067**); the L2 gradient-boosting family, the L4 transformer/GNNs and
+> the fusion models are essentially perfect (ECE ≤ 0.007). Miscalibration is **structural and
+> over-confident** (`mean_pred > base_rate` everywhere it appears), concentrated in the crippled
+> control `static_only` (**0.37**), the plain recurrent nets (`lstm_L3` 0.072, `tcn_bestL` 0.057,
+> `lstm_L7` 0.048, `gru_bestL` 0.041), `random_forest` (0.035 — tree-vote over-confidence) and
+> the no-skill baselines; it **grows with lead time** (`lstm_L3` 0.018 → 0.037 → 0.072) and is
+> **worst in monsoon** (`lstm_L3` monsoon 0.1025 vs non-monsoon 0.0314). Recalibration (Platt and
+> isotonic, fitted **on validation only**) is scored **out-of-fold over 5 station folds**; isotonic
+> wins on Brier and brings **every skill** model within the 0.02 bar (the no-skill control
+> `static_only` stays at 0.033); in-sample isotonic ECE = **0.000** by construction is carried only
+> as the optimistic bound, which is why the OOF number is quoted. **Decision:** the L1 linear
+> models, the L2 gradient-boosting family, the L4 transformer/GNNs and the fusion models **may
+> proceed to Phase 29 uncalibrated**; `random_forest` and the plain recurrent nets
+> (`lstm_L3/L7`, `gru_bestL`, `tcn_bestL`) **must carry a validation-fitted calibrator** (isotonic
+> preferred) before any risk band, and — because the failure is **period-dependent** — Phase 29
+> should use **period-specific** calibration/thresholds for them. `static_only` is retained only
+> as a comparison row. `reports/phase28_calibration.csv` (216 rows = 24 × 3 × 3) is the
+> calibrated-vs-raw table; `phase28_summary.json` the decision; `figures/phase28_reliability.png`
+> the reliability diagrams; `notebooks/28_calibration.ipynb` 12/12. Test untouched (frozen to
+> Phase 33).
 
 ---
 
@@ -699,7 +727,8 @@ DONE   Phases 0–16   foundations, data, features, leakage, table, splits, base
        Phase 25  gate → Transformer      DONE         ┘
        Phase 26  multi-horizon matrix    DONE
        Phase 27  fair ML vs DL comparison  DONE  (+ stages 43–46, 50–52)
-       Phase 28  calibration → Phase 29 thresholds/bands → Phase 30 error analysis
+       Phase 28  probability calibration  DONE
+       Phase 29 thresholds/bands → Phase 30 error analysis
        Phase 31  robustness → Phase 32 ablation matrix (E0–E16) → Phase 33 selection → Phase 34 XAI
        Phases 35–42  system (prototype)
        Phases 43–45  final evaluation, reproducibility, thesis
@@ -745,7 +774,7 @@ Stages **1–30 are frozen** — they record completed work and are mirrored in
 | 44 | Precision / Recall / F1 | **DONE** | Phase 27 — best-F1 threshold derived on the **train** fold per model; precision/recall/F1/specificity/FNR for all 24 × 3 horizons |
 | 45 | Confusion matrix | **DONE** | Phase 27 — `tp/fp/fn/tn` + derived `fnr/far/fpr` on every cell (`phase27_metrics.csv`) |
 | 46 | False-negative + operational analysis | **DONE** | Phase 27 — `phase27_operational.csv`: missed-flood rows, false-alarm rate/FPR, event-level recall, warning lead time, per year/season; Phase 30 deepens the error analysis |
-| 47 | Probability calibration | TODO | Phase 28 |
+| 47 | Probability calibration | **DONE** | Phase 28 — P1 `val_2022` probabilities for all 24 models via the Phase-27 predictor; raw Brier/ECE reproduce the Phase-27 re-score (max \|Δ ECE\| = 7.2e-07); 17/24 clear ECE ≤ 0.02 all-season (median 0.0067); miscalibration is over-confidence, growing with lead time and worst in monsoon (recurrent nets + `random_forest`); Platt/isotonic fitted on validation, scored out-of-fold (5 station folds) fix every skill model; `phase28_calibration.csv` (216) + `phase28_reliability.png` |
 | 48 | Risk-level definition | TODO | Phase 29 — derived from validation |
 | 49 | Threshold optimization | TODO | Phase 29 — cost of FN ≫ FP |
 | 50 | Temporal evaluation | **DONE** | Phase 27 — per-year P2 temporal block (`phase27_generalisation.csv`; engineered L1∪L2 vs sequence L3∪L4 gaps 0.007–0.020) |
