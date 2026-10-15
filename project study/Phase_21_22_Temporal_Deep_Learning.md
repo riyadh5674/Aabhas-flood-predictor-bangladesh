@@ -200,11 +200,14 @@ TCN is not hypersensitive.
 
 ### Cross-cell robustness
 
-| | P2 rolling 24/48/72 h | P3 spatial CV 24/48/72 h |
+| | P2 rolling 24/48/72 h *(mean over 2020/21/22)* | P3 spatial CV 24/48/72 h |
 |---|---|---|
 | lstm_L3 | 0.9551 / 0.9362 / 0.9193 | 0.9196 / 0.9055 / 0.8781 |
 | gru_bestL | 0.9507 / 0.9376 / 0.9231 | 0.9139 / 0.8972 / 0.8855 |
 | **tcn_bestL** | 0.9478 / 0.9371 / 0.9063 | **0.9258** / 0.8949 / 0.8716 |
+
+*(Note: the Phase-21 table in §4 shows P2 **per year at 24 h**; here P2 is the **mean over the three
+rolling years (2020/21/22)** per horizon — which is why the `lstm_L3` 24 h figure is lower here than there.)*
 
 **P3 spatial CV: the TCN leads at 24 h (0.9258 vs LSTM 0.9196, GRU 0.9139)** then falls behind
 at 72 h — the same short-lead-time character. Season splits barely move (≤ 1 point) across all

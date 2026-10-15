@@ -200,6 +200,11 @@ Buckets (never pooled with years — D8):
 | logreg_linear | **0.7164** | 0.6774 | 0.6805 |
 | logreg_selected | 0.7053 | **0.6935** | 0.7113 |
 
+> **Bucket count vs Phase 15 (avoid confusion).** Phase 15 counted **23** new-network stations
+> (*first seen ≥ 2023*) and **84** trained. The Phase-16 bucket mask uses `first_year > 2023`
+> (i.e. ≥ 2024), so the single station first seen in 2023 lands in `test_trained` instead —
+> hence **85 trained / 22 new-network** here. Same data, one definitional boundary.
+
 Skill vs persistence (logreg): per year **1.006 / 1.022 / 1.043 / 1.032** — but **0.997 on
 `test_unseen`** and **0.984 on `test_new_network`**. Again: the linear model's gain is
 confined to stations it has seen.
