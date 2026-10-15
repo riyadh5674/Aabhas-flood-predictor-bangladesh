@@ -1,0 +1,63 @@
+{
+  "rule": "gate1 beats-D7-everywhere; gate2 calibration; rank by horizon-mean P1 PR-AUC, then fewest missed floods (Phase-29 threshold), then robustness floor, then inference cost; overlapping CIs are NOT separable",
+  "eligible": [
+    "xgboost",
+    "xgboost_selected",
+    "lightgbm",
+    "random_forest"
+  ],
+  "ranked": [
+    {
+      "rank": 1,
+      "model": "xgboost",
+      "p1_pr_auc_mean": 0.95463,
+      "missed_warn_total": 87,
+      "d7_margin_min": 0.0144,
+      "infer_ms_per_1k": 0.066
+    },
+    {
+      "rank": 2,
+      "model": "xgboost_selected",
+      "p1_pr_auc_mean": 0.95393,
+      "missed_warn_total": 88,
+      "d7_margin_min": 0.0143,
+      "infer_ms_per_1k": 0.019
+    },
+    {
+      "rank": 3,
+      "model": "lightgbm",
+      "p1_pr_auc_mean": 0.95344,
+      "missed_warn_total": 112,
+      "d7_margin_min": 0.0144,
+      "infer_ms_per_1k": 0.043
+    },
+    {
+      "rank": 4,
+      "model": "random_forest",
+      "p1_pr_auc_mean": 0.9523,
+      "missed_warn_total": 96,
+      "d7_margin_min": 0.0134,
+      "infer_ms_per_1k": 0.12
+    }
+  ],
+  "thresholds": {
+    "xgboost|label_24h|all": 0.0673034861683845,
+    "xgboost|label_24h|monsoon": 0.0673034861683845,
+    "xgboost|label_24h|non-monsoon": 0.098720945417881,
+    "xgboost|label_48h|all": 0.0524014309048652,
+    "xgboost|label_48h|monsoon": 0.0524014309048652,
+    "xgboost|label_48h|non-monsoon": 0.0644904524087905,
+    "xgboost|label_72h|all": 0.0963322296738624,
+    "xgboost|label_72h|monsoon": 0.0963322296738624,
+    "xgboost|label_72h|non-monsoon": 0.1214154660701751,
+    "persistence|label_24h|all": 0.2587482733753005,
+    "persistence|label_24h|monsoon": 0.2320971978497966,
+    "persistence|label_24h|non-monsoon": 0.3439873021513911,
+    "persistence|label_48h|all": 0.1704004295056597,
+    "persistence|label_48h|monsoon": 0.1704004295056597,
+    "persistence|label_48h|non-monsoon": 0.383361446285543,
+    "persistence|label_72h|all": 0.2251707257495754,
+    "persistence|label_72h|monsoon": 0.2015960201408528,
+    "persistence|label_72h|non-monsoon": 0.3907974296956384
+  }
+}

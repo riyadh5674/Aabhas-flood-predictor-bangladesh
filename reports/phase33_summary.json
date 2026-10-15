@@ -1,0 +1,60 @@
+{
+  "phase": 33,
+  "stage": 57,
+  "seed": 20261008,
+  "model": "xgboost",
+  "registry_id": "L2-03",
+  "family": "xgboost",
+  "config_id": "xgboost_c01",
+  "n_models_scored": 24,
+  "n_eligible": 4,
+  "eligible": [
+    "xgboost",
+    "xgboost_selected",
+    "lightgbm",
+    "random_forest"
+  ],
+  "eligible_ranked": [
+    {
+      "rank": 1,
+      "model": "xgboost",
+      "p1_pr_auc_mean": 0.95463,
+      "missed_warn_total": 87,
+      "d7_margin_min": 0.0144
+    },
+    {
+      "rank": 2,
+      "model": "xgboost_selected",
+      "p1_pr_auc_mean": 0.95393,
+      "missed_warn_total": 88,
+      "d7_margin_min": 0.0143
+    },
+    {
+      "rank": 3,
+      "model": "lightgbm",
+      "p1_pr_auc_mean": 0.95344,
+      "missed_warn_total": 112,
+      "d7_margin_min": 0.0144
+    },
+    {
+      "rank": 4,
+      "model": "random_forest",
+      "p1_pr_auc_mean": 0.9523,
+      "missed_warn_total": 96,
+      "d7_margin_min": 0.0134
+    }
+  ],
+  "rejected_families": {
+    "L1 linear / shallow tree": "beaten by L2 on every horizon; miss the D7 robustness floor at one or more dev cells",
+    "L1 references (climatology, persistence)": "bars, not candidates",
+    "L2 random_forest / sklearn gradient_boosting": "random_forest fails the calibration gate; gradient_boosting is below D7 on some dev cell",
+    "L3/L4 deep (LSTM/GRU/TCN/fusion/GNN/Transformer)": "do not clear the D7 bar on every dev cell (worst margin -0.10 to -0.14)"
+  },
+  "dataset_sha256": "a6748529083fcdceb8bb8a657b067bf12b5c861f3a7a6b09c8977ea63be73c8e",
+  "test_rows_read": 1198056,
+  "test_reads": 1,
+  "test_d7_phase16_crosscheck_max_abs_delta_pr_auc": 5.551115123125783e-17,
+  "wall_s": 12.7,
+  "hardware": "CPU \u00b7 AMD64 \u00b7 Windows \u00b7 torch 2.14.1+cpu",
+  "exit_code": 0
+}
