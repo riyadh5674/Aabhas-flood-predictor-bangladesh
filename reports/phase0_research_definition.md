@@ -116,9 +116,11 @@ Rare-but-not-degenerate ⇒ **PR-AUC is the primary metric** (Phase 20), accurac
 | Neighbourhood (Phase 11) | `nb3_rain_7d nb5_rain_7d nb3_rain_14d nb5_rain_14d nb3_wl_pct_danger nb5_wl_pct_danger nb3_n_wl_danger nb5_n_wl_danger` |
 | Upstream (Phase 11) | `up_rain7d_lag1 up_rain7d_lag2 up_wl_pct_danger_lag1 up_wl_pct_danger_lag2` |
 
-Phase-11 groups are **pre-audit admitted** on the argument in
+Phase-11 groups were **pre-audit admitted** on the argument in
 `reports/phase11_spatial_features.md` §4 (all computed at or before `t`); the formal
-whitelist ruling is stage 19 and may still demote individual columns.
+whitelist ruling is stage 19 and was issued on 2026-10-08 — **all 19 columns ADMIT**,
+`nb*_n_wl_danger` evidenced separately (`reports/phase13_leakage_audit.md` §5,
+`data/processed/feature_whitelist.csv`).
 
 **ILLEGAL (must never appear in a feature matrix):**
 
@@ -153,9 +155,9 @@ whitelist ruling is stage 19 and may still demote individual columns.
 | # | Risk | Evidence | Where handled |
 | --- | --- | --- | --- |
 | R1 | **Base-rate drift over time** | `label_72h` positives per year: 2,831 (2017) → 276 (2023) → 500 (2025); rate 16.2 % → 1.2 % → 1.8 % | temporal splits report per-year metrics; never pool years blindly (Phases 15, 20, 26) |
-| R2 | **Tidal/estuarine stations dominate** | Mongla 83.8 %, Khulna 52.3 %, Daulatkhan 40.4 % base rate | per-station metrics + tidal subgroup; do not treat as labelling errors |
-| R3 | **13 stations have 0 positives** (≥200 labelled rows) | Boalmari, Sonapur, Lakshmipur, Haripur … | keep (legitimate); report macro vs micro averages |
-| R4 | **Class imbalance** | 15–19 : 1 | Phase 19; PR-AUC primary; oversampling only inside the training fold |
+| R2 | **Tidal/estuarine stations dominate** | Mongla 83.8 %, Khulna 52.3 %, Daulatkhan 40.4 % base rate | per-station metrics + tidal subgroup; do not treat as labelling errors. **Re-measured Phase 16 §10: 73.2 / 39.5 / 26.8 % — W-R2, the 83.8 % figure is not reproducible from the Phase-14 table; pending phase0 review** |
+| R3 | **13 stations have 0 positives** (≥200 labelled rows) | Boalmari, Sonapur, Lakshmipur, Haripur … | keep (legitimate); report macro vs micro averages. **Re-measured Phase 16 §10: 14 stations (Dhaka, Faridpur, Bogura … added) — W-R3, pending phase0 review** |
+| R4 | **Class imbalance** | 15–19 : 1 | Phase 19; PR-AUC primary; oversampling only inside the training fold. **Phase 16 §10 confirmed the whole-table range and found the split-specific ratios: 9.4:1 train → 18.6:1 val → 70:1 test (24 h)** |
 | R5 | **Rainfall is reanalysis, not observed** | NASA POWER / MERRA‑2 | stated in every report; ablation with/without rain (Phase 38) |
 | R6 | **2018 gap** | 0 readings in the whole year | split around it; never interpolate across it |
 | R7 | **Growing station network** | 85 → 133 stations | station-out validation must not let network growth leak into "unseen location" claims |
@@ -183,7 +185,7 @@ below to translate; when the two disagree on order, D10 wins.*
 > | **Phase 13** | **22–24** | **19–20** | critical leakage audit |
 > | Phase 14 | — | 26 | experimental (model-ready) table |
 > | Phase 15 | 25–27 | 27–28 | temporal / spatial / monsoon splits |
-> | Phase 16 | 28 | 30 | baselines |
+> | Phase 16 | 28 | 29–30 | baselines + class-imbalance analysis |
 >
 > The checklist's own "defensible order" (leakage before selection) is **superseded** by D10:
 > Phase 12 runs before Phase 13. Nothing is lost — Phase 13 still lands before Phase 14/15,
@@ -218,22 +220,22 @@ below to translate; when the two disagree on order, D10 wins.*
 ### Leakage & experiment definition (stages 19–26)
 | # | Stage | Status | Note |
 | --- | --- | --- | --- |
-| 19 | Data-leakage audit | PARTIAL | rules in §5; formal audit doc pending (whitelist was deleted) |
-| 20 | Define prediction-time info boundary | DONE | §5 |
+| 19 | Data-leakage audit | DONE | `notebooks/05_leakage_audit.ipynb` — 11/11 checks (L1–L11), `reports/phase13_leakage_audit.md`; formal whitelist restored → `data/processed/feature_whitelist.csv` (61 ADMIT · 1 ADMIT-WATCH · 1 ADMIT-CONSTANT · 10 BAN) |
+| 20 | Define prediction-time info boundary | DONE | §5 — issue instant 24:00 UTC of `t`; `latest_day_used` column of the whitelist is the machine-readable form |
 | 21 | Feature engineering | DONE | core features in `build_dataset.py`; Phase 11 added static + neighbourhood + upstream groups → `reports/phase11_spatial_features.md` |
 | 22 | Temporal / lag / rolling features | DONE | lags 1–7, roll 7/30, rain windows |
 | 23 | Spatial / geographical features | DONE | static 7 (`station_spatial_features.csv`) + neighbourhood 8 + upstream 4 = 19 columns, built 2026-10-08; soil/landcover group still absent (R8) |
-| 24 | Feature selection | TODO | Phase 12 |
-| 25 | Mutual information | PARTIAL | MI computed for 38 features × 3 horizons in `notebooks/03_eda.ipynb` (TF2); the selection decision itself is Phase 12 |
-| 26 | Model-ready dataset | DONE | 200,665 × 54 (post-F3 + F8 fixes, D4/D9) |
+| 24 | Feature selection | DONE | Phase 12 — `notebooks/04_feature_selection.ipynb` (13/13 cells), `reports/phase12_feature_selection.md`; sets FULL 62 / LINEAR 35 / SELECTED 10 |
+| 25 | Mutual information | DONE | Phase 12 step 19 — MI for 62 features × 3 horizons on train only; used with redundancy collapse, rule-based k*=10 |
+| 26 | Model-ready dataset | DONE | 200,665 × 73 source (post-F3 + F8 fixes, D4/D9; +19 spatial columns at Phase 11); **Phase 14 experimental table = 200,665 × 67** (`data/processed/experimental_dataset.csv`, dictionary alongside) |
 
 ### Split, model, evaluate (stages 27–46)
 | # | Stage | Status | Note |
 | --- | --- | --- | --- |
-| 27 | Temporal train/val/test split | TODO | must respect R1 + R6 |
-| 28 | Spatial validation design | TODO | must respect R7 |
-| 29 | Class-imbalance analysis | PARTIAL | §4/§7; formal analysis pending |
-| 30 | Baseline models | TODO | `scripts/baseline_model.py` exists but **has an early-stopping-on-test flaw to fix first** |
+| 27 | Temporal train/val/test split | DONE | Phase 15 — `notebooks/07_split_design.ipynb` (S1–S10 green); train 77,571 / val 21,920 / test 101,174 (frozen), cuts inside 98–131-day dry-season gaps, 7-day embargo flags 0 rows (R1 + R6 respected) |
+| 28 | Spatial validation design | DONE | Phase 15 — 5 cohort-balanced station folds (R7), fold 0 = 26 stations frozen out of every training set, 4-fold spatial CV on train years, test reported as trained / new-network / unseen buckets |
+| 29 | Class-imbalance analysis | **DONE** | Phase 16 §10 (workflow Phase 19) — `notebooks/08_baseline_models.ipynb` I1–I5, **59/59 checks green**; ratios 9.4:1 train → 18.6:1 val → 70:1 test (24 h), per-year 4.9–83:1, top-10 stations = 38.9 % of positives, accuracy gain ≤ 0.045, PR-AUC primary; evidence `data/processed/class_imbalance.json`, `figures/phase16_class_imbalance.png`; **W-R2/W-R3 re-measured, see §7** |
+| 30 | Baseline models | **DONE** | Phase 16 — `scripts/baseline_model.py` rewritten (early-stopping-on-test flaw gone), `scripts/phase16_run.log` exit 0 / 312 s, `reports/phase16_baseline.md` §1–§12; notebook S1–S7 verify 59/59 checks; logreg_linear beats the D7 persistence bar by only +2.1…+4.3 % on val 2022 |
 | 31 | Candidate ML models | TODO | logreg / LightGBM / XGBoost justified in plan §6 |
 | 32 | Hyperparameter tuning | TODO | |
 | 33 | Model comparison | TODO | |
@@ -269,8 +271,10 @@ below to translate; when the two disagree on order, D10 wins.*
 | 61 | Documentation / reproducibility | DONE | phase 0/1/2–3 reports + 4 git commits; F1 fix reproducible from history |
 | 62 | Research report / thesis | TODO | |
 
-**Totals:** 23 DONE · 6 PARTIAL · 28 TODO · 2 BLOCKED · (3 horizons counted in TODO).
-*Updated 2026-10-08 after Phase 11 (stages 21, 23 closed: 19 spatial columns, 73-col model-ready table, audits 14/14 + verifier green).*
+**Totals:** 28 DONE · 4 PARTIAL · 28 TODO · 2 BLOCKED (60 table rows = 62 stages; stages 48–50 share one row, so 28 stages are TODO).
+*Updated 2026-10-08 after Phase 15 (stages 19, 24, 25, 26, 27, 28 closed: Phase 13 leakage
+audit 11/11 + whitelist; Phase 14 experimental table 200,665 × 67; Phase 15 split strategy
+S1–S10 → `data/processed/split_assignments.csv` + `splits.json`).* 
 
 ## 9. Decisions logged (user-confirmed, 2026-10-07)
 
@@ -298,8 +302,10 @@ below to translate; when the two disagree on order, D10 wins.*
 - [x] Phase-0 risks recorded with evidence (§7)
 - [x] All 62 workflow stages mapped (§8)
 
-**Next stage:** Phase 11 closed (steps 15–17 / stages 21, 23). Next: **Phase 12 — feature
-selection, body steps 18–21** (statistical filtering → **MI step 19** → model-based
-importance → RFE; checklist 24–25), *then* **Phase 13 — leakage audit, steps 22–24**
-(checklist 19–20: `obs_days_*` ban, `n_readings`/E7 admissibility, whitelist for the 19
-spatial columns), then Phase 15 split design per F7/F8, D7 and D8. Order per **D10**.
+**Next stage:** Phase 16 closed (checklist 29–30: baseline models + class-imbalance
+analysis; `notebooks/08_baseline_models.ipynb` 59/59 green, `reports/phase16_baseline.md`,
+D7 persistence bar established, early-stopping flaw fixed). Next: **Phase 17 — candidate ML
+models (body step 29 / stage 31)** — logreg / LightGBM / XGBoost justified in plan §6,
+every candidate judged against the **D7 persistence bar** under the three Phase-16
+protocols and per-season cells, under the stage-29 metric policy (PR-AUC primary, no
+accuracy headline, resampling inside the training fold only). Order per **D10**.

@@ -1,0 +1,371 @@
+Phase 21 — LSTM/GRU | families=['lstm_L7'] | seed=20261008 | 2026-10-09 06:43:19.136775+00:00
+registry OK: test_policy=frozen_read_at_phase33, budgets <= 20
+index labels re-checked 1:1 vs experimental_dataset.csv (200,665 rows, 133 stations)
+dev grid OK: ['spatial_fold_1', 'spatial_fold_2', 'spatial_fold_3', 'spatial_fold_4', 'val_2020', 'val_2021', 'val_2022'] — frozen test never scored
+
+=== lstm_L7 (L3-02) L=7 lstm — tuning 10/96 configs, cell=val_2022, score=mean PR-AUC over 3 horizons ===
+  [1/10] lstm_L7_c00 mean=0.84716 (24h=0.85367 48h=0.84653 72h=0.84129) off (88s)
+  [2/10] lstm_L7_c01 mean=0.83145 (24h=0.83506 48h=0.83098 72h=0.82830) off (97s)
+  [3/10] lstm_L7_c02 mean=0.90201 (24h=0.91006 48h=0.90262 72h=0.89336) off (216s)
+  [4/10] lstm_L7_c03 mean=0.86303 (24h=0.87081 48h=0.86718 72h=0.85109) on (2132s)
+  [5/10] lstm_L7_c04 mean=0.86793 (24h=0.87410 48h=0.86578 72h=0.86391) off (67s)
+  [6/10] lstm_L7_c05 mean=0.90739 (24h=0.92241 48h=0.91170 72h=0.88805) on (81s)
+  [7/10] lstm_L7_c06 mean=0.89001 (24h=0.90345 48h=0.89237 72h=0.87420) off (90s)
+  [8/10] lstm_L7_c07 mean=0.91146 (24h=0.93091 48h=0.91642 72h=0.88707) on (276s)
+  [9/10] lstm_L7_c08 mean=0.89058 (24h=0.90888 48h=0.89025 72h=0.87262) off (40s)
+  [10/10] lstm_L7_c09 mean=0.89608 (24h=0.91411 48h=0.90011 72h=0.87402) on (53s)
+  -> winner lstm_L7_c07 mean_pr_auc=0.91146 epochs={'24h': 13, '48h': 12, '72h': 13} n_params=53,569
+=== lstm_L7 — grid with lstm_L7_c07 (8 dev tasks x 3 seasons x 3 horizons) ===
+  P1_temporal_primary train_<2022   label_24h epochs 13 fit 78s
+  P1_temporal_primary train_<2022   label_48h epochs 12 fit 66s
+  P1_temporal_primary train_<2022   label_72h epochs 13 fit 75s
+  P2_rolling_origin  train_<=2019  label_24h epochs 13 fit 39s
+  P2_rolling_origin  train_<=2019  label_48h epochs 12 fit 33s
+  P2_rolling_origin  train_<=2019  label_72h epochs 13 fit 41s
+  P2_rolling_origin  train_<=2020  label_24h epochs 13 fit 52s
+  P2_rolling_origin  train_<=2020  label_48h epochs 12 fit 50s
+  P2_rolling_origin  train_<=2020  label_72h epochs 13 fit 50s
+  P2_rolling_origin  train_<=2021  label_24h epochs 13 fit 73s
+  P2_rolling_origin  train_<=2021  label_48h epochs 12 fit 115s
+  P2_rolling_origin  train_<=2021  label_72h epochs 13 fit 70s
+  P3_spatial_cv      excl_fold_1   label_24h epochs 13 fit 54s
+  P3_spatial_cv      excl_fold_1   label_48h epochs 12 fit 49s
+  P3_spatial_cv      excl_fold_1   label_72h epochs 13 fit 53s
+  P3_spatial_cv      excl_fold_2   label_24h epochs 13 fit 52s
+  P3_spatial_cv      excl_fold_2   label_48h epochs 12 fit 51s
+  P3_spatial_cv      excl_fold_2   label_72h epochs 13 fit 52s
+  P3_spatial_cv      excl_fold_3   label_24h epochs 13 fit 82s
+  P3_spatial_cv      excl_fold_3   label_48h epochs 12 fit 55s
+  P3_spatial_cv      excl_fold_3   label_72h epochs 13 fit 57s
+  P3_spatial_cv      excl_fold_4   label_24h epochs 13 fit 57s
+  P3_spatial_cv      excl_fold_4   label_48h epochs 12 fit 49s
+  P3_spatial_cv      excl_fold_4   label_72h epochs 13 fit 854s
+  checkpoint: phase21_search.csv (22 rows), phase21_metrics.csv (144 rows), phase21_L3-02.pt, family time 5412s
+
+L* = 3 (0.92677 mean PR-AUC on val_2022 over the 4 LSTMs)
+
+TOTAL 5417s — exit=0
+exit=0
+Phase 21 — LSTM/GRU | families=['lstm_L14'] | seed=20261008 | 2026-10-09 08:14:23.006087+00:00
+registry OK: test_policy=frozen_read_at_phase33, budgets <= 20
+index labels re-checked 1:1 vs experimental_dataset.csv (200,665 rows, 133 stations)
+dev grid OK: ['spatial_fold_1', 'spatial_fold_2', 'spatial_fold_3', 'spatial_fold_4', 'val_2020', 'val_2021', 'val_2022'] — frozen test never scored
+
+=== lstm_L14 (L3-03) L=14 lstm — tuning 8/96 configs, cell=val_2022, score=mean PR-AUC over 3 horizons ===
+  [1/8] lstm_L14_c00 mean=0.79960 (24h=0.80458 48h=0.80054 72h=0.79368) on (146s)
+  [2/8] lstm_L14_c01 mean=0.86309 (24h=0.88564 48h=0.86033 72h=0.84329) on (3278s)
+  [3/8] lstm_L14_c02 mean=0.86069 (24h=0.88470 48h=0.85792 72h=0.83946) off (107s)
+  [4/8] lstm_L14_c03 mean=0.83853 (24h=0.85533 48h=0.84208 72h=0.81818) on (612s)
+  [5/8] lstm_L14_c04 mean=0.90775 (24h=0.93107 48h=0.90983 72h=0.88234) off (224s)
+  [6/8] lstm_L14_c05 mean=0.84144 (24h=0.85927 48h=0.83624 72h=0.82881) off (5175s)
+  [7/8] lstm_L14_c06 mean=0.89021 (24h=0.91168 48h=0.89032 72h=0.86862) off (1559s)
+  [8/8] lstm_L14_c07 mean=0.86520 (24h=0.89032 48h=0.86077 72h=0.84451) on (127s)
+  -> winner lstm_L14_c04 mean_pr_auc=0.90775 epochs={'24h': 14, '48h': 12, '72h': 13} n_params=14,497
+=== lstm_L14 — grid with lstm_L14_c04 (8 dev tasks x 3 seasons x 3 horizons) ===
+  P1_temporal_primary train_<2022   label_24h epochs 14 fit 158s
+  P1_temporal_primary train_<2022   label_48h epochs 12 fit 120s
+  P1_temporal_primary train_<2022   label_72h epochs 13 fit 139s
+  P2_rolling_origin  train_<=2019  label_24h epochs 14 fit 59s
+  P2_rolling_origin  train_<=2019  label_48h epochs 12 fit 48s
+  P2_rolling_origin  train_<=2019  label_72h epochs 13 fit 47s
+  P2_rolling_origin  train_<=2020  label_24h epochs 14 fit 79s
+  P2_rolling_origin  train_<=2020  label_48h epochs 12 fit 72s
+  P2_rolling_origin  train_<=2020  label_72h epochs 13 fit 82s
+  P2_rolling_origin  train_<=2021  label_24h epochs 14 fit 119s
+  P2_rolling_origin  train_<=2021  label_48h epochs 12 fit 91s
+  P2_rolling_origin  train_<=2021  label_72h epochs 13 fit 102s
+  P3_spatial_cv      excl_fold_1   label_24h epochs 14 fit 84s
+  P3_spatial_cv      excl_fold_1   label_48h epochs 12 fit 72s
+  P3_spatial_cv      excl_fold_1   label_72h epochs 13 fit 86s
+  P3_spatial_cv      excl_fold_2   label_24h epochs 14 fit 91s
+  P3_spatial_cv      excl_fold_2   label_48h epochs 12 fit 64s
+  P3_spatial_cv      excl_fold_2   label_72h epochs 13 fit 75s
+  P3_spatial_cv      excl_fold_3   label_24h epochs 14 fit 87s
+  P3_spatial_cv      excl_fold_3   label_48h epochs 12 fit 75s
+  P3_spatial_cv      excl_fold_3   label_72h epochs 13 fit 74s
+  P3_spatial_cv      excl_fold_4   label_24h epochs 14 fit 86s
+  P3_spatial_cv      excl_fold_4   label_48h epochs 12 fit 75s
+  P3_spatial_cv      excl_fold_4   label_72h epochs 13 fit 73s
+  checkpoint: phase21_search.csv (20 rows), phase21_metrics.csv (144 rows), phase21_L3-03.pt, family time 13394s
+
+L* = 3 (0.92677 mean PR-AUC on val_2022 over the 4 LSTMs)
+
+TOTAL 13396s — exit=0
+exit=0
+Phase 21 — LSTM/GRU | families=['lstm_L30'] | seed=20261008 | 2026-10-09 11:58:37.752346+00:00
+registry OK: test_policy=frozen_read_at_phase33, budgets <= 20
+index labels re-checked 1:1 vs experimental_dataset.csv (200,665 rows, 133 stations)
+dev grid OK: ['spatial_fold_1', 'spatial_fold_2', 'spatial_fold_3', 'spatial_fold_4', 'val_2020', 'val_2021', 'val_2022'] — frozen test never scored
+
+=== lstm_L30 (L3-04) L=30 lstm — tuning 6/96 configs, cell=val_2022, score=mean PR-AUC over 3 horizons ===
+  [1/6] lstm_L30_c00 mean=0.83699 (24h=0.88019 48h=0.83916 72h=0.79164) on (3588s)
+  [2/6] lstm_L30_c01 mean=0.83695 (24h=0.86024 48h=0.83534 72h=0.81527) on (5635s)
+  [3/6] lstm_L30_c02 mean=0.88806 (24h=0.91658 48h=0.88904 72h=0.85856) on (782s)
+  [4/6] lstm_L30_c03 mean=0.83268 (24h=0.85277 48h=0.82939 72h=0.81589) on (523s)
+  [5/6] lstm_L30_c04 mean=0.86044 (24h=0.89722 48h=0.85946 72h=0.82465) on (1418s)
+  [6/6] lstm_L30_c05 mean=0.91688 (24h=0.93883 48h=0.91827 72h=0.89355) off (537s)
+  -> winner lstm_L30_c05 mean_pr_auc=0.91688 epochs={'24h': 12, '48h': 5, '72h': 8} n_params=14,497
+=== lstm_L30 — grid with lstm_L30_c05 (8 dev tasks x 3 seasons x 3 horizons) ===
+  P1_temporal_primary train_<2022   label_24h epochs 12 fit 214s
+  P1_temporal_primary train_<2022   label_48h epochs 5 fit 73s
+  P1_temporal_primary train_<2022   label_72h epochs 8 fit 99s
+  P2_rolling_origin  train_<=2019  label_24h epochs 12 fit 80s
+  P2_rolling_origin  train_<=2019  label_48h epochs 5 fit 29s
+  P2_rolling_origin  train_<=2019  label_72h epochs 8 fit 51s
+  P2_rolling_origin  train_<=2020  label_24h epochs 12 fit 140s
+  P2_rolling_origin  train_<=2020  label_48h epochs 5 fit 48s
+  P2_rolling_origin  train_<=2020  label_72h epochs 8 fit 71s
+  P2_rolling_origin  train_<=2021  label_24h epochs 12 fit 160s
+  P2_rolling_origin  train_<=2021  label_48h epochs 5 fit 73s
+  P2_rolling_origin  train_<=2021  label_72h epochs 8 fit 110s
+  P3_spatial_cv      excl_fold_1   label_24h epochs 12 fit 130s
+  P3_spatial_cv      excl_fold_1   label_48h epochs 5 fit 64s
+  P3_spatial_cv      excl_fold_1   label_72h epochs 8 fit 95s
+  P3_spatial_cv      excl_fold_2   label_24h epochs 12 fit 134s
+  P3_spatial_cv      excl_fold_2   label_48h epochs 5 fit 46s
+  P3_spatial_cv      excl_fold_2   label_72h epochs 8 fit 73s
+  P3_spatial_cv      excl_fold_3   label_24h epochs 12 fit 156s
+  P3_spatial_cv      excl_fold_3   label_48h epochs 5 fit 75s
+  P3_spatial_cv      excl_fold_3   label_72h epochs 8 fit 95s
+  P3_spatial_cv      excl_fold_4   label_24h epochs 12 fit 138s
+  P3_spatial_cv      excl_fold_4   label_48h epochs 5 fit 49s
+  P3_spatial_cv      excl_fold_4   label_72h epochs 8 fit 124s
+  checkpoint: phase21_search.csv (18 rows), phase21_metrics.csv (144 rows), phase21_L3-04.pt, family time 14994s
+
+L* = 3 (0.92677 mean PR-AUC on val_2022 over the 4 LSTMs)
+
+TOTAL 14996s — exit=0
+exit=0
+Phase 21 — LSTM/GRU | families=['gru_bestL'] | seed=20261008 | 2026-10-09 16:09:43.086438+00:00
+registry OK: test_policy=frozen_read_at_phase33, budgets <= 20
+index labels re-checked 1:1 vs experimental_dataset.csv (200,665 rows, 133 stations)
+dev grid OK: ['spatial_fold_1', 'spatial_fold_2', 'spatial_fold_3', 'spatial_fold_4', 'val_2020', 'val_2021', 'val_2022'] — frozen test never scored
+
+L* = 3 (0.92677 mean PR-AUC on val_2022 over the 4 LSTMs)
+
+=== gru_bestL (L3-05) L=3 gru — tuning 10/96 configs, cell=val_2022, score=mean PR-AUC over 3 horizons ===
+  [1/10] gru_bestL_c00 mean=0.86239 (24h=0.86719 48h=0.86476 72h=0.85523) off (114s)
+  [2/10] gru_bestL_c01 mean=0.84990 (24h=0.85578 48h=0.85027 72h=0.84365) off (84s)
+  [3/10] gru_bestL_c02 mean=0.90838 (24h=0.91802 48h=0.91103 72h=0.89608) off (211s)
+  [4/10] gru_bestL_c03 mean=0.87903 (24h=0.88648 48h=0.88033 72h=0.87028) on (53s)
+  [5/10] gru_bestL_c04 mean=0.88503 (24h=0.89175 48h=0.88809 72h=0.87524) off (60s)
+  [6/10] gru_bestL_c05 mean=0.91584 (24h=0.92705 48h=0.91864 72h=0.90183) on (100s)
+  [7/10] gru_bestL_c06 mean=0.91541 (24h=0.92575 48h=0.91721 72h=0.90328) off (112s)
+  [8/10] gru_bestL_c07 mean=0.92362 (24h=0.93592 48h=0.92632 72h=0.90861) on (233s)
+  [9/10] gru_bestL_c08 mean=0.91487 (24h=0.92499 48h=0.91635 72h=0.90328) off (56s)
+  [10/10] gru_bestL_c09 mean=0.91518 (24h=0.93024 48h=0.91592 72h=0.89937) on (93s)
+  -> winner gru_bestL_c07 mean_pr_auc=0.92362 epochs={'24h': 13, '48h': 12, '72h': 14} n_params=40,193
+=== gru_bestL — grid with gru_bestL_c07 (8 dev tasks x 3 seasons x 3 horizons) ===
+  P1_temporal_primary train_<2022   label_24h epochs 13 fit 74s
+  P1_temporal_primary train_<2022   label_48h epochs 12 fit 62s
+  P1_temporal_primary train_<2022   label_72h epochs 14 fit 68s
+  P2_rolling_origin  train_<=2019  label_24h epochs 13 fit 32s
+  P2_rolling_origin  train_<=2019  label_48h epochs 12 fit 37s
+  P2_rolling_origin  train_<=2019  label_72h epochs 14 fit 31s
+  P2_rolling_origin  train_<=2020  label_24h epochs 13 fit 59s
+  P2_rolling_origin  train_<=2020  label_48h epochs 12 fit 63s
+  P2_rolling_origin  train_<=2020  label_72h epochs 14 fit 68s
+  P2_rolling_origin  train_<=2021  label_24h epochs 13 fit 76s
+  P2_rolling_origin  train_<=2021  label_48h epochs 12 fit 71s
+  P2_rolling_origin  train_<=2021  label_72h epochs 14 fit 76s
+  P3_spatial_cv      excl_fold_1   label_24h epochs 13 fit 59s
+  P3_spatial_cv      excl_fold_1   label_48h epochs 12 fit 52s
+  P3_spatial_cv      excl_fold_1   label_72h epochs 14 fit 61s
+  P3_spatial_cv      excl_fold_2   label_24h epochs 13 fit 55s
+  P3_spatial_cv      excl_fold_2   label_48h epochs 12 fit 48s
+  P3_spatial_cv      excl_fold_2   label_72h epochs 14 fit 60s
+  P3_spatial_cv      excl_fold_3   label_24h epochs 13 fit 56s
+  P3_spatial_cv      excl_fold_3   label_48h epochs 12 fit 53s
+  P3_spatial_cv      excl_fold_3   label_72h epochs 14 fit 58s
+  P3_spatial_cv      excl_fold_4   label_24h epochs 13 fit 59s
+  P3_spatial_cv      excl_fold_4   label_48h epochs 12 fit 57s
+  P3_spatial_cv      excl_fold_4   label_72h epochs 14 fit 57s
+  checkpoint: phase21_search.csv (22 rows), phase21_metrics.csv (144 rows), phase21_L3-05.pt, family time 2577s
+
+TOTAL 2581s — exit=0
+exit=0
+Phase 21 — LSTM/GRU | families=['lstm_L7'] | seed=20261008 | 2026-10-09 16:57:37.062377+00:00
+registry OK: test_policy=frozen_read_at_phase33, budgets <= 20
+index labels re-checked 1:1 vs experimental_dataset.csv (200,665 rows, 133 stations)
+dev grid OK: ['spatial_fold_1', 'spatial_fold_2', 'spatial_fold_3', 'spatial_fold_4', 'val_2020', 'val_2021', 'val_2022'] — frozen test never scored
+
+=== lstm_L7 (L3-02) L=7 lstm — tuning 10/96 configs, cell=val_2022, score=mean PR-AUC over 3 horizons ===
+  [1/10] lstm_L7_c00 mean=0.84716 (24h=0.85367 48h=0.84653 72h=0.84129) off (100s)
+  [2/10] lstm_L7_c01 mean=0.83145 (24h=0.83506 48h=0.83098 72h=0.82830) off (106s)
+  [3/10] lstm_L7_c02 mean=0.90201 (24h=0.91006 48h=0.90262 72h=0.89336) off (260s)
+  [4/10] lstm_L7_c03 mean=0.86303 (24h=0.87081 48h=0.86718 72h=0.85109) on (63s)
+  [5/10] lstm_L7_c04 mean=0.86793 (24h=0.87410 48h=0.86578 72h=0.86391) off (68s)
+  [6/10] lstm_L7_c05 mean=0.90739 (24h=0.92241 48h=0.91170 72h=0.88805) on (117s)
+  [7/10] lstm_L7_c06 mean=0.89001 (24h=0.90345 48h=0.89237 72h=0.87420) off (136s)
+  [8/10] lstm_L7_c07 mean=0.91146 (24h=0.93091 48h=0.91642 72h=0.88707) on (461s)
+  [9/10] lstm_L7_c08 mean=0.89058 (24h=0.90888 48h=0.89025 72h=0.87262) off (70s)
+  [10/10] lstm_L7_c09 mean=0.89608 (24h=0.91411 48h=0.90011 72h=0.87402) on (85s)
+  -> winner lstm_L7_c07 mean_pr_auc=0.91146 epochs={'24h': 13, '48h': 12, '72h': 13} n_params=53,569
+=== lstm_L7 — grid with lstm_L7_c07 (8 dev tasks x 3 seasons x 3 horizons) ===
+  P1_temporal_primary train_<2022   label_24h epochs 13 fit 129s
+  P1_temporal_primary train_<2022   label_48h epochs 12 fit 121s
+  P1_temporal_primary train_<2022   label_72h epochs 13 fit 118s
+  P2_rolling_origin  train_<=2019  label_24h epochs 13 fit 57s
+  P2_rolling_origin  train_<=2019  label_48h epochs 12 fit 55s
+  P2_rolling_origin  train_<=2019  label_72h epochs 13 fit 56s
+  P2_rolling_origin  train_<=2020  label_24h epochs 13 fit 93s
+  P2_rolling_origin  train_<=2020  label_48h epochs 12 fit 89s
+  P2_rolling_origin  train_<=2020  label_72h epochs 13 fit 83s
+  P2_rolling_origin  train_<=2021  label_24h epochs 13 fit 116s
+  P2_rolling_origin  train_<=2021  label_48h epochs 12 fit 107s
+  P2_rolling_origin  train_<=2021  label_72h epochs 13 fit 107s
+  P3_spatial_cv      excl_fold_1   label_24h epochs 13 fit 86s
+  P3_spatial_cv      excl_fold_1   label_48h epochs 12 fit 81s
+  P3_spatial_cv      excl_fold_1   label_72h epochs 13 fit 85s
+  P3_spatial_cv      excl_fold_2   label_24h epochs 13 fit 81s
+  P3_spatial_cv      excl_fold_2   label_48h epochs 12 fit 83s
+  P3_spatial_cv      excl_fold_2   label_72h epochs 13 fit 87s
+  P3_spatial_cv      excl_fold_3   label_24h epochs 13 fit 74s
+  P3_spatial_cv      excl_fold_3   label_48h epochs 12 fit 46s
+  P3_spatial_cv      excl_fold_3   label_72h epochs 13 fit 60s
+  P3_spatial_cv      excl_fold_4   label_24h epochs 13 fit 57s
+  P3_spatial_cv      excl_fold_4   label_48h epochs 12 fit 49s
+  P3_spatial_cv      excl_fold_4   label_72h epochs 13 fit 53s
+  checkpoint: phase21_search.csv (22 rows), phase21_metrics.csv (144 rows), phase21_L3-02.pt, family time 3531s
+
+L* = 3 (0.92677 mean PR-AUC on val_2022 over the 4 LSTMs)
+
+TOTAL 3534s — exit=0
+exit=0
+Phase 21 — LSTM/GRU | families=['lstm_L14'] | seed=20261008 | 2026-10-09 17:56:54.760257+00:00
+registry OK: test_policy=frozen_read_at_phase33, budgets <= 20
+index labels re-checked 1:1 vs experimental_dataset.csv (200,665 rows, 133 stations)
+dev grid OK: ['spatial_fold_1', 'spatial_fold_2', 'spatial_fold_3', 'spatial_fold_4', 'val_2020', 'val_2021', 'val_2022'] — frozen test never scored
+
+=== lstm_L14 (L3-03) L=14 lstm — tuning 8/96 configs, cell=val_2022, score=mean PR-AUC over 3 horizons ===
+  [1/8] lstm_L14_c00 mean=0.79960 (24h=0.80458 48h=0.80054 72h=0.79368) on (151s)
+  [2/8] lstm_L14_c01 mean=0.86309 (24h=0.88564 48h=0.86033 72h=0.84329) on (344s)
+  [3/8] lstm_L14_c02 mean=0.86069 (24h=0.88470 48h=0.85792 72h=0.83946) off (84s)
+  [4/8] lstm_L14_c03 mean=0.83853 (24h=0.85533 48h=0.84208 72h=0.81818) on (66s)
+  [5/8] lstm_L14_c04 mean=0.90775 (24h=0.93107 48h=0.90983 72h=0.88234) off (226s)
+  [6/8] lstm_L14_c05 mean=0.84144 (24h=0.85927 48h=0.83624 72h=0.82881) off (444s)
+  [7/8] lstm_L14_c06 mean=0.89021 (24h=0.91168 48h=0.89032 72h=0.86862) off (1536s)
+  [8/8] lstm_L14_c07 mean=0.86520 (24h=0.89032 48h=0.86077 72h=0.84451) on (63s)
+  -> winner lstm_L14_c04 mean_pr_auc=0.90775 epochs={'24h': 14, '48h': 12, '72h': 13} n_params=14,497
+=== lstm_L14 — grid with lstm_L14_c04 (8 dev tasks x 3 seasons x 3 horizons) ===
+  P1_temporal_primary train_<2022   label_24h epochs 14 fit 146s
+  P1_temporal_primary train_<2022   label_48h epochs 12 fit 139s
+  P1_temporal_primary train_<2022   label_72h epochs 13 fit 106s
+  P2_rolling_origin  train_<=2019  label_24h epochs 14 fit 56s
+  P2_rolling_origin  train_<=2019  label_48h epochs 12 fit 52s
+  P2_rolling_origin  train_<=2019  label_72h epochs 13 fit 68s
+  P2_rolling_origin  train_<=2020  label_24h epochs 14 fit 75s
+  P2_rolling_origin  train_<=2020  label_48h epochs 12 fit 70s
+  P2_rolling_origin  train_<=2020  label_72h epochs 13 fit 141s
+  P2_rolling_origin  train_<=2021  label_24h epochs 14 fit 121s
+  P2_rolling_origin  train_<=2021  label_48h epochs 12 fit 99s
+  P2_rolling_origin  train_<=2021  label_72h epochs 13 fit 103s
+  P3_spatial_cv      excl_fold_1   label_24h epochs 14 fit 77s
+  P3_spatial_cv      excl_fold_1   label_48h epochs 12 fit 60s
+  P3_spatial_cv      excl_fold_1   label_72h epochs 13 fit 75s
+  P3_spatial_cv      excl_fold_2   label_24h epochs 14 fit 88s
+  P3_spatial_cv      excl_fold_2   label_48h epochs 12 fit 59s
+  P3_spatial_cv      excl_fold_2   label_72h epochs 13 fit 72s
+  P3_spatial_cv      excl_fold_3   label_24h epochs 14 fit 74s
+  P3_spatial_cv      excl_fold_3   label_48h epochs 12 fit 90s
+  P3_spatial_cv      excl_fold_3   label_72h epochs 13 fit 70s
+  P3_spatial_cv      excl_fold_4   label_24h epochs 14 fit 80s
+  P3_spatial_cv      excl_fold_4   label_48h epochs 12 fit 82s
+  P3_spatial_cv      excl_fold_4   label_72h epochs 13 fit 68s
+  checkpoint: phase21_search.csv (30 rows), phase21_metrics.csv (216 rows), phase21_L3-03.pt, family time 5095s
+
+L* = 3 (0.92677 mean PR-AUC on val_2022 over the 4 LSTMs)
+
+TOTAL 5096s — exit=0
+exit=0
+Phase 21 — LSTM/GRU | families=['lstm_L30'] | seed=20261008 | 2026-10-09 19:23:01.459296+00:00
+registry OK: test_policy=frozen_read_at_phase33, budgets <= 20
+index labels re-checked 1:1 vs experimental_dataset.csv (200,665 rows, 133 stations)
+dev grid OK: ['spatial_fold_1', 'spatial_fold_2', 'spatial_fold_3', 'spatial_fold_4', 'val_2020', 'val_2021', 'val_2022'] — frozen test never scored
+
+=== lstm_L30 (L3-04) L=30 lstm — tuning 6/96 configs, cell=val_2022, score=mean PR-AUC over 3 horizons ===
+  [1/6] lstm_L30_c00 mean=0.83699 (24h=0.88019 48h=0.83916 72h=0.79164) on (1245s)
+  [2/6] lstm_L30_c01 mean=0.83695 (24h=0.86024 48h=0.83534 72h=0.81527) on (211s)
+exit=1
+Phase 21 — LSTM/GRU | families=['lstm_L30', 'gru_bestL'] | seed=20261008 | 2026-10-09 20:34:31.518907+00:00
+registry OK: test_policy=frozen_read_at_phase33, budgets <= 20
+index labels re-checked 1:1 vs experimental_dataset.csv (200,665 rows, 133 stations)
+dev grid OK: ['spatial_fold_1', 'spatial_fold_2', 'spatial_fold_3', 'spatial_fold_4', 'val_2020', 'val_2021', 'val_2022'] — frozen test never scored
+
+=== lstm_L30 (L3-04) L=30 lstm — tuning 6/96 configs, cell=val_2022, score=mean PR-AUC over 3 horizons ===
+  [1/6] lstm_L30_c00 mean=0.83699 (24h=0.88019 48h=0.83916 72h=0.79164) on (2354s)
+  [2/6] lstm_L30_c01 mean=0.83695 (24h=0.86024 48h=0.83534 72h=0.81527) on (163s)
+  [3/6] lstm_L30_c02 mean=0.88806 (24h=0.91658 48h=0.88904 72h=0.85856) on (457s)
+  [4/6] lstm_L30_c03 mean=0.83268 (24h=0.85277 48h=0.82939 72h=0.81589) on (1103s)
+  [5/6] lstm_L30_c04 mean=0.86044 (24h=0.89722 48h=0.85946 72h=0.82465) on (7565s)
+  [6/6] lstm_L30_c05 mean=0.91688 (24h=0.93883 48h=0.91827 72h=0.89355) off (316s)
+  -> winner lstm_L30_c05 mean_pr_auc=0.91688 epochs={'24h': 12, '48h': 5, '72h': 8} n_params=14,497
+=== lstm_L30 — grid with lstm_L30_c05 (8 dev tasks x 3 seasons x 3 horizons) ===
+  P1_temporal_primary train_<2022   label_24h epochs 12 fit 87s
+  P1_temporal_primary train_<2022   label_48h epochs 5 fit 36s
+  P1_temporal_primary train_<2022   label_72h epochs 8 fit 56s
+  P2_rolling_origin  train_<=2019  label_24h epochs 12 fit 20501s
+  P2_rolling_origin  train_<=2019  label_48h epochs 5 fit 16s
+  P2_rolling_origin  train_<=2019  label_72h epochs 8 fit 28s
+  P2_rolling_origin  train_<=2020  label_24h epochs 12 fit 70s
+  P2_rolling_origin  train_<=2020  label_48h epochs 5 fit 26s
+  P2_rolling_origin  train_<=2020  label_72h epochs 8 fit 45s
+  P2_rolling_origin  train_<=2021  label_24h epochs 12 fit 201s
+  P2_rolling_origin  train_<=2021  label_48h epochs 5 fit 95s
+  P2_rolling_origin  train_<=2021  label_72h epochs 8 fit 120s
+  P3_spatial_cv      excl_fold_1   label_24h epochs 12 fit 165s
+  P3_spatial_cv      excl_fold_1   label_48h epochs 5 fit 103s
+  P3_spatial_cv      excl_fold_1   label_72h epochs 8 fit 83s
+  P3_spatial_cv      excl_fold_2   label_24h epochs 12 fit 116s
+  P3_spatial_cv      excl_fold_2   label_48h epochs 5 fit 41s
+  P3_spatial_cv      excl_fold_2   label_72h epochs 8 fit 56s
+  P3_spatial_cv      excl_fold_3   label_24h epochs 12 fit 103s
+  P3_spatial_cv      excl_fold_3   label_48h epochs 5 fit 41s
+  P3_spatial_cv      excl_fold_3   label_72h epochs 8 fit 459s
+  P3_spatial_cv      excl_fold_4   label_24h epochs 12 fit 151s
+  P3_spatial_cv      excl_fold_4   label_48h epochs 5 fit 50s
+  P3_spatial_cv      excl_fold_4   label_72h epochs 8 fit 93s
+  checkpoint: phase21_search.csv (36 rows), phase21_metrics.csv (288 rows), phase21_L3-04.pt, family time 34857s
+
+L* = 3 (0.92677 mean PR-AUC on val_2022 over the 4 LSTMs)
+
+=== gru_bestL (L3-05) L=3 gru — tuning 10/96 configs, cell=val_2022, score=mean PR-AUC over 3 horizons ===
+  [1/10] gru_bestL_c00 mean=0.86239 (24h=0.86719 48h=0.86476 72h=0.85523) off (80s)
+  [2/10] gru_bestL_c01 mean=0.84990 (24h=0.85578 48h=0.85027 72h=0.84365) off (78s)
+  [3/10] gru_bestL_c02 mean=0.90838 (24h=0.91802 48h=0.91103 72h=0.89608) off (203s)
+  [4/10] gru_bestL_c03 mean=0.87903 (24h=0.88648 48h=0.88033 72h=0.87028) on (54s)
+  [5/10] gru_bestL_c04 mean=0.88503 (24h=0.89175 48h=0.88809 72h=0.87524) off (58s)
+  [6/10] gru_bestL_c05 mean=0.91584 (24h=0.92705 48h=0.91864 72h=0.90183) on (104s)
+  [7/10] gru_bestL_c06 mean=0.91541 (24h=0.92575 48h=0.91721 72h=0.90328) off (113s)
+  [8/10] gru_bestL_c07 mean=0.92362 (24h=0.93592 48h=0.92632 72h=0.90861) on (233s)
+  [9/10] gru_bestL_c08 mean=0.91487 (24h=0.92499 48h=0.91635 72h=0.90328) off (54s)
+  [10/10] gru_bestL_c09 mean=0.91518 (24h=0.93024 48h=0.91592 72h=0.89937) on (78s)
+  -> winner gru_bestL_c07 mean_pr_auc=0.92362 epochs={'24h': 13, '48h': 12, '72h': 14} n_params=40,193
+=== gru_bestL — grid with gru_bestL_c07 (8 dev tasks x 3 seasons x 3 horizons) ===
+  P1_temporal_primary train_<2022   label_24h epochs 13 fit 71s
+  P1_temporal_primary train_<2022   label_48h epochs 12 fit 68s
+  P1_temporal_primary train_<2022   label_72h epochs 14 fit 73s
+  P2_rolling_origin  train_<=2019  label_24h epochs 13 fit 34s
+  P2_rolling_origin  train_<=2019  label_48h epochs 12 fit 30s
+  P2_rolling_origin  train_<=2019  label_72h epochs 14 fit 39s
+  P2_rolling_origin  train_<=2020  label_24h epochs 13 fit 52s
+  P2_rolling_origin  train_<=2020  label_48h epochs 12 fit 48s
+  P2_rolling_origin  train_<=2020  label_72h epochs 14 fit 54s
+  P2_rolling_origin  train_<=2021  label_24h epochs 13 fit 77s
+  P2_rolling_origin  train_<=2021  label_48h epochs 12 fit 68s
+  P2_rolling_origin  train_<=2021  label_72h epochs 14 fit 74s
+  P3_spatial_cv      excl_fold_1   label_24h epochs 13 fit 53s
+  P3_spatial_cv      excl_fold_1   label_48h epochs 12 fit 49s
+  P3_spatial_cv      excl_fold_1   label_72h epochs 14 fit 57s
+  P3_spatial_cv      excl_fold_2   label_24h epochs 13 fit 50s
+  P3_spatial_cv      excl_fold_2   label_48h epochs 12 fit 57s
+  P3_spatial_cv      excl_fold_2   label_72h epochs 14 fit 63s
+  P3_spatial_cv      excl_fold_3   label_24h epochs 13 fit 61s
+  P3_spatial_cv      excl_fold_3   label_48h epochs 12 fit 3295s
+  P3_spatial_cv      excl_fold_3   label_72h epochs 14 fit 70s
+  P3_spatial_cv      excl_fold_4   label_24h epochs 13 fit 66s
+  P3_spatial_cv      excl_fold_4   label_48h epochs 12 fit 59s
+  P3_spatial_cv      excl_fold_4   label_72h epochs 14 fit 74s
+  checkpoint: phase21_search.csv (46 rows), phase21_metrics.csv (360 rows), phase21_L3-05.pt, family time 5766s
+
+TOTAL 40625s — exit=0

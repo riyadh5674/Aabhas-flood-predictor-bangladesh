@@ -1,0 +1,284 @@
+Phase 24.2 — families=['gcn', 'gat'] | seed=20261008 | 2026-10-11 08:14:18.222115+00:00
+registry OK: L4-01/L4-02 present, gate=phase24_graph_gate, budget<=20
+graph: 201 edges (52 river + 149 fallback k=2), mean deg 3.023, connected=True, sha=3ed0ef1d4bef
+index labels re-checked 1:1 vs experimental_dataset.csv (200,665 rows)
+graph tensors: torch.Size([133, 133]), edge-mask nnz 535
+dev grid OK: ['spatial_fold_1', 'spatial_fold_2', 'spatial_fold_3', 'spatial_fold_4', 'val_2020', 'val_2021', 'val_2022'] — frozen test never scored
+temporal encoder: LSTM(hidden), windows L*=L=3, 13 channels
+
+=== gcn (L4-01) — tuning 8/128 configs, cell=val_2022, score=mean PR-AUC over 3 horizons ===
+  [1/8] gcn_c00 mean=0.87738 (24h=0.89073, 48h=0.87930, 72h=0.86210) on (122s)
+  [2/8] gcn_c01 mean=0.84058 (24h=0.84760, 48h=0.83985, 72h=0.83428) off (129s)
+  [3/8] gcn_c02 mean=0.89305 (24h=0.90656, 48h=0.89515, 72h=0.87745) on (275s)
+  [4/8] gcn_c03 mean=0.88764 (24h=0.89930, 48h=0.89075, 72h=0.87287) off (381s)
+  [5/8] gcn_c04 mean=0.86372 (24h=0.87910, 48h=0.85914, 72h=0.85293) on (360s)
+  [6/8] gcn_c05 mean=0.90764 (24h=0.91684, 48h=0.91167, 72h=0.89440) off (152s)
+  [7/8] gcn_c06 mean=0.92129 (24h=0.93365, 48h=0.92368, 72h=0.90654) off (282s)
+  [8/8] gcn_c07 mean=0.91522 (24h=0.92498, 48h=0.91887, 72h=0.90181) off (156s)
+  -> winner gcn_c06 mean_pr_auc=0.92129 epochs={'24h': 14, '48h': 14, '72h': 13} n_params=15,553
+=== gcn — grid with gcn_c06 (8 dev tasks x 3 seasons x 3 horizons) ===
+  P1_temporal_primary train_<2022   label_24h epochs 14 fit 62s
+  P1_temporal_primary train_<2022   label_48h epochs 14 fit 42s
+  P1_temporal_primary train_<2022   label_72h epochs 13 fit 39s
+  P2_rolling_origin  train_<=2019  label_24h epochs 14 fit 18s
+  P2_rolling_origin  train_<=2019  label_48h epochs 14 fit 25s
+  P2_rolling_origin  train_<=2019  label_72h epochs 13 fit 20s
+  P2_rolling_origin  train_<=2020  label_24h epochs 14 fit 33s
+  P2_rolling_origin  train_<=2020  label_48h epochs 14 fit 28s
+  P2_rolling_origin  train_<=2020  label_72h epochs 13 fit 29s
+  P2_rolling_origin  train_<=2021  label_24h epochs 14 fit 46s
+  P2_rolling_origin  train_<=2021  label_48h epochs 14 fit 43s
+  P2_rolling_origin  train_<=2021  label_72h epochs 13 fit 45s
+  P3_spatial_cv      excl_fold_1   label_24h epochs 14 fit 64s
+  P3_spatial_cv      excl_fold_1   label_48h epochs 14 fit 42s
+  P3_spatial_cv      excl_fold_1   label_72h epochs 13 fit 37s
+  P3_spatial_cv      excl_fold_2   label_24h epochs 14 fit 40s
+  P3_spatial_cv      excl_fold_2   label_48h epochs 14 fit 51s
+  P3_spatial_cv      excl_fold_2   label_72h epochs 13 fit 40s
+  P3_spatial_cv      excl_fold_3   label_24h epochs 14 fit 39s
+  P3_spatial_cv      excl_fold_3   label_48h epochs 14 fit 37s
+  P3_spatial_cv      excl_fold_3   label_72h epochs 13 fit 35s
+  P3_spatial_cv      excl_fold_4   label_24h epochs 14 fit 39s
+  P3_spatial_cv      excl_fold_4   label_48h epochs 14 fit 38s
+  P3_spatial_cv      excl_fold_4   label_72h epochs 13 fit 35s
+  checkpoint: phase24_search.csv (8 rows), phase24_metrics.csv (72 rows), phase24_L4-01.pt, family time 2851s
+
+=== gat (L4-02) — tuning 8/128 configs, cell=val_2022, score=mean PR-AUC over 3 horizons ===
+  [1/8] gat_c00 mean=0.88759 (24h=0.89875, 48h=0.88889, 72h=0.87514) on (2921s)
+Phase 24.2 — families=['gat'] | seed=20261008 | 2026-10-11 16:21:48.235720+00:00
+registry OK: L4-01/L4-02 present, gate=phase24_graph_gate, budget<=20
+graph: 201 edges (52 river + 149 fallback k=2), mean deg 3.023, connected=True, sha=3ed0ef1d4bef
+index labels re-checked 1:1 vs experimental_dataset.csv (200,665 rows)
+graph tensors: torch.Size([133, 133]), edge-mask nnz 535
+dev grid OK: ['spatial_fold_1', 'spatial_fold_2', 'spatial_fold_3', 'spatial_fold_4', 'val_2020', 'val_2021', 'val_2022'] — frozen test never scored
+temporal encoder: LSTM(hidden), windows L*=L=3, 13 channels
+
+=== gat (L4-02) — tuning 8/128 configs, cell=val_2022, score=mean PR-AUC over 3 horizons ===
+  [1/8] gat_c00 mean=0.90529 (24h=0.91419, 48h=0.90896, 72h=0.89272) on (310s)
+  [2/8] gat_c01 mean=0.87900 (24h=0.89024, 48h=0.87838, 72h=0.86837) off (172s)
+Phase 24.2 — families=['gat'] | seed=20261008 | 2026-10-11 16:31:10.272409+00:00
+registry OK: L4-01/L4-02 present, gate=phase24_graph_gate, budget<=20
+graph: 201 edges (52 river + 149 fallback k=2), mean deg 3.023, connected=True, sha=3ed0ef1d4bef
+index labels re-checked 1:1 vs experimental_dataset.csv (200,665 rows)
+graph tensors: torch.Size([133, 133]), edge-mask nnz 535
+dev grid OK: ['spatial_fold_1', 'spatial_fold_2', 'spatial_fold_3', 'spatial_fold_4', 'val_2020', 'val_2021', 'val_2022'] — frozen test never scored
+temporal encoder: LSTM(hidden), windows L*=L=3, 13 channels
+
+=== gat (L4-02) — tuning 8/128 configs, cell=val_2022, score=mean PR-AUC over 3 horizons ===
+  [3/8] gat_c02 mean=0.90817 (24h=0.91743, 48h=0.91048, 72h=0.89660) on (395s)
+  [1/8] gat_c00 mean=0.90512 (24h=0.91378, 48h=0.90906, 72h=0.89254) on (356s)
+  [2/8] gat_c01 mean=0.87900 (24h=0.89023, 48h=0.87838, 72h=0.86837) off (226s)
+  [4/8] gat_c03 mean=0.91108 (24h=0.92693, 48h=0.91470, 72h=0.89161) off (615s)
+  [3/8] gat_c02 mean=0.90817 (24h=0.91743, 48h=0.91048, 72h=0.89660) on (525s)
+  [5/8] gat_c04 mean=0.90009 (24h=0.91509, 48h=0.89770, 72h=0.88748) on (419s)
+  [6/8] gat_c05 mean=0.91302 (24h=0.92886, 48h=0.91056, 72h=0.89964) off (810s)
+  [4/8] gat_c03 mean=0.90974 (24h=0.92463, 48h=0.91310, 72h=0.89150) off (1063s)
+  [7/8] gat_c06 mean=0.93021 (24h=0.94436, 48h=0.93344, 72h=0.91284) off (259s)
+  [5/8] gat_c04 mean=0.89999 (24h=0.91524, 48h=0.89774, 72h=0.88699) on (819s)
+  [8/8] gat_c07 mean=0.91531 (24h=0.91820, 48h=0.91844, 72h=0.90929) off (697s)
+  -> winner gat_c06 mean_pr_auc=0.93021 epochs={'24h': 14, '48h': 14, '72h': 11} n_params=15,617
+=== gat — grid with gat_c06 (8 dev tasks x 3 seasons x 3 horizons) ===
+  P1_temporal_primary train_<2022   label_24h epochs 14 fit 133s
+  [6/8] gat_c05 mean=0.91182 (24h=0.92863, 48h=0.91003, 72h=0.89680) off (274s)
+  P1_temporal_primary train_<2022   label_48h epochs 14 fit 109s
+  P1_temporal_primary train_<2022   label_72h epochs 11 fit 88s
+  P2_rolling_origin  train_<=2019  label_24h epochs 14 fit 51s
+  [7/8] gat_c06 mean=0.92860 (24h=0.94079, 48h=0.93145, 72h=0.91356) off (290s)
+  P2_rolling_origin  train_<=2019  label_48h epochs 14 fit 48s
+  P2_rolling_origin  train_<=2019  label_72h epochs 11 fit 40s
+  P2_rolling_origin  train_<=2020  label_24h epochs 14 fit 79s
+  P2_rolling_origin  train_<=2020  label_48h epochs 14 fit 76s
+  [8/8] gat_c07 mean=0.91602 (24h=0.92034, 48h=0.91844, 72h=0.90929) off (244s)
+  -> winner gat_c06 mean_pr_auc=0.92860 epochs={'24h': 9, '48h': 14, '72h': 14} n_params=15,617
+=== gat — grid with gat_c06 (8 dev tasks x 3 seasons x 3 horizons) ===
+  P2_rolling_origin  train_<=2020  label_72h epochs 11 fit 61s
+  P1_temporal_primary train_<2022   label_24h epochs 9 fit 58s
+  P2_rolling_origin  train_<=2021  label_24h epochs 14 fit 103s
+  P1_temporal_primary train_<2022   label_48h epochs 14 fit 84s
+  P1_temporal_primary train_<2022   label_72h epochs 14 fit 83s
+  P2_rolling_origin  train_<=2021  label_48h epochs 14 fit 94s
+  P2_rolling_origin  train_<=2019  label_24h epochs 9 fit 28s
+  P2_rolling_origin  train_<=2019  label_48h epochs 14 fit 42s
+  P2_rolling_origin  train_<=2021  label_72h epochs 11 fit 76s
+  P2_rolling_origin  train_<=2019  label_72h epochs 14 fit 47s
+  P2_rolling_origin  train_<=2020  label_24h epochs 9 fit 43s
+  P3_spatial_cv      excl_fold_1   label_24h epochs 14 fit 106s
+  P2_rolling_origin  train_<=2020  label_48h epochs 14 fit 67s
+  P3_spatial_cv      excl_fold_1   label_48h epochs 14 fit 103s
+  P2_rolling_origin  train_<=2020  label_72h epochs 14 fit 63s
+  P2_rolling_origin  train_<=2021  label_24h epochs 9 fit 59s
+  P3_spatial_cv      excl_fold_1   label_72h epochs 11 fit 83s
+Phase 24.2 — families=['gcn', 'gat', 'gnn_lstm'] | seed=20261008 | 2026-10-11 17:46:22.819338+00:00 | SMOKE
+registry OK: L4-01/L4-02/L4-04 present, gate=phase24_graph_gate, budget<=20
+graph: 427 edges (52 river + 375 fallback k=5), mean deg 6.421, connected=True, sha=655ca5a4e048
+index labels re-checked 1:1 vs experimental_dataset.csv (200,665 rows)
+graph tensors: torch.Size([133, 133]), edge-mask nnz 987
+dev grid OK: ['spatial_fold_1', 'spatial_fold_2', 'spatial_fold_3', 'spatial_fold_4', 'val_2020', 'val_2021', 'val_2022'] — frozen test never scored
+temporal encoder: LSTM(hidden), windows L*=L=3, 13 channels
+
+=== gcn (L4-01) — tuning 1/128 configs, cell=val_2022, score=mean PR-AUC over 3 horizons ===
+  [1/1] gcn_c00 mean=0.82092 (24h=0.82092) off (17s)
+  -> winner gcn_c00 mean_pr_auc=0.82092 epochs={'24h': 2} n_params=24,449
+=== gcn — grid with gcn_c00 (8 dev tasks x 3 seasons x 3 horizons) ===
+  P1_temporal_primary train_<2022   label_24h epochs 2 fit 9s
+  checkpoint: phase24_search.csv (1 rows), phase24_metrics.csv (1 rows), phase24_L4-01.pt, family time 30s
+
+=== gat (L4-02) — tuning 1/128 configs, cell=val_2022, score=mean PR-AUC over 3 horizons ===
+  [1/1] gat_c00 mean=0.81927 (24h=0.81927) off (14s)
+  -> winner gat_c00 mean_pr_auc=0.81927 epochs={'24h': 2} n_params=24,577
+=== gat — grid with gat_c00 (8 dev tasks x 3 seasons x 3 horizons) ===
+  P2_rolling_origin  train_<=2021  label_48h epochs 14 fit 126s
+  P1_temporal_primary train_<2022   label_24h epochs 2 fit 13s
+  checkpoint: phase24_search.csv (2 rows), phase24_metrics.csv (2 rows), phase24_L4-02.pt, family time 32s
+
+=== gnn_lstm (L4-04) — tuning 1/128 configs, cell=val_2022, score=mean PR-AUC over 3 horizons ===
+  [1/1] gnn_lstm_c00 mean=0.87574 (24h=0.87574) off (18s)
+  -> winner gnn_lstm_c00 mean_pr_auc=0.87574 epochs={'24h': 2} n_params=38,401
+=== gnn_lstm — grid with gnn_lstm_c00 (8 dev tasks x 3 seasons x 3 horizons) ===
+  P3_spatial_cv      excl_fold_2   label_24h epochs 14 fit 153s
+  P1_temporal_primary train_<2022   label_24h epochs 2 fit 15s
+  checkpoint: phase24_search.csv (3 rows), phase24_metrics.csv (3 rows), phase24_L4-04.pt, family time 37s
+
+TOTAL 103s — exit=0
+Phase 24.2 — families=['gcn', 'gat', 'gnn_lstm'] | seed=20261008 | 2026-10-11 17:48:34.258526+00:00
+registry OK: L4-01/L4-02/L4-04 present, gate=phase24_graph_gate, budget<=20
+graph: 427 edges (52 river + 375 fallback k=5), mean deg 6.421, connected=True, sha=655ca5a4e048
+index labels re-checked 1:1 vs experimental_dataset.csv (200,665 rows)
+graph tensors: torch.Size([133, 133]), edge-mask nnz 987
+dev grid OK: ['spatial_fold_1', 'spatial_fold_2', 'spatial_fold_3', 'spatial_fold_4', 'val_2020', 'val_2021', 'val_2022'] — frozen test never scored
+temporal encoder: LSTM(hidden), windows L*=L=3, 13 channels
+
+=== gcn (L4-01) — tuning 8/128 configs, cell=val_2022, score=mean PR-AUC over 3 horizons ===
+  P2_rolling_origin  train_<=2021  label_72h epochs 14 fit 119s
+  P3_spatial_cv      excl_fold_2   label_48h epochs 14 fit 129s
+  P3_spatial_cv      excl_fold_1   label_24h epochs 9 fit 73s
+  P3_spatial_cv      excl_fold_2   label_72h epochs 11 fit 95s
+  P3_spatial_cv      excl_fold_1   label_48h epochs 14 fit 106s
+  [1/8] gcn_c00 mean=0.90503 (24h=0.91298, 48h=0.90681, 72h=0.89531) on (264s)
+  P3_spatial_cv      excl_fold_3   label_24h epochs 14 fit 126s
+  P3_spatial_cv      excl_fold_1   label_72h epochs 14 fit 110s
+  [2/8] gcn_c01 mean=0.85702 (24h=0.86575, 48h=0.85944, 72h=0.84587) off (159s)
+  P3_spatial_cv      excl_fold_2   label_24h epochs 9 fit 74s
+  P3_spatial_cv      excl_fold_3   label_48h epochs 14 fit 127s
+  P3_spatial_cv      excl_fold_2   label_48h epochs 14 fit 111s
+  P3_spatial_cv      excl_fold_3   label_72h epochs 11 fit 98s
+  P3_spatial_cv      excl_fold_2   label_72h epochs 14 fit 108s
+  P3_spatial_cv      excl_fold_4   label_24h epochs 14 fit 129s
+  P3_spatial_cv      excl_fold_3   label_24h epochs 9 fit 75s
+  [3/8] gcn_c02 mean=0.90867 (24h=0.91993, 48h=0.91296, 72h=0.89311) on (341s)
+  P3_spatial_cv      excl_fold_4   label_48h epochs 14 fit 188s
+  P3_spatial_cv      excl_fold_3   label_48h epochs 14 fit 171s
+  P3_spatial_cv      excl_fold_4   label_72h epochs 11 fit 124s
+  checkpoint: phase24_search.csv (8 rows), phase24_metrics.csv (72 rows), phase24_L4-02.pt, family time 6249s
+
+TOTAL 6256s — exit=0
+  P3_spatial_cv      excl_fold_3   label_72h epochs 14 fit 142s
+  P3_spatial_cv      excl_fold_4   label_24h epochs 9 fit 74s
+  P3_spatial_cv      excl_fold_4   label_48h epochs 14 fit 122s
+  [4/8] gcn_c03 mean=0.91224 (24h=0.92522, 48h=0.91798, 72h=0.89351) off (630s)
+  P3_spatial_cv      excl_fold_4   label_72h epochs 14 fit 182s
+  checkpoint: phase24_search.csv (8 rows), phase24_metrics.csv (72 rows), phase24_L4-02.pt, family time 6143s
+
+TOTAL 6148s — exit=0
+  [5/8] gcn_c04 mean=0.89059 (24h=0.90437, 48h=0.88895, 72h=0.87844) on (326s)
+  [6/8] gcn_c05 mean=0.90988 (24h=0.91850, 48h=0.90962, 72h=0.90150) off (142s)
+  [7/8] gcn_c06 mean=0.93052 (24h=0.94207, 48h=0.93534, 72h=0.91414) off (230s)
+  [8/8] gcn_c07 mean=0.91185 (24h=0.92098, 48h=0.91209, 72h=0.90248) off (190s)
+  -> winner gcn_c06 mean_pr_auc=0.93052 epochs={'24h': 14, '48h': 14, '72h': 14} n_params=15,553
+=== gcn — grid with gcn_c06 (8 dev tasks x 3 seasons x 3 horizons) ===
+  P1_temporal_primary train_<2022   label_24h epochs 14 fit 81s
+  P1_temporal_primary train_<2022   label_48h epochs 14 fit 80s
+  P1_temporal_primary train_<2022   label_72h epochs 14 fit 76s
+  P2_rolling_origin  train_<=2019  label_24h epochs 14 fit 39s
+  P2_rolling_origin  train_<=2019  label_48h epochs 14 fit 40s
+  P2_rolling_origin  train_<=2019  label_72h epochs 14 fit 38s
+  P2_rolling_origin  train_<=2020  label_24h epochs 14 fit 76s
+  P2_rolling_origin  train_<=2020  label_48h epochs 14 fit 65s
+  P2_rolling_origin  train_<=2020  label_72h epochs 14 fit 65s
+  P2_rolling_origin  train_<=2021  label_24h epochs 14 fit 72s
+  P2_rolling_origin  train_<=2021  label_48h epochs 14 fit 70s
+  P2_rolling_origin  train_<=2021  label_72h epochs 14 fit 71s
+  P3_spatial_cv      excl_fold_1   label_24h epochs 14 fit 74s
+  P3_spatial_cv      excl_fold_1   label_48h epochs 14 fit 72s
+  P3_spatial_cv      excl_fold_1   label_72h epochs 14 fit 71s
+  P3_spatial_cv      excl_fold_2   label_24h epochs 14 fit 73s
+  P3_spatial_cv      excl_fold_2   label_48h epochs 14 fit 72s
+  P3_spatial_cv      excl_fold_2   label_72h epochs 14 fit 73s
+  P3_spatial_cv      excl_fold_3   label_24h epochs 14 fit 73s
+  P3_spatial_cv      excl_fold_3   label_48h epochs 14 fit 72s
+  P3_spatial_cv      excl_fold_3   label_72h epochs 14 fit 71s
+  P3_spatial_cv      excl_fold_4   label_24h epochs 14 fit 74s
+  P3_spatial_cv      excl_fold_4   label_48h epochs 14 fit 74s
+  P3_spatial_cv      excl_fold_4   label_72h epochs 14 fit 82s
+  checkpoint: phase24_search.csv (16 rows), phase24_metrics.csv (144 rows), phase24_L4-01.pt, family time 4054s
+  skip gat: already complete (phase24_L4-02.pt)
+
+=== gnn_lstm (L4-04) — tuning 8/128 configs, cell=val_2022, score=mean PR-AUC over 3 horizons ===
+  [1/8] gnn_lstm_c00 mean=0.91000 (24h=0.92227, 48h=0.90723, 72h=0.90050) on (249s)
+  [2/8] gnn_lstm_c01 mean=0.90024 (24h=0.91347, 48h=0.90222, 72h=0.88502) off (215s)
+  [3/8] gnn_lstm_c02 mean=0.90761 (24h=0.91640, 48h=0.90083, 72h=0.90559) on (327s)
+  [4/8] gnn_lstm_c03 mean=0.92598 (24h=0.93641, 48h=0.93057, 72h=0.91096) off (570s)
+  [5/8] gnn_lstm_c04 mean=0.90959 (24h=0.92741, 48h=0.91487, 72h=0.88650) on (449s)
+  [6/8] gnn_lstm_c05 mean=0.90841 (24h=0.91396, 48h=0.90718, 72h=0.90410) off (199s)
+  [7/8] gnn_lstm_c06 mean=0.92802 (24h=0.94237, 48h=0.92640, 72h=0.91529) off (334s)
+  [8/8] gnn_lstm_c07 mean=0.91077 (24h=0.92714, 48h=0.91304, 72h=0.89214) off (213s)
+  -> winner gnn_lstm_c06 mean_pr_auc=0.92802 epochs={'24h': 10, '48h': 12, '72h': 10} n_params=18,433
+=== gnn_lstm — grid with gnn_lstm_c06 (8 dev tasks x 3 seasons x 3 horizons) ===
+  P1_temporal_primary train_<2022   label_24h epochs 10 fit 72s
+  P1_temporal_primary train_<2022   label_48h epochs 12 fit 83s
+  P1_temporal_primary train_<2022   label_72h epochs 10 fit 80s
+  P2_rolling_origin  train_<=2019  label_24h epochs 10 fit 34s
+  P2_rolling_origin  train_<=2019  label_48h epochs 12 fit 40s
+  P2_rolling_origin  train_<=2019  label_72h epochs 10 fit 32s
+  P2_rolling_origin  train_<=2020  label_24h epochs 10 fit 49s
+  P2_rolling_origin  train_<=2020  label_48h epochs 12 fit 1765s
+  P2_rolling_origin  train_<=2020  label_72h epochs 10 fit 48s
+  P2_rolling_origin  train_<=2021  label_24h epochs 10 fit 67s
+  P2_rolling_origin  train_<=2021  label_48h epochs 12 fit 3064s
+  P2_rolling_origin  train_<=2021  label_72h epochs 10 fit 19510s
+Phase 24.2 — families=['gnn_lstm'] | seed=20261008 | 2026-10-13 11:57:05.449332+00:00
+registry OK: L4-01/L4-02/L4-04 present, gate=phase24_graph_gate, budget<=20
+graph: 427 edges (52 river + 375 fallback k=5), mean deg 6.421, connected=True, sha=655ca5a4e048
+index labels re-checked 1:1 vs experimental_dataset.csv (200,665 rows)
+graph tensors: torch.Size([133, 133]), edge-mask nnz 987
+dev grid OK: ['spatial_fold_1', 'spatial_fold_2', 'spatial_fold_3', 'spatial_fold_4', 'val_2020', 'val_2021', 'val_2022'] — frozen test never scored
+temporal encoder: LSTM(hidden), windows L*=L=3, 13 channels
+
+=== gnn_lstm (L4-04) — tuning 8/128 configs, cell=val_2022, score=mean PR-AUC over 3 horizons ===
+  [1/8] gnn_lstm_c00 mean=0.91000 (24h=0.92227, 48h=0.90723, 72h=0.90050) on (408s)
+  [2/8] gnn_lstm_c01 mean=0.90024 (24h=0.91347, 48h=0.90222, 72h=0.88502) off (363s)
+  [3/8] gnn_lstm_c02 mean=0.90761 (24h=0.91640, 48h=0.90083, 72h=0.90559) on (509s)
+  [4/8] gnn_lstm_c03 mean=0.92598 (24h=0.93641, 48h=0.93057, 72h=0.91096) off (554s)
+  [5/8] gnn_lstm_c04 mean=0.90959 (24h=0.92741, 48h=0.91487, 72h=0.88650) on (361s)
+  [6/8] gnn_lstm_c05 mean=0.90841 (24h=0.91396, 48h=0.90718, 72h=0.90410) off (208s)
+  [7/8] gnn_lstm_c06 mean=0.92802 (24h=0.94237, 48h=0.92640, 72h=0.91529) off (797s)
+  [8/8] gnn_lstm_c07 mean=0.91077 (24h=0.92714, 48h=0.91304, 72h=0.89214) off (233s)
+  -> winner gnn_lstm_c06 mean_pr_auc=0.92802 epochs={'24h': 10, '48h': 12, '72h': 10} n_params=18,433
+=== gnn_lstm — grid with gnn_lstm_c06 (8 dev tasks x 3 seasons x 3 horizons) ===
+  P1_temporal_primary train_<2022   label_24h epochs 10 fit 42s
+  P1_temporal_primary train_<2022   label_48h epochs 12 fit 51s
+  P1_temporal_primary train_<2022   label_72h epochs 10 fit 2099s
+  P2_rolling_origin  train_<=2019  label_24h epochs 10 fit 33s
+  P2_rolling_origin  train_<=2019  label_48h epochs 12 fit 40s
+  P2_rolling_origin  train_<=2019  label_72h epochs 10 fit 33s
+  P2_rolling_origin  train_<=2020  label_24h epochs 10 fit 51s
+  P2_rolling_origin  train_<=2020  label_48h epochs 12 fit 62s
+  P2_rolling_origin  train_<=2020  label_72h epochs 10 fit 47s
+  P2_rolling_origin  train_<=2021  label_24h epochs 10 fit 68s
+  P2_rolling_origin  train_<=2021  label_48h epochs 12 fit 82s
+  P2_rolling_origin  train_<=2021  label_72h epochs 10 fit 67s
+  P3_spatial_cv      excl_fold_1   label_24h epochs 10 fit 70s
+  P3_spatial_cv      excl_fold_1   label_48h epochs 12 fit 79s
+  P3_spatial_cv      excl_fold_1   label_72h epochs 10 fit 66s
+  P3_spatial_cv      excl_fold_2   label_24h epochs 10 fit 70s
+  P3_spatial_cv      excl_fold_2   label_48h epochs 12 fit 84s
+  P3_spatial_cv      excl_fold_2   label_72h epochs 10 fit 68s
+  P3_spatial_cv      excl_fold_3   label_24h epochs 10 fit 70s
+  P3_spatial_cv      excl_fold_3   label_48h epochs 12 fit 114s
+  P3_spatial_cv      excl_fold_3   label_72h epochs 10 fit 67s
+  P3_spatial_cv      excl_fold_4   label_24h epochs 10 fit 80s
+  P3_spatial_cv      excl_fold_4   label_48h epochs 12 fit 84s
+  P3_spatial_cv      excl_fold_4   label_72h epochs 10 fit 66s
+  checkpoint: phase24_search.csv (24 rows), phase24_metrics.csv (216 rows), phase24_L4-04.pt, family time 7163s
+
+TOTAL 7166s — exit=0

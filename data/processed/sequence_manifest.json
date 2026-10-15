@@ -1,0 +1,174 @@
+{
+  "phase": 18,
+  "stage": 32,
+  "created_utc": "2026-10-08T20:01:25.806562+00:00",
+  "source": {
+    "experimental_dataset.csv": "a6748529083fcdceb8bb8a657b067bf12b5c861f3a7a6b09c8977ea63be73c8e",
+    "n_anchor_rows": 200665,
+    "n_stations": 133,
+    "calendar_start": "2017-01-06",
+    "calendar_end": "2026-10-05",
+    "calendar_days": 3560
+  },
+  "variables": [
+    "wl_first",
+    "wl_mean",
+    "wl_max",
+    "wl_min",
+    "wl_last",
+    "wl_pct_danger",
+    "precip_mm",
+    "tmax_c",
+    "tmin_c",
+    "n_readings",
+    "doy_sin",
+    "doy_cos"
+  ],
+  "n_variables": 12,
+  "labels_excluded": [
+    "label_24h",
+    "label_48h",
+    "label_72h"
+  ],
+  "engineered_columns_excluded": "all lag/roll/rain_*_d/neighbour/up_* columns (E13 keeps raw-vs-engineered interpretable)",
+  "fitted_statistics": "none - raw calendar scatter + windowing only",
+  "window": {
+    "lengths": [
+      3,
+      7,
+      14,
+      30
+    ],
+    "definition": "X[i,k,:] = station row at day (date_i - L + 1 + k); window ends ON the anchor day",
+    "front_pad": "NaN before the station's first calendar day",
+    "gap_policy": "absent calendar days are all-NaN timesteps (policy chosen in Phase 19)"
+  },
+  "files": {
+    "sequences_L3.npy": {
+      "shape": [
+        200665,
+        3,
+        12
+      ],
+      "dtype": "float32",
+      "bytes": 28895888,
+      "sha256": "afcc01690650052b70b53680da4d89fb868102cf1788555140ff6f2374481cda"
+    },
+    "sequences_L7.npy": {
+      "shape": [
+        200665,
+        7,
+        12
+      ],
+      "dtype": "float32",
+      "bytes": 67423568,
+      "sha256": "6c738329cc20fdfbd1dea347c8b9a275131ecc7aed72ba4f3313cb5551854b92"
+    },
+    "sequences_L14.npy": {
+      "shape": [
+        200665,
+        14,
+        12
+      ],
+      "dtype": "float32",
+      "bytes": 134847008,
+      "sha256": "7a351b9ae76f52fa8ad1d48d2c1596f8baafe46edfd35a34e8decc96f7644538"
+    },
+    "sequences_L30.npy": {
+      "shape": [
+        200665,
+        30,
+        12
+      ],
+      "dtype": "float32",
+      "bytes": 288957728,
+      "sha256": "c1e1a6d05c83a65cad6dbacdd4c9a391cdf196300d864abc12e33634e90e6d21"
+    },
+    "sequence_index.csv": {
+      "rows": 200665,
+      "bytes": 10529122,
+      "sha256": "d6083f0768b026f7056dd1201312d2baf9ce9724c4b6735e6fff08a09028c31d"
+    }
+  },
+  "stats": {
+    "front_padded_samples": {
+      "3": 19,
+      "7": 19,
+      "14": 35,
+      "30": 62
+    },
+    "fraction_samples_with_empty_timestep": {
+      "3": 0.0285,
+      "7": 0.0746,
+      "14": 0.1414,
+      "30": 0.2669
+    },
+    "fraction_station_days_present": 0.4238
+  },
+  "checks": {
+    "passed": 16,
+    "total": 16
+  },
+  "warnings": [],
+  "missing_timestep_policy": {
+    "rule_id": "P19-M1",
+    "name": "keep-all + observation mask channel",
+    "statement": "No timestep and no sample is dropped or imputed. Every window keeps all L timesteps. A timestep whose calendar day is absent from the model table is written to the tensor as all-NaN in Dataset B and handed to the model as mask=0 (binary mask channel, sequence_mask_L{L}.npy); observed days are mask=1. On present days the ~0.1% variable-level NaNs (precip_mm, tmax_c, tmin_c) are replaced by 0 AFTER the training fold's standardisation, i.e. by the fold mean - no information, no fitting outside the fold. Phase 21 input is therefore concat(12 raw variables, mask) = 13 channels; a plain NaN must never reach a layer.",
+    "why": [
+      "identical sample sets for L = 3/7/14/30 - the D12 length sweep stays comparable (rejection would train different models on different data)",
+      "nothing is fabricated: interpolation/forward-fill would invent driver variables (precip_mm), age-2 filling (R4) still drops samples",
+      "the cheapest rejected alternative (R2) drops 2.9-26.7% of samples, L-dependent and distribution-shifting (S3b)"
+    ],
+    "samples_dropped_per_L": {
+      "3": 0,
+      "7": 0,
+      "14": 0,
+      "30": 0
+    },
+    "mask_files": {
+      "sequence_mask_L3.npy": {
+        "shape": [
+          200665,
+          3
+        ],
+        "dtype": "uint8",
+        "bytes": 602123,
+        "sha256": "beb68e4ae8d7108208056834b1f5863e6ecbc4244573f3d4bdaeacb4b989d5ae"
+      },
+      "sequence_mask_L7.npy": {
+        "shape": [
+          200665,
+          7
+        ],
+        "dtype": "uint8",
+        "bytes": 1404783,
+        "sha256": "dbd147eb5b8ffb702dfd5c65b32b0a762acf77ec5c2014e1e0f076ac1014df3e"
+      },
+      "sequence_mask_L14.npy": {
+        "shape": [
+          200665,
+          14
+        ],
+        "dtype": "uint8",
+        "bytes": 2809438,
+        "sha256": "91143ef8e6543437b8d4b71439a4e989ca2c63d28ff972a918543bc9658eb6fd"
+      },
+      "sequence_mask_L30.npy": {
+        "shape": [
+          200665,
+          30
+        ],
+        "dtype": "uint8",
+        "bytes": 6020078,
+        "sha256": "2497b2bc2e66736b03e6303a78e6c3ec11487070207a80ea9732410a22bdc156"
+      }
+    },
+    "variable_level_nan_fraction_on_observed": {
+      "precip_mm": 0.00027,
+      "tmax_c": 0.00027,
+      "tmin_c": 0.00027
+    },
+    "amended_by": "phase19",
+    "amended_utc": "2026-10-08 20:26:59.496777+00:00"
+  }
+}

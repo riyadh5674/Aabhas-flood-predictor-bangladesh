@@ -1,0 +1,16 @@
+{
+  "created": "2026-10-11T05:44:10.907742+00:00",
+  "phase": "24.2 (station graph & GNN, stage 39)",
+  "rule": "Phase-11C river-upstream (same river, +0.5m, <=250km) UNION nearest-k=2 haversine fallback (minimal k for connectivity)",
+  "n_stations": 133,
+  "n_edges": 201,
+  "n_river_edges": 52,
+  "n_fallback_edges": 149,
+  "fallback_k": 2,
+  "mean_degree": 3.023,
+  "min_degree": 2,
+  "max_degree": 5,
+  "connected": true,
+  "file": "data/processed/station_graph.csv",
+  "sha256": "3ed0ef1d4befe75b8960865ceefd8cf2779d13795414b01e5c0b40adc04e65f3"
+}

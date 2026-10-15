@@ -1,0 +1,215 @@
+{
+  "seed": 20261008,
+  "n_stations": 133,
+  "rivers": 80,
+  "basins": 5,
+  "river_upstream": {
+    "directed_edges": 52,
+    "downstream_stations": 52,
+    "upstream_roles": 44
+  },
+  "coverage": {
+    "river_upstream": {
+      "nodes_covered": 82,
+      "n_edges": 52,
+      "mean_degree": 0.782,
+      "max_degree": 4,
+      "isolated": 51,
+      "n_components": 81,
+      "largest_component": 10,
+      "is_connected": false,
+      "component_sizes": [
+        10,
+        5,
+        4,
+        4,
+        4,
+        4,
+        3,
+        3,
+        3,
+        2,
+        2,
+        2
+      ]
+    },
+    "river_undirected": {
+      "nodes_covered": 82,
+      "n_edges": 52,
+      "mean_degree": 0.782,
+      "max_degree": 4,
+      "isolated": 51,
+      "n_components": 81,
+      "largest_component": 10,
+      "is_connected": false,
+      "component_sizes": [
+        10,
+        5,
+        4,
+        4,
+        4,
+        4,
+        3,
+        3,
+        3,
+        2,
+        2,
+        2
+      ]
+    },
+    "same_river_250km": {
+      "nodes_covered": 83,
+      "n_edges": 111,
+      "mean_degree": 1.669,
+      "max_degree": 9,
+      "isolated": 50,
+      "n_components": 80,
+      "largest_component": 10,
+      "is_connected": false,
+      "component_sizes": [
+        10,
+        5,
+        4,
+        4,
+        4,
+        4,
+        3,
+        3,
+        3,
+        3,
+        2,
+        2
+      ]
+    },
+    "basin_clique": {
+      "nodes_covered": 133,
+      "n_edges": 2178,
+      "mean_degree": 32.752,
+      "max_degree": 49,
+      "isolated": 0,
+      "n_components": 5,
+      "largest_component": 50,
+      "is_connected": false,
+      "component_sizes": [
+        50,
+        32,
+        24,
+        17,
+        10
+      ]
+    },
+    "knn3": {
+      "nodes_covered": 133,
+      "n_edges": 260,
+      "mean_degree": 3.91,
+      "max_degree": 7,
+      "isolated": 0,
+      "n_components": 2,
+      "largest_component": 128,
+      "is_connected": false,
+      "component_sizes": [
+        128,
+        5
+      ]
+    },
+    "knn5": {
+      "nodes_covered": 133,
+      "n_edges": 415,
+      "mean_degree": 6.241,
+      "max_degree": 10,
+      "isolated": 0,
+      "n_components": 1,
+      "largest_component": 133,
+      "is_connected": true,
+      "component_sizes": [
+        133
+      ]
+    }
+  },
+  "dep": {
+    "0": {
+      "edge_mean": 0.8998773441501874,
+      "edge_median": 0.9584117020739054,
+      "edge_p10": 0.7407665963505796,
+      "edge_p90": 0.9937151461869806,
+      "null_mean": 0.5780393381122914,
+      "null_median": 0.5980876155387689,
+      "delta": 0.32183800603789603,
+      "n_edges": 50
+    },
+    "1": {
+      "edge_mean": 0.8917865276313105,
+      "edge_median": 0.9528351471354503,
+      "edge_p10": 0.7499491845084166,
+      "edge_p90": 0.9897964409596604,
+      "null_mean": 0.5744406272928475,
+      "null_median": 0.5914508715600014,
+      "delta": 0.317345900338463,
+      "n_edges": 50
+    },
+    "2": {
+      "edge_mean": 0.8632523329994932,
+      "edge_median": 0.9396946050188854,
+      "edge_p10": 0.6783467832003133,
+      "edge_p90": 0.9846039499988272,
+      "null_mean": 0.5675379087522473,
+      "null_median": 0.5833983534496812,
+      "delta": 0.2957144242472459,
+      "n_edges": 50
+    },
+    "3": {
+      "edge_mean": 0.8319443750242553,
+      "edge_median": 0.9160404675576415,
+      "edge_p10": 0.597244999554779,
+      "edge_p90": 0.975450859346457,
+      "null_mean": 0.5593066487385042,
+      "null_median": 0.5742573839694247,
+      "delta": 0.2726377262857511,
+      "n_edges": 50
+    }
+  },
+  "frac_lag1_r_ge_0.5": 1.0,
+  "incremental_value": {
+    "n_rows_with_upstream": 59463,
+    "n_stations_with_upstream": 50,
+    "label_24h": {
+      "own": {
+        "pr_auc": 0.9267,
+        "roc_auc": 0.9941
+      },
+      "own+upstream": {
+        "pr_auc": 0.9293,
+        "roc_auc": 0.9942
+      },
+      "delta_pr_auc": 0.0026
+    },
+    "label_48h": {
+      "own": {
+        "pr_auc": 0.9017,
+        "roc_auc": 0.9888
+      },
+      "own+upstream": {
+        "pr_auc": 0.9106,
+        "roc_auc": 0.9896
+      },
+      "delta_pr_auc": 0.0089
+    },
+    "label_72h": {
+      "own": {
+        "pr_auc": 0.8774,
+        "roc_auc": 0.9796
+      },
+      "own+upstream": {
+        "pr_auc": 0.8891,
+        "roc_auc": 0.9809
+      },
+      "delta_pr_auc": 0.0117
+    }
+  },
+  "edge_validation": {
+    "n_edges": 52,
+    "n_with_data": 50,
+    "n_exact_match_ge_099": 50,
+    "mean_match_rate": 0.9997
+  }
+}

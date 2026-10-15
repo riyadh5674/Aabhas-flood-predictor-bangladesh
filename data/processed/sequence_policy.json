@@ -1,0 +1,274 @@
+{
+  "phase": 19,
+  "stage": 33,
+  "chosen_rule": {
+    "rule_id": "P19-M1",
+    "name": "keep-all + observation mask channel",
+    "statement": "No timestep and no sample is dropped or imputed. Every window keeps all L timesteps. A timestep whose calendar day is absent from the model table is written to the tensor as all-NaN in Dataset B and handed to the model as mask=0 (binary mask channel, sequence_mask_L{L}.npy); observed days are mask=1. On present days the ~0.1% variable-level NaNs (precip_mm, tmax_c, tmin_c) are replaced by 0 AFTER the training fold's standardisation, i.e. by the fold mean - no information, no fitting outside the fold. Phase 21 input is therefore concat(12 raw variables, mask) = 13 channels; a plain NaN must never reach a layer.",
+    "why": [
+      "identical sample sets for L = 3/7/14/30 - the D12 length sweep stays comparable (rejection would train different models on different data)",
+      "nothing is fabricated: interpolation/forward-fill would invent driver variables (precip_mm), age-2 filling (R4) still drops samples",
+      "the cheapest rejected alternative (R2) drops 2.9-26.7% of samples, L-dependent and distribution-shifting (S3b)"
+    ],
+    "samples_dropped_per_L": {
+      "3": 0,
+      "7": 0,
+      "14": 0,
+      "30": 0
+    }
+  },
+  "counterfactual_drop_costs": {
+    "3": {
+      "R1_keep_all": {
+        "kept": 200665,
+        "dropped": 0,
+        "pct_dropped": 0.0
+      },
+      "R2_reject_any_gap": {
+        "kept": 194946,
+        "dropped": 5719,
+        "pct_dropped": 2.85
+      },
+      "R3_min_observed": {
+        "kept": 194946,
+        "dropped": 5719,
+        "pct_dropped": 2.85
+      },
+      "R4_ffill_age2_then_reject": {
+        "kept": 195035,
+        "dropped": 5630,
+        "pct_dropped": 2.81
+      }
+    },
+    "7": {
+      "R1_keep_all": {
+        "kept": 200665,
+        "dropped": 0,
+        "pct_dropped": 0.0
+      },
+      "R2_reject_any_gap": {
+        "kept": 185691,
+        "dropped": 14974,
+        "pct_dropped": 7.46
+      },
+      "R3_min_observed": {
+        "kept": 188282,
+        "dropped": 12383,
+        "pct_dropped": 6.17
+      },
+      "R4_ffill_age2_then_reject": {
+        "kept": 189497,
+        "dropped": 11168,
+        "pct_dropped": 5.57
+      }
+    },
+    "14": {
+      "R1_keep_all": {
+        "kept": 200665,
+        "dropped": 0,
+        "pct_dropped": 0.0
+      },
+      "R2_reject_any_gap": {
+        "kept": 172285,
+        "dropped": 28380,
+        "pct_dropped": 14.14
+      },
+      "R3_min_observed": {
+        "kept": 187063,
+        "dropped": 13602,
+        "pct_dropped": 6.78
+      },
+      "R4_ffill_age2_then_reject": {
+        "kept": 180915,
+        "dropped": 19750,
+        "pct_dropped": 9.84
+      }
+    },
+    "30": {
+      "R1_keep_all": {
+        "kept": 200665,
+        "dropped": 0,
+        "pct_dropped": 0.0
+      },
+      "R2_reject_any_gap": {
+        "kept": 147103,
+        "dropped": 53562,
+        "pct_dropped": 26.69
+      },
+      "R3_min_observed": {
+        "kept": 177021,
+        "dropped": 23644,
+        "pct_dropped": 11.78
+      },
+      "R4_ffill_age2_then_reject": {
+        "kept": 163280,
+        "dropped": 37385,
+        "pct_dropped": 18.63
+      }
+    }
+  },
+  "bias_probe_R2_L30": {
+    "drop_rate_by_split": {
+      "train": 0.2506,
+      "val": 0.3119,
+      "test": 0.2697
+    },
+    "drop_rate_by_season": {
+      "monsoon": 0.1293,
+      "non-monsoon": 0.4388
+    },
+    "label24_rate_dropped": 0.0318,
+    "label24_rate_kept": 0.0563,
+    "pct_dropped": 26.69
+  },
+  "gap_statistics_per_L": {
+    "3": {
+      "pct_clean": 0.9714997632870704,
+      "pct_any": 0.02850023671292951,
+      "pct_ge3": 0.0,
+      "mean_empty": 0.04296713427852391,
+      "max_empty": 2,
+      "max_run": 2,
+      "mismatch": 0
+    },
+    "7": {
+      "pct_clean": 0.9253781177584531,
+      "pct_any": 0.07462188224154685,
+      "pct_ge3": 0.033912241796028204,
+      "mean_empty": 0.21233897291505743,
+      "max_empty": 6,
+      "max_run": 6,
+      "mismatch": 0
+    },
+    "14": {
+      "pct_clean": 0.8585702539057634,
+      "pct_any": 0.14142974609423667,
+      "pct_ge3": 0.08368674158423242,
+      "mean_empty": 0.6829990282311315,
+      "max_empty": 13,
+      "max_run": 13,
+      "mismatch": 0
+    },
+    "30": {
+      "pct_clean": 0.7330775172551267,
+      "pct_any": 0.2669224827448733,
+      "pct_ge3": 0.18151147434779358,
+      "mean_empty": 2.534577529713702,
+      "max_empty": 29,
+      "max_run": 29,
+      "mismatch": 0
+    }
+  },
+  "mask_files": {
+    "sequence_mask_L3.npy": {
+      "shape": [
+        200665,
+        3
+      ],
+      "dtype": "uint8",
+      "bytes": 602123,
+      "sha256": "beb68e4ae8d7108208056834b1f5863e6ecbc4244573f3d4bdaeacb4b989d5ae"
+    },
+    "sequence_mask_L7.npy": {
+      "shape": [
+        200665,
+        7
+      ],
+      "dtype": "uint8",
+      "bytes": 1404783,
+      "sha256": "dbd147eb5b8ffb702dfd5c65b32b0a762acf77ec5c2014e1e0f076ac1014df3e"
+    },
+    "sequence_mask_L14.npy": {
+      "shape": [
+        200665,
+        14
+      ],
+      "dtype": "uint8",
+      "bytes": 2809438,
+      "sha256": "91143ef8e6543437b8d4b71439a4e989ca2c63d28ff972a918543bc9658eb6fd"
+    },
+    "sequence_mask_L30.npy": {
+      "shape": [
+        200665,
+        30
+      ],
+      "dtype": "uint8",
+      "bytes": 6020078,
+      "sha256": "2497b2bc2e66736b03e6303a78e6c3ec11487070207a80ea9732410a22bdc156"
+    }
+  },
+  "checks": [
+    {
+      "id": "S1a",
+      "pass": true
+    },
+    {
+      "id": "S1b",
+      "pass": true
+    },
+    {
+      "id": "S2a",
+      "pass": true
+    },
+    {
+      "id": "S2b.3",
+      "pass": true
+    },
+    {
+      "id": "S2b.7",
+      "pass": true
+    },
+    {
+      "id": "S2b.14",
+      "pass": true
+    },
+    {
+      "id": "S2b.30",
+      "pass": true
+    },
+    {
+      "id": "S2c",
+      "pass": true
+    },
+    {
+      "id": "S3a.3",
+      "pass": true
+    },
+    {
+      "id": "S3a.7",
+      "pass": true
+    },
+    {
+      "id": "S3a.14",
+      "pass": true
+    },
+    {
+      "id": "S3a.30",
+      "pass": true
+    },
+    {
+      "id": "S3b",
+      "pass": true
+    },
+    {
+      "id": "S3c.3",
+      "pass": true
+    },
+    {
+      "id": "S3c.7",
+      "pass": true
+    },
+    {
+      "id": "S3c.14",
+      "pass": true
+    },
+    {
+      "id": "S3c.30",
+      "pass": true
+    },
+    {
+      "id": "S3d",
+      "pass": true
+    }
+  ]
+}

@@ -1,0 +1,129 @@
+{
+  "date": "2026-10-08",
+  "phase": "Phase 13 leakage audit (steps 22-24; checklist 19-20)",
+  "issue_instant": "24:00 UTC of day t",
+  "checks": [
+    {
+      "id": "L1 static source audit",
+      "pass": true,
+      "detail": "2 forward-shift calls, all inside add_labels (lines 145-181); 4 feature builders x 0 target/label tokens; no year/month columns in the pool"
+    },
+    {
+      "id": "L2 calendar-formula recompute",
+      "pass": true,
+      "detail": "27 derived columns rebuilt from the full calendar matrix with shift(+k)/backward-window formulas: 0 mismatches over 200,665 model-ready rows x 3 decimals tolerance 1e-9"
+    },
+    {
+      "id": "L3 neighbourhood same-day recompute",
+      "pass": true,
+      "detail": "8 nb* columns recomputed from day-t values only for 60 sampled dates: 47,984 cells compared, 0 mismatches"
+    },
+    {
+      "id": "L4 upstream lag recompute",
+      "pass": true,
+      "detail": "upstream rule re-derived (56 stations mapped; 81,238 model-ready rows have a partner); 4 columns x 200,665 rows = 802,660 cells, 0 mismatches"
+    },
+    {
+      "id": "L5 banned/target columns absent from feature sets",
+      "pass": true,
+      "detail": "FULL(62) / LINEAR(35) / SELECTED(10) share 0 columns with the 3 labels, 3 obs_days_* and the 4 identity/date keys"
+    },
+    {
+      "id": "L6 univariate target-leakage screen",
+      "pass": true,
+      "detail": "62 features x 3 horizons in 34s; max oriented AUC 0.990 (wl_dist_to_danger); 0 features at/above 0.995"
+    },
+    {
+      "id": "L7 future-control (screen power)",
+      "pass": true,
+      "detail": "a deliberately future-derived feature reproduces label_24h on 100.0% and label_72h on 100.0% of labelled rows (AUC 1.000) -> the L6 threshold would catch it; the legitimate past-window twin wl_exceed_days_30 scores 0.908"
+    },
+    {
+      "id": "L8 observation-process test (phase5 E7 + phase11 open item 1)",
+      "pass": true,
+      "detail": "n_readings: AUC target 0.475 vs availability 0.804, delta PR-AUC -0.0013..+0.0018; nb5_n_wl_danger: AUC target 0.857 vs availability 0.295, delta PR-AUC +0.0035..+0.0075 -> n_readings is a LABEL-AVAILABILITY proxy (watch), nb*_n_wl_danger is a genuine day-t flood-state signal (admit)"
+    },
+    {
+      "id": "L9 key uniqueness + split disjointness",
+      "pass": true,
+      "detail": "0 duplicate station-days in either table; date-split train 77,571 / val 21,920 / test 101,174 share 0 dates and 0 station-days (partition by construction, asserted)"
+    },
+    {
+      "id": "L10 hole integrity",
+      "pass": true,
+      "detail": "52 zero-observation stretches, longest 2017-12-10..2018-12-31 (2018: 31,390 calendar rows, 0 observed, 0 in model-ready); 93,208 calendar rows sit in holes and NONE reaches the table; rows are consecutive calendar days for all 141 stations; lag1-7 empty on 2019-01-01 (23 observed rows); label rules hold {'label_24h': {'0': 190577, '1': 9982, 'nan': 106}, 'label_48h': {'0': 186507, '1': 11241, 'nan': 2917}, 'label_72h': {'0': 182834, '1': 12340, 'nan': 5491}}"
+    },
+    {
+      "id": "L11 cross-split similarity (evidence for Phase 15)",
+      "pass": true,
+      "detail": "0 exact feature-vector hashes appear in 2 parts (0 rows); 2022-01-01: nearest rows 2021-11-03 <-> 2022-03-15 = 131 model-ready-free days at the cut, 66 stations on both sides within 90 d (1 positive on both sides); 2023-01-01: nearest rows 2022-10-30 <-> 2023-01-27 = 88 model-ready-free days at the cut, 43 stations on both sides within 90 d (0 positive on both sides) -> the date cut already carries a natural dry-season embargo; an explicit embargo/gap is still a Phase 15 decision; keys and dates never overlap (L9)"
+    }
+  ],
+  "auc_screen_max": {
+    "feature": "wl_dist_to_danger",
+    "value": 0.9901
+  },
+  "observation_process": {
+    "auc": {
+      "n_readings": {
+        "target_24h": 0.47519742602595033,
+        "label_availability": 0.8037677850784416
+      },
+      "nb5_n_wl_danger": {
+        "target_24h": 0.8573329583200279,
+        "label_availability": 0.2945225171118422
+      }
+    },
+    "delta_pr_auc": [
+      {
+        "feature": "n_readings",
+        "horizon": "label_24h",
+        "persistence": 0.9009,
+        "plus_feature": 0.8996,
+        "delta_pr_auc": -0.0013
+      },
+      {
+        "feature": "n_readings",
+        "horizon": "label_48h",
+        "persistence": 0.8707,
+        "plus_feature": 0.8706,
+        "delta_pr_auc": -0.0001
+      },
+      {
+        "feature": "n_readings",
+        "horizon": "label_72h",
+        "persistence": 0.8388,
+        "plus_feature": 0.8406,
+        "delta_pr_auc": 0.0018
+      },
+      {
+        "feature": "nb5_n_wl_danger",
+        "horizon": "label_24h",
+        "persistence": 0.9009,
+        "plus_feature": 0.9045,
+        "delta_pr_auc": 0.0035
+      },
+      {
+        "feature": "nb5_n_wl_danger",
+        "horizon": "label_48h",
+        "persistence": 0.8707,
+        "plus_feature": 0.8747,
+        "delta_pr_auc": 0.004
+      },
+      {
+        "feature": "nb5_n_wl_danger",
+        "horizon": "label_72h",
+        "persistence": 0.8388,
+        "plus_feature": 0.8463,
+        "delta_pr_auc": 0.0075
+      }
+    ]
+  },
+  "cross_split_identical_rows": 0,
+  "whitelist": {
+    "ADMIT": 61,
+    "BAN": 10,
+    "ADMIT-WATCH": 1,
+    "ADMIT-CONSTANT": 1
+  }
+}

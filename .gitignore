@@ -15,5 +15,17 @@ data/raw/ffwc/*.html
 data/raw/geo/*
 !data/raw/geo/README.md
 
+# --- processed bulk data: large / regenerable (manifests + small tables stay tracked) ---
+data/processed/experimental_dataset.csv
+data/processed/split_assignments.csv
+data/processed/sequence_index.csv
+data/processed/*.npy
+
 # --- transient outputs ---
 scripts/*.err
+scripts/*.err.*
+scripts/*.out.txt
+scripts/*.stdout.log
+scripts/*.stderr.log
+scripts/*_console.*
+scripts/*.pid

@@ -1,0 +1,549 @@
+{
+  "phase": 16,
+  "stage": 29,
+  "date": "2026-10-09",
+  "inputs": {
+    "experimental_dataset.csv": "a6748529083fcdceb8bb8a657b067bf12b5c861f3a7a6b09c8977ea63be73c8e",
+    "split_assignments.csv": "b94c9942707eabca55e75c310f5d8598becce1b492de5912000e4a011e213156",
+    "phase16_baseline_metrics.csv": "7a1a6fa55ec009dd1249eadd629cf5fca1de7b28381123de22f81b4e4eeff4f4",
+    "phase16_test_metrics.csv": "7c798e5d3c7341bc0e1ca00e2d9202531508fee2eba3b48fd2772e1cd830e8e2"
+  },
+  "distributions": {
+    "by_split": [
+      {
+        "split": "train",
+        "horizon": "label_24h",
+        "labelled": 61977,
+        "pos": 5943,
+        "rate_%": 9.59,
+        "ratio_0_to_1": 9.4
+      },
+      {
+        "split": "train",
+        "horizon": "label_48h",
+        "labelled": 60992,
+        "pos": 6465,
+        "rate_%": 10.6,
+        "ratio_0_to_1": 8.4
+      },
+      {
+        "split": "train",
+        "horizon": "label_72h",
+        "labelled": 60144,
+        "pos": 6924,
+        "rate_%": 11.51,
+        "ratio_0_to_1": 7.7
+      },
+      {
+        "split": "val",
+        "horizon": "label_24h",
+        "labelled": 17502,
+        "pos": 891,
+        "rate_%": 5.09,
+        "ratio_0_to_1": 18.6
+      },
+      {
+        "split": "val",
+        "horizon": "label_48h",
+        "labelled": 17300,
+        "pos": 1027,
+        "rate_%": 5.94,
+        "ratio_0_to_1": 15.8
+      },
+      {
+        "split": "val",
+        "horizon": "label_72h",
+        "labelled": 17089,
+        "pos": 1124,
+        "rate_%": 6.58,
+        "ratio_0_to_1": 14.2
+      },
+      {
+        "split": "test",
+        "horizon": "label_24h",
+        "labelled": 101136,
+        "pos": 1425,
+        "rate_%": 1.41,
+        "ratio_0_to_1": 70.0
+      },
+      {
+        "split": "test",
+        "horizon": "label_48h",
+        "labelled": 99812,
+        "pos": 1768,
+        "rate_%": 1.77,
+        "ratio_0_to_1": 55.5
+      },
+      {
+        "split": "test",
+        "horizon": "label_72h",
+        "labelled": 98566,
+        "pos": 2094,
+        "rate_%": 2.12,
+        "ratio_0_to_1": 46.1
+      }
+    ],
+    "by_year": [
+      {
+        "year": 2017,
+        "rows": 17453,
+        "label_24h_rate_%": 13.37,
+        "label_24h_ratio": 6.5,
+        "label_48h_rate_%": 15.2,
+        "label_48h_ratio": 5.6,
+        "label_72h_rate_%": 16.81,
+        "label_72h_ratio": 4.9
+      },
+      {
+        "year": 2019,
+        "rows": 18309,
+        "label_24h_rate_%": 5.01,
+        "label_24h_ratio": 18.9,
+        "label_48h_rate_%": 5.77,
+        "label_48h_ratio": 16.3,
+        "label_72h_rate_%": 6.47,
+        "label_72h_ratio": 14.5
+      },
+      {
+        "year": 2020,
+        "rows": 20055,
+        "label_24h_rate_%": 13.57,
+        "label_24h_ratio": 6.4,
+        "label_48h_rate_%": 14.77,
+        "label_48h_ratio": 5.8,
+        "label_72h_rate_%": 15.83,
+        "label_72h_ratio": 5.3
+      },
+      {
+        "year": 2021,
+        "rows": 21754,
+        "label_24h_rate_%": 6.78,
+        "label_24h_ratio": 13.8,
+        "label_48h_rate_%": 7.59,
+        "label_48h_ratio": 12.2,
+        "label_72h_rate_%": 8.32,
+        "label_72h_ratio": 11.0
+      },
+      {
+        "year": 2022,
+        "rows": 21920,
+        "label_24h_rate_%": 5.08,
+        "label_24h_ratio": 18.7,
+        "label_48h_rate_%": 5.96,
+        "label_48h_ratio": 15.8,
+        "label_72h_rate_%": 6.64,
+        "label_72h_ratio": 14.1
+      },
+      {
+        "year": 2023,
+        "rows": 23869,
+        "label_24h_rate_%": 0.68,
+        "label_24h_ratio": 146.3,
+        "label_48h_rate_%": 0.93,
+        "label_48h_ratio": 106.6,
+        "label_72h_rate_%": 1.19,
+        "label_72h_ratio": 83.0
+      },
+      {
+        "year": 2024,
+        "rows": 24363,
+        "label_24h_rate_%": 2.54,
+        "label_24h_ratio": 38.3,
+        "label_48h_rate_%": 3.11,
+        "label_48h_ratio": 31.2,
+        "label_72h_rate_%": 3.69,
+        "label_72h_ratio": 26.1
+      },
+      {
+        "year": 2025,
+        "rows": 28252,
+        "label_24h_rate_%": 1.17,
+        "label_24h_ratio": 84.6,
+        "label_48h_rate_%": 1.49,
+        "label_48h_ratio": 65.9,
+        "label_72h_rate_%": 1.79,
+        "label_72h_ratio": 55.0
+      },
+      {
+        "year": 2026,
+        "rows": 24690,
+        "label_24h_rate_%": 1.27,
+        "label_24h_ratio": 77.6,
+        "label_48h_rate_%": 1.6,
+        "label_48h_ratio": 61.6,
+        "label_72h_rate_%": 1.9,
+        "label_72h_ratio": 51.7
+      }
+    ],
+    "by_split_season": [
+      {
+        "split": "train",
+        "season": "monsoon",
+        "rows": 35194,
+        "label_24h_rate_%": 15.5,
+        "label_24h_labelled": 35185,
+        "label_48h_rate_%": 16.9,
+        "label_48h_labelled": 35077,
+        "label_72h_rate_%": 18.15,
+        "label_72h_labelled": 34967
+      },
+      {
+        "split": "train",
+        "season": "non-monsoon",
+        "rows": 26797,
+        "label_24h_rate_%": 1.82,
+        "label_24h_labelled": 26792,
+        "label_48h_rate_%": 2.07,
+        "label_48h_labelled": 25915,
+        "label_72h_rate_%": 2.3,
+        "label_72h_labelled": 25177
+      },
+      {
+        "split": "val",
+        "season": "monsoon",
+        "rows": 9996,
+        "label_24h_rate_%": 6.84,
+        "label_24h_labelled": 9966,
+        "label_48h_rate_%": 7.98,
+        "label_48h_labelled": 9889,
+        "label_72h_rate_%": 8.81,
+        "label_72h_labelled": 9797
+      },
+      {
+        "split": "val",
+        "season": "non-monsoon",
+        "rows": 7542,
+        "label_24h_rate_%": 2.77,
+        "label_24h_labelled": 7536,
+        "label_48h_rate_%": 3.21,
+        "label_48h_labelled": 7411,
+        "label_72h_rate_%": 3.58,
+        "label_72h_labelled": 7292
+      },
+      {
+        "split": "test",
+        "season": "monsoon",
+        "rows": 54766,
+        "label_24h_rate_%": 2.33,
+        "label_24h_labelled": 54739,
+        "label_48h_rate_%": 2.88,
+        "label_48h_labelled": 54563,
+        "label_72h_rate_%": 3.4,
+        "label_72h_labelled": 54408
+      },
+      {
+        "split": "test",
+        "season": "non-monsoon",
+        "rows": 46408,
+        "label_24h_rate_%": 0.32,
+        "label_24h_labelled": 46397,
+        "label_48h_rate_%": 0.43,
+        "label_48h_labelled": 45249,
+        "label_72h_rate_%": 0.55,
+        "label_72h_labelled": 44158
+      }
+    ]
+  },
+  "concentration": {
+    "stations": 133,
+    "stations_ever_positive": 111,
+    "stations_ge_200_rows": 122,
+    "zero_positive_stations_ge_200_rows": [
+      "Dhaka",
+      "Faridpur",
+      "Bogura",
+      "Chuadanga",
+      "Hatboalia",
+      "Shimulbari",
+      "Chattogram",
+      "Kamarjani",
+      "Lakshmipur",
+      "Goalkanda",
+      "Boalmari",
+      "Haripur",
+      "Sonapur",
+      "Shuvopur"
+    ],
+    "top10_share_positives": 0.3892,
+    "top20_share_positives": 0.5757,
+    "top_station_rates": {
+      "Mongla": 73.2,
+      "Khulna": 39.5,
+      "Dalia": 22.2,
+      "Sureshswar": 21.9,
+      "Daulatkhan": 26.8
+    }
+  },
+  "imbalance_ratio_0_to_1": {
+    "label_24h": {
+      "all": 19.1,
+      "train": 9.4,
+      "val": 18.6,
+      "test": 70.0
+    },
+    "label_48h": {
+      "all": 16.6
+    },
+    "label_72h": {
+      "all": 14.8,
+      "worst_year": 83.0,
+      "best_year": 4.9
+    }
+  },
+  "policy": {
+    "primary_metric": "pr_auc (PR-AUC)",
+    "never_headline": [
+      "accuracy",
+      "roc_auc alone"
+    ],
+    "reporting": "per year / per bucket / per season / per station, macro + micro (D8), never pooled",
+    "thresholds": "derived from training predictions only; stage 39 sets the cost of FN >> FP",
+    "resampling": "inside the training fold only, never before the split (R4)",
+    "class_weight": "candidate variant for Phase 17, fitted on the same folds",
+    "open_risk": "train-derived thresholds do not transfer to the low-base-rate test years (I4c) - recall falls from 0.85 to 0.53 at 24 h"
+  },
+  "checks": [
+    {
+      "id": "S1a",
+      "pass": true
+    },
+    {
+      "id": "S1b",
+      "pass": true
+    },
+    {
+      "id": "S1c",
+      "pass": true
+    },
+    {
+      "id": "S1d",
+      "pass": true
+    },
+    {
+      "id": "S1e",
+      "pass": true
+    },
+    {
+      "id": "S1f",
+      "pass": true
+    },
+    {
+      "id": "S2a",
+      "pass": true
+    },
+    {
+      "id": "S2b",
+      "pass": true
+    },
+    {
+      "id": "S2c",
+      "pass": true
+    },
+    {
+      "id": "S2d",
+      "pass": true
+    },
+    {
+      "id": "S3a",
+      "pass": true
+    },
+    {
+      "id": "S3b",
+      "pass": true
+    },
+    {
+      "id": "S3c",
+      "pass": true
+    },
+    {
+      "id": "S3d",
+      "pass": true
+    },
+    {
+      "id": "S3e",
+      "pass": true
+    },
+    {
+      "id": "S4a-dev",
+      "pass": true
+    },
+    {
+      "id": "S4b-dev",
+      "pass": true
+    },
+    {
+      "id": "S4c-dev",
+      "pass": true
+    },
+    {
+      "id": "S4a-test",
+      "pass": true
+    },
+    {
+      "id": "S4b-test",
+      "pass": true
+    },
+    {
+      "id": "S4c-test",
+      "pass": true
+    },
+    {
+      "id": "S4d",
+      "pass": true
+    },
+    {
+      "id": "S4e",
+      "pass": true
+    },
+    {
+      "id": "S5a-dev",
+      "pass": true
+    },
+    {
+      "id": "S5b-dev",
+      "pass": true
+    },
+    {
+      "id": "S5c-dev",
+      "pass": true
+    },
+    {
+      "id": "S5a-test",
+      "pass": true
+    },
+    {
+      "id": "S5b-test",
+      "pass": true
+    },
+    {
+      "id": "S5c-test",
+      "pass": true
+    },
+    {
+      "id": "S6a",
+      "pass": true
+    },
+    {
+      "id": "S6b",
+      "pass": true
+    },
+    {
+      "id": "S6c",
+      "pass": true
+    },
+    {
+      "id": "S7a",
+      "pass": true
+    },
+    {
+      "id": "S7b",
+      "pass": true
+    },
+    {
+      "id": "S7c",
+      "pass": true
+    },
+    {
+      "id": "S7d",
+      "pass": true
+    },
+    {
+      "id": "I1a",
+      "pass": true
+    },
+    {
+      "id": "I1b",
+      "pass": true
+    },
+    {
+      "id": "I1c",
+      "pass": true
+    },
+    {
+      "id": "I1d",
+      "pass": true
+    },
+    {
+      "id": "I2a",
+      "pass": true
+    },
+    {
+      "id": "I2b",
+      "pass": true
+    },
+    {
+      "id": "I2c",
+      "pass": true
+    },
+    {
+      "id": "I2d",
+      "pass": true
+    },
+    {
+      "id": "I2e",
+      "pass": true
+    },
+    {
+      "id": "I3a",
+      "pass": true
+    },
+    {
+      "id": "I3b",
+      "pass": true
+    },
+    {
+      "id": "I3c",
+      "pass": true
+    },
+    {
+      "id": "I4a",
+      "pass": true
+    },
+    {
+      "id": "I4b-dev",
+      "pass": true
+    },
+    {
+      "id": "I4b-test",
+      "pass": true
+    },
+    {
+      "id": "I4c",
+      "pass": true
+    },
+    {
+      "id": "I4d",
+      "pass": true
+    },
+    {
+      "id": "I3d",
+      "pass": true
+    },
+    {
+      "id": "I5a",
+      "pass": true
+    },
+    {
+      "id": "I5b",
+      "pass": true
+    },
+    {
+      "id": "I5c",
+      "pass": true
+    },
+    {
+      "id": "I5d",
+      "pass": true
+    }
+  ],
+  "warnings": [
+    {
+      "id": "W-R3",
+      "note": "phase0 R3 records 13 zero-positive stations, the Phase-14 table has 14 (>= 200 labelled rows) - re-measured here, phase0 not overwritten"
+    },
+    {
+      "id": "W-R2",
+      "note": "phase0 R2 quotes Mongla 83.8 %; the Phase-14 table gives 73.2 % - the earlier figure is not reproducible from the current table, flagged for phase0 review"
+    }
+  ]
+}

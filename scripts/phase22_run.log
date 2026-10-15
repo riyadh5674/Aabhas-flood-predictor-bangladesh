@@ -1,0 +1,49 @@
+Phase 22 — families=['tcn_bestL'] | seed=20261008 | 2026-10-10 17:42:20.941254+00:00
+registry OK: test_policy=frozen_read_at_phase33, budgets <= 20
+index labels re-checked 1:1 vs experimental_dataset.csv (200,665 rows, 133 stations)
+dev grid OK: ['spatial_fold_1', 'spatial_fold_2', 'spatial_fold_3', 'spatial_fold_4', 'val_2020', 'val_2021', 'val_2022'] — frozen test never scored
+
+L* = 3 (0.92677 mean PR-AUC on val_2022 over the 4 LSTMs)
+
+=== tcn_bestL (L3-06) L=3 tcn — tuning 12/96 configs, cell=val_2022, score=mean PR-AUC over 3 horizons ===
+  [1/12] tcn_bestL_c00 mean=0.91082 (24h=0.92553 48h=0.91055 72h=0.89637) off (144s)
+  [2/12] tcn_bestL_c01 mean=0.90895 (24h=0.92029 48h=0.90865 72h=0.89791) off (128s)
+  [3/12] tcn_bestL_c02 mean=0.91501 (24h=0.93030 48h=0.91045 72h=0.90428) off (315s)
+  [4/12] tcn_bestL_c03 mean=0.91626 (24h=0.93001 48h=0.91572 72h=0.90306) off (102s)
+  [5/12] tcn_bestL_c04 mean=0.91037 (24h=0.92631 48h=0.91603 72h=0.88877) on (152s)
+  [6/12] tcn_bestL_c05 mean=0.91062 (24h=0.91893 48h=0.91266 72h=0.90025) on (124s)
+  [7/12] tcn_bestL_c06 mean=0.91046 (24h=0.91960 48h=0.91743 72h=0.89435) off (121s)
+  [8/12] tcn_bestL_c07 mean=0.91000 (24h=0.92195 48h=0.91067 72h=0.89738) on (98s)
+  [9/12] tcn_bestL_c08 mean=0.91101 (24h=0.91888 48h=0.91620 72h=0.89796) on (192s)
+  [10/12] tcn_bestL_c09 mean=0.91845 (24h=0.92983 48h=0.91837 72h=0.90714) on (138s)
+  [11/12] tcn_bestL_c10 mean=0.91538 (24h=0.92718 48h=0.91441 72h=0.90454) on (96s)
+  [12/12] tcn_bestL_c11 mean=0.92124 (24h=0.94052 48h=0.92236 72h=0.90083) on (187s)
+  -> winner tcn_bestL_c11 mean_pr_auc=0.92124 epochs={'24h': 9, '48h': 13, '72h': 2} n_params=11,329
+=== tcn_bestL — grid with tcn_bestL_c11 (8 dev tasks x 3 seasons x 3 horizons) ===
+  P1_temporal_primary train_<2022   label_24h epochs 9 fit 54s
+  P1_temporal_primary train_<2022   label_48h epochs 13 fit 61s
+  P1_temporal_primary train_<2022   label_72h epochs 2 fit 9s
+  P2_rolling_origin  train_<=2019  label_24h epochs 9 fit 20s
+  P2_rolling_origin  train_<=2019  label_48h epochs 13 fit 29s
+  P2_rolling_origin  train_<=2019  label_72h epochs 2 fit 5s
+  P2_rolling_origin  train_<=2020  label_24h epochs 9 fit 30s
+  P2_rolling_origin  train_<=2020  label_48h epochs 13 fit 43s
+  P2_rolling_origin  train_<=2020  label_72h epochs 2 fit 7s
+  P2_rolling_origin  train_<=2021  label_24h epochs 9 fit 44s
+  P2_rolling_origin  train_<=2021  label_48h epochs 13 fit 61s
+  P2_rolling_origin  train_<=2021  label_72h epochs 2 fit 9s
+  P3_spatial_cv      excl_fold_1   label_24h epochs 9 fit 33s
+  P3_spatial_cv      excl_fold_1   label_48h epochs 13 fit 45s
+  P3_spatial_cv      excl_fold_1   label_72h epochs 2 fit 7s
+  P3_spatial_cv      excl_fold_2   label_24h epochs 9 fit 31s
+  P3_spatial_cv      excl_fold_2   label_48h epochs 13 fit 43s
+  P3_spatial_cv      excl_fold_2   label_72h epochs 2 fit 7s
+  P3_spatial_cv      excl_fold_3   label_24h epochs 9 fit 33s
+  P3_spatial_cv      excl_fold_3   label_48h epochs 13 fit 47s
+  P3_spatial_cv      excl_fold_3   label_72h epochs 2 fit 7s
+  P3_spatial_cv      excl_fold_4   label_24h epochs 9 fit 31s
+  P3_spatial_cv      excl_fold_4   label_48h epochs 13 fit 47s
+  P3_spatial_cv      excl_fold_4   label_72h epochs 2 fit 7s
+  checkpoint: phase22_search.csv (12 rows), phase22_metrics.csv (72 rows), phase22_L3-06.pt, family time 2557s
+
+TOTAL 2560s — exit=0

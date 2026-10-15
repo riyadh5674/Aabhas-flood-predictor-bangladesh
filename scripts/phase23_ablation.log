@@ -1,0 +1,56 @@
+matched config = fusion_L3 winner fusion_L3_c15: {"lr": 0.003, "hidden": 64, "layers": 2, "dropout": 0.3, "batch_size": 512} | epochs {'24h': 10, '48h': 11, '72h': 14} | L=3
+  P1_temporal_primary train_<2022   label_24h fusion_matched         fit 56s
+  P1_temporal_primary train_<2022   label_24h temporal_only_matched  fit 42s
+  P1_temporal_primary train_<2022   label_48h fusion_matched         fit 55s
+  P1_temporal_primary train_<2022   label_48h temporal_only_matched  fit 48s
+  P1_temporal_primary train_<2022   label_72h fusion_matched         fit 65s
+  P1_temporal_primary train_<2022   label_72h temporal_only_matched  fit 56s
+  P2_rolling_origin  train_<=2019  label_24h fusion_matched         fit 23s
+  P2_rolling_origin  train_<=2019  label_24h temporal_only_matched  fit 17s
+  P2_rolling_origin  train_<=2019  label_48h fusion_matched         fit 25s
+  P2_rolling_origin  train_<=2019  label_48h temporal_only_matched  fit 20s
+  P2_rolling_origin  train_<=2019  label_72h fusion_matched         fit 31s
+  P2_rolling_origin  train_<=2019  label_72h temporal_only_matched  fit 25s
+  P2_rolling_origin  train_<=2020  label_24h fusion_matched         fit 36s
+  P2_rolling_origin  train_<=2020  label_24h temporal_only_matched  fit 31s
+  P2_rolling_origin  train_<=2020  label_48h fusion_matched         fit 45s
+  P2_rolling_origin  train_<=2020  label_48h temporal_only_matched  fit 36s
+  P2_rolling_origin  train_<=2020  label_72h fusion_matched         fit 63s
+  P2_rolling_origin  train_<=2020  label_72h temporal_only_matched  fit 56s
+  P2_rolling_origin  train_<=2021  label_24h fusion_matched         fit 73s
+  P2_rolling_origin  train_<=2021  label_24h temporal_only_matched  fit 51s
+  P2_rolling_origin  train_<=2021  label_48h fusion_matched         fit 66s
+  P2_rolling_origin  train_<=2021  label_48h temporal_only_matched  fit 53s
+  P2_rolling_origin  train_<=2021  label_72h fusion_matched         fit 106s
+  P2_rolling_origin  train_<=2021  label_72h temporal_only_matched  fit 75s
+  P3_spatial_cv      excl_fold_1   label_24h fusion_matched         fit 50s
+  P3_spatial_cv      excl_fold_1   label_24h temporal_only_matched  fit 44s
+  P3_spatial_cv      excl_fold_1   label_48h fusion_matched         fit 45s
+  P3_spatial_cv      excl_fold_1   label_48h temporal_only_matched  fit 32s
+  P3_spatial_cv      excl_fold_1   label_72h fusion_matched         fit 48s
+  P3_spatial_cv      excl_fold_1   label_72h temporal_only_matched  fit 56s
+  P3_spatial_cv      excl_fold_2   label_24h fusion_matched         fit 40s
+  P3_spatial_cv      excl_fold_2   label_24h temporal_only_matched  fit 35s
+  P3_spatial_cv      excl_fold_2   label_48h fusion_matched         fit 40s
+  P3_spatial_cv      excl_fold_2   label_48h temporal_only_matched  fit 38s
+  P3_spatial_cv      excl_fold_2   label_72h fusion_matched         fit 66s
+  P3_spatial_cv      excl_fold_2   label_72h temporal_only_matched  fit 48s
+  P3_spatial_cv      excl_fold_3   label_24h fusion_matched         fit 46s
+  P3_spatial_cv      excl_fold_3   label_24h temporal_only_matched  fit 37s
+  P3_spatial_cv      excl_fold_3   label_48h fusion_matched         fit 50s
+  P3_spatial_cv      excl_fold_3   label_48h temporal_only_matched  fit 40s
+  P3_spatial_cv      excl_fold_3   label_72h fusion_matched         fit 55s
+  P3_spatial_cv      excl_fold_3   label_72h temporal_only_matched  fit 48s
+  P3_spatial_cv      excl_fold_4   label_24h fusion_matched         fit 43s
+  P3_spatial_cv      excl_fold_4   label_24h temporal_only_matched  fit 41s
+  P3_spatial_cv      excl_fold_4   label_48h fusion_matched         fit 46s
+  P3_spatial_cv      excl_fold_4   label_48h temporal_only_matched  fit 39s
+  P3_spatial_cv      excl_fold_4   label_72h fusion_matched         fit 55s
+  P3_spatial_cv      excl_fold_4   label_72h temporal_only_matched  fit 48s
+
+=== fused - temporal-only gain (val_2022, season=all, paired station bootstrap) ===
+  label_24h: fused 0.9444 vs temporal-only 0.9420  gain +0.0024  CI [-0.0003, +0.0084]
+  label_48h: fused 0.9385 vs temporal-only 0.9332  gain +0.0053  CI [-0.0010, +0.0123]
+  label_72h: fused 0.9238 vs temporal-only 0.9279  gain -0.0041  CI [-0.0107, -0.0011]
+
+wrote phase23_ablation.csv (144 rows), phase23_ablation_boot.csv, phase23_ablation_preds.npz  [2381s]

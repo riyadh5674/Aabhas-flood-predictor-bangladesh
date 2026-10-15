@@ -1,0 +1,161 @@
+{
+  "created": "2026-10-08",
+  "phase": "Phase 15 split strategy (steps 25-27; checklist 27-28)",
+  "source_table": "data/processed/experimental_dataset.csv",
+  "source_sha256": "a6748529083fcdceb8bb8a657b067bf12b5c861f3a7a6b09c8977ea63be73c8e",
+  "assignments": "data/processed/split_assignments.csv",
+  "design": {
+    "temporal_cuts": {
+      "val": "2022-01-01",
+      "test": "2023-01-01"
+    },
+    "embargo_days": 7,
+    "monsoon_months": [
+      6,
+      7,
+      8,
+      9
+    ],
+    "spatial_folds": 5,
+    "holdout_fold": 0,
+    "station_cohorts": {
+      "early": "first observed <= 2017",
+      "late": "first observed >= 2018"
+    },
+    "seed": 20261008,
+    "holdout_stations": [
+      1,
+      12,
+      14,
+      29,
+      36,
+      41,
+      43,
+      52,
+      56,
+      60,
+      63,
+      67,
+      68,
+      69,
+      81,
+      83,
+      84,
+      88,
+      98,
+      105,
+      118,
+      123,
+      124,
+      137,
+      148,
+      154
+    ]
+  },
+  "protocols": {
+    "P1_temporal_primary": "train < 2022 (holdout excluded) / val 2022 (holdout excluded) / test 2023+ (all stations; report seen vs unseen separately)",
+    "P2_rolling_origin": [
+      "train <= 2019 -> val 2020",
+      "train <= 2020 -> val 2021",
+      "train <= 2021 -> val 2022"
+    ],
+    "P3_spatial_cv": "4 folds over non-holdout stations, train-period rows only, station-disjoint by construction",
+    "P4_unseen_location_test": "fold 0 stations, test period only, never trained on or validated on",
+    "P5_season": "every metric additionally reported for JJAS vs rest (D1)",
+    "frozen": "test period (2023+) never used for model selection (D8)"
+  },
+  "counts": {
+    "split_rows": {
+      "test": 101174,
+      "train": 77571,
+      "val": 21920
+    },
+    "split_rows_non_holdout": {
+      "test": 81411,
+      "train": 61991,
+      "val": 17538
+    },
+    "stations_per_fold": {
+      "0": 26,
+      "1": 27,
+      "2": 27,
+      "3": 26,
+      "4": 27
+    },
+    "train_sets_excluding_holdout": {
+      "primary train": 61991,
+      "rolling 2020": 28711,
+      "rolling 2021": 44614,
+      "rolling 2022": 61991,
+      "spatial CV train": 61991
+    },
+    "test_trained_station_rows": 75889,
+    "test_new_network_rows": 5522,
+    "test_unseen_rows": 19763,
+    "stations_trained_on": 84,
+    "stations_new_network": 23,
+    "embargo_flagged_rows": 0
+  },
+  "evidence": {
+    "natural_free_days_at_cuts": {
+      "2020-01-01": 98,
+      "2021-01-01": 100,
+      "2022-01-01": 131,
+      "2023-01-01": 88
+    },
+    "base_rate_drift_label_72h": {
+      "2017": 16.81,
+      "2019": 6.47,
+      "2020": 15.83,
+      "2021": 8.32,
+      "2022": 6.64,
+      "2023": 1.19,
+      "2024": 3.69,
+      "2025": 1.79,
+      "2026": 1.9
+    },
+    "monsoon": {
+      "share_rows": 0.5552,
+      "label_72h_rate_monsoon": 9.79,
+      "label_72h_rate_non_monsoon": 1.8
+    }
+  },
+  "checks": [
+    {
+      "id": "S1 input contract",
+      "pass": true
+    },
+    {
+      "id": "S2 spatial folds (step 26 / R7)",
+      "pass": true
+    },
+    {
+      "id": "S3 temporal split (step 25)",
+      "pass": true
+    },
+    {
+      "id": "S4 embargo (step 25 / R6)",
+      "pass": true
+    },
+    {
+      "id": "S5 rolling-origin folds (D8 / R1)",
+      "pass": true
+    },
+    {
+      "id": "S6 spatial protocols (step 26)",
+      "pass": true
+    },
+    {
+      "id": "S7 monsoon validation (step 27 / D1)",
+      "pass": true
+    },
+    {
+      "id": "S8 integrity",
+      "pass": true
+    },
+    {
+      "id": "S9 write + round-trip",
+      "pass": true
+    }
+  ]
+}

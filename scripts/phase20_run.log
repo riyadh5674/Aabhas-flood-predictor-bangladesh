@@ -1,0 +1,820 @@
+Phase 20 ΓÇö classical ML | families=['xgboost_selected'] | seed=20261008 | 2026-10-08 20:39:30.054613+00:00
+
+registry OK: test_policy=frozen_read_at_phase33, budgets within <=40
+
+loaded 200,665 rows x 75 cols (train 61,991 / val 17,538 / test 101,174); feature sets FULL 62 / LINEAR 35 / SELECTED 10
+
+dev grid OK: ['spatial_fold_1', 'spatial_fold_2', 'spatial_fold_3', 'spatial_fold_4', 'val_2020', 'val_2021', 'val_2022'] ΓÇö frozen test never scored
+
+
+
+=== xgboost_selected (L2-05) ΓÇö tuning 12/432 configs, cell=val_2022, score=mean PR-AUC over 3 horizons ===
+
+  [1/12] xgboost_selected_c00 mean=0.95393 (24h=0.96631 48h=0.95333 72h=0.94216) none (11s)
+
+  [2/12] xgboost_selected_c01 mean=0.95353 (24h=0.96592 48h=0.95379 72h=0.94087) none (12s)
+
+  [3/12] xgboost_selected_c02 mean=0.95248 (24h=0.96536 48h=0.95217 72h=0.93990) none (7s)
+
+  [4/12] xgboost_selected_c03 mean=0.95259 (24h=0.96563 48h=0.95302 72h=0.93911) none (10s)
+
+  [5/12] xgboost_selected_c04 mean=0.95356 (24h=0.96648 48h=0.95280 72h=0.94140) none (18s)
+
+  [6/12] xgboost_selected_c05 mean=0.95357 (24h=0.96614 48h=0.95298 72h=0.94159) none (15s)
+
+  [7/12] xgboost_selected_c06 mean=0.95239 (24h=0.96484 48h=0.95343 72h=0.93890) none (20s)
+
+  [8/12] xgboost_selected_c07 mean=0.95195 (24h=0.96507 48h=0.95155 72h=0.93922) none (16s)
+
+  [9/12] xgboost_selected_c08 mean=0.95057 (24h=0.96314 48h=0.95102 72h=0.93757) none (21s)
+
+  [10/12] xgboost_selected_c09 mean=0.94950 (24h=0.96300 48h=0.95003 72h=0.93546) none (25s)
+
+  [11/12] xgboost_selected_c10 mean=0.95363 (24h=0.96609 48h=0.95340 72h=0.94139) none (26s)
+
+  [12/12] xgboost_selected_c11 mean=0.95171 (24h=0.96444 48h=0.95165 72h=0.93904) none (37s)
+
+  -> winner xgboost_selected_c00 mean_pr_auc=0.95393 weighting=none
+
+=== xgboost_selected ΓÇö grid with xgboost_selected_c00 (8 dev cells x 3 seasons x 3 horizons) ===
+
+  P1_temporal_primary train_<2022   label_24h pr_auc(val) fit 3.9s
+
+  P1_temporal_primary train_<2022   label_48h pr_auc(val) fit 4.3s
+
+  P1_temporal_primary train_<2022   label_72h pr_auc(val) fit 3.5s
+
+  P2_rolling_origin  train_<=2019  label_24h pr_auc(val) fit 2.2s
+
+  P2_rolling_origin  train_<=2019  label_48h pr_auc(val) fit 2.2s
+
+  P2_rolling_origin  train_<=2019  label_72h pr_auc(val) fit 2.2s
+
+  P2_rolling_origin  train_<=2020  label_24h pr_auc(val) fit 2.6s
+
+  P2_rolling_origin  train_<=2020  label_48h pr_auc(val) fit 2.9s
+
+  P2_rolling_origin  train_<=2020  label_72h pr_auc(val) fit 3.1s
+
+  P2_rolling_origin  train_<=2021  label_24h pr_auc(val) fit 3.3s
+
+  P2_rolling_origin  train_<=2021  label_48h pr_auc(val) fit 3.5s
+
+  P2_rolling_origin  train_<=2021  label_72h pr_auc(val) fit 3.7s
+
+  P3_spatial_cv      excl_fold_1   label_24h pr_auc(val) fit 3.5s
+
+  P3_spatial_cv      excl_fold_1   label_48h pr_auc(val) fit 3.2s
+
+  P3_spatial_cv      excl_fold_1   label_72h pr_auc(val) fit 2.8s
+
+  P3_spatial_cv      excl_fold_2   label_24h pr_auc(val) fit 2.9s
+
+  P3_spatial_cv      excl_fold_2   label_48h pr_auc(val) fit 2.9s
+
+  P3_spatial_cv      excl_fold_2   label_72h pr_auc(val) fit 2.8s
+
+  P3_spatial_cv      excl_fold_3   label_24h pr_auc(val) fit 3.0s
+
+  P3_spatial_cv      excl_fold_3   label_48h pr_auc(val) fit 2.9s
+
+  P3_spatial_cv      excl_fold_3   label_72h pr_auc(val) fit 2.8s
+
+  P3_spatial_cv      excl_fold_4   label_24h pr_auc(val) fit 2.8s
+
+  P3_spatial_cv      excl_fold_4   label_48h pr_auc(val) fit 2.7s
+
+  P3_spatial_cv      excl_fold_4   label_72h pr_auc(val) fit 2.7s
+
+  checkpoint: phase20_search.csv (12 rows), phase20_metrics.csv (72 rows), phase20_L2-05.pkl, family time 318s
+
+
+
+==============================================================================
+
+PHASE 20 summary
+
+==============================================================================
+
+
+
+-- tuning budgets actually used (registry max = 40) --
+
+                  configs  space  budget     best  fit_s
+
+family                                                  
+
+xgboost_selected       12    432      12  0.95393  217.7
+
+
+
+-- selected config per family --
+
+          family            config_id                                                                                                                         params weighting  mean_pr_auc
+
+xgboost_selected xgboost_selected_c00 {"n_estimators": 300, "learning_rate": 0.03, "max_depth": 6, "min_child_weight": 1, "subsample": 1.0, "colsample_bytree": 1.0}      none     0.953934
+
+
+
+=== selection cell val_2022 (P1, season=all) ΓÇö Phase 20 vs Phase 16 ===
+
+                     brier                        pr_auc                        recall                    
+
+horizon          label_24h label_48h label_72h label_24h label_48h label_72h label_24h label_48h label_72h
+
+model                                                                                                     
+
+logreg_linear       0.0099    0.0133    0.0168    0.9401    0.9241    0.9053    0.8474    0.8179    0.8052
+
+persistence         0.0118    0.0166    0.0214    0.9203    0.8954    0.8683    0.8777    0.8189    0.7625
+
+xgboost_selected    0.0076    0.0106    0.0131    0.9663    0.9533    0.9422    0.8855    0.8685    0.8674
+
+
+
+=== spatial CV (P3, mean over folds, season=all) ΓÇö PR-AUC ===
+
+horizon           label_24h  label_48h  label_72h
+
+model                                            
+
+logreg_linear        0.9277     0.9032     0.8803
+
+persistence          0.9370     0.9182     0.8979
+
+xgboost_selected     0.9740     0.9589     0.9439
+
+
+
+=== rolling origin (P2, per year, season=all) ΓÇö PR-AUC ===
+
+horizon                    label_24h  label_48h  label_72h
+
+model            cell                                     
+
+xgboost_selected val_2020     0.9854     0.9757     0.9644
+
+                 val_2021     0.9819     0.9717     0.9580
+
+                 val_2022     0.9663     0.9533     0.9422
+
+
+
+wrote phase20_search.csv (12 rows), phase20_metrics.csv (72 rows), models/phase20_L2-0*.pkl
+
+
+
+TOTAL 320s ΓÇö exit=0
+
+Phase 20 ΓÇö classical ML | families=['random_forest', 'gradient_boosting'] | seed=20261008 | 2026-10-08 20:45:04.447303+00:00
+
+registry OK: test_policy=frozen_read_at_phase33, budgets within <=40
+
+loaded 200,665 rows x 75 cols (train 61,991 / val 17,538 / test 101,174); feature sets FULL 62 / LINEAR 35 / SELECTED 10
+
+dev grid OK: ['spatial_fold_1', 'spatial_fold_2', 'spatial_fold_3', 'spatial_fold_4', 'val_2020', 'val_2021', 'val_2022'] ΓÇö frozen test never scored
+
+
+
+=== random_forest (L2-01) ΓÇö tuning 12/72 configs, cell=val_2022, score=mean PR-AUC over 3 horizons ===
+
+  [1/12] random_forest_c00 mean=0.94028 (24h=0.95288 48h=0.93928 72h=0.92868) class_weight=balanced (93s)
+
+  [2/12] random_forest_c01 mean=0.93774 (24h=0.94739 48h=0.93845 72h=0.92737) class_weight=balanced (82s)
+
+  [3/12] random_forest_c02 mean=0.94590 (24h=0.95951 48h=0.94729 72h=0.93090) class_weight=balanced (238s)
+
+  [4/12] random_forest_c03 mean=0.94259 (24h=0.95351 48h=0.94300 72h=0.93125) class_weight=balanced (58s)
+
+  [5/12] random_forest_c04 mean=0.95051 (24h=0.96401 48h=0.95066 72h=0.93685) class_weight=balanced (223s)
+
+  [6/12] random_forest_c05 mean=0.94744 (24h=0.96175 48h=0.94621 72h=0.93436) class_weight=None (399s)
+
+  [7/12] random_forest_c06 mean=0.95110 (24h=0.96402 48h=0.95106 72h=0.93821) class_weight=None (96s)
+
+  [8/12] random_forest_c07 mean=0.95230 (24h=0.96650 48h=0.95155 72h=0.93885) class_weight=balanced (245s)
+
+  [9/12] random_forest_c08 mean=0.95225 (24h=0.96600 48h=0.95170 72h=0.93904) class_weight=balanced (482s)
+
+  [10/12] random_forest_c09 mean=0.94781 (24h=0.96061 48h=0.94823 72h=0.93458) class_weight=None (134s)
+
+  [11/12] random_forest_c10 mean=0.94929 (24h=0.96336 48h=0.94920 72h=0.93531) class_weight=None (183s)
+
+  [12/12] random_forest_c11 mean=0.94468 (24h=0.95836 48h=0.94522 72h=0.93045) class_weight=balanced (552s)
+
+  -> winner random_forest_c07 mean_pr_auc=0.95230 weighting=class_weight=balanced
+
+=== random_forest ΓÇö grid with random_forest_c07 (8 dev cells x 3 seasons x 3 horizons) ===
+
+  P1_temporal_primary train_<2022   label_24h pr_auc(val) fit 84.3s
+
+  P1_temporal_primary train_<2022   label_48h pr_auc(val) fit 76.6s
+
+  P1_temporal_primary train_<2022   label_72h pr_auc(val) fit 81.4s
+
+  P2_rolling_origin  train_<=2019  label_24h pr_auc(val) fit 28.0s
+
+  P2_rolling_origin  train_<=2019  label_48h pr_auc(val) fit 27.4s
+
+  P2_rolling_origin  train_<=2019  label_72h pr_auc(val) fit 28.1s
+
+  P2_rolling_origin  train_<=2020  label_24h pr_auc(val) fit 54.0s
+
+  P2_rolling_origin  train_<=2020  label_48h pr_auc(val) fit 51.3s
+
+  P2_rolling_origin  train_<=2020  label_72h pr_auc(val) fit 53.3s
+
+  P2_rolling_origin  train_<=2021  label_24h pr_auc(val) fit 78.4s
+
+  P2_rolling_origin  train_<=2021  label_48h pr_auc(val) fit 80.3s
+
+  P2_rolling_origin  train_<=2021  label_72h pr_auc(val) fit 84.9s
+
+  P3_spatial_cv      excl_fold_1   label_24h pr_auc(val) fit 55.9s
+
+  P3_spatial_cv      excl_fold_1   label_48h pr_auc(val) fit 51.5s
+
+  P3_spatial_cv      excl_fold_1   label_72h pr_auc(val) fit 55.2s
+
+  P3_spatial_cv      excl_fold_2   label_24h pr_auc(val) fit 54.8s
+
+  P3_spatial_cv      excl_fold_2   label_48h pr_auc(val) fit 55.1s
+
+  P3_spatial_cv      excl_fold_2   label_72h pr_auc(val) fit 57.5s
+
+  P3_spatial_cv      excl_fold_3   label_24h pr_auc(val) fit 56.7s
+
+  P3_spatial_cv      excl_fold_3   label_48h pr_auc(val) fit 58.6s
+
+  P3_spatial_cv      excl_fold_3   label_72h pr_auc(val) fit 60.6s
+
+  P3_spatial_cv      excl_fold_4   label_24h pr_auc(val) fit 48.0s
+
+  P3_spatial_cv      excl_fold_4   label_48h pr_auc(val) fit 49.3s
+
+  P3_spatial_cv      excl_fold_4   label_72h pr_auc(val) fit 54.8s
+
+  checkpoint: phase20_search.csv (24 rows), phase20_metrics.csv (144 rows), phase20_L2-01.pkl, family time 4208s
+
+
+
+=== gradient_boosting (L2-02) ΓÇö tuning 4/48 configs, cell=val_2022, score=mean PR-AUC over 3 horizons ===
+
+  [1/4] gradient_boosting_c00 mean=0.92898 (24h=0.94536 48h=0.92786 72h=0.91372) none (159s)
+
+  [2/4] gradient_boosting_c01 mean=0.94712 (24h=0.96184 48h=0.94569 72h=0.93383) none (231s)
+
+  [3/4] gradient_boosting_c02 mean=0.93471 (24h=0.94824 48h=0.93380 72h=0.92209) none (283s)
+
+  [4/4] gradient_boosting_c03 mean=0.94431 (24h=0.96063 48h=0.94334 72h=0.92896) none (353s)
+
+  -> winner gradient_boosting_c01 mean_pr_auc=0.94712 weighting=none
+
+=== gradient_boosting ΓÇö grid with gradient_boosting_c01 (8 dev cells x 3 seasons x 3 horizons) ===
+
+  P1_temporal_primary train_<2022   label_24h pr_auc(val) fit 77.4s
+
+  P1_temporal_primary train_<2022   label_48h pr_auc(val) fit 78.8s
+
+  P1_temporal_primary train_<2022   label_72h pr_auc(val) fit 74.1s
+
+  P2_rolling_origin  train_<=2019  label_24h pr_auc(val) fit 34.5s
+
+  P2_rolling_origin  train_<=2019  label_48h pr_auc(val) fit 33.4s
+
+  P2_rolling_origin  train_<=2019  label_72h pr_auc(val) fit 34.3s
+
+  P2_rolling_origin  train_<=2020  label_24h pr_auc(val) fit 54.7s
+
+  P2_rolling_origin  train_<=2020  label_48h pr_auc(val) fit 54.0s
+
+  P2_rolling_origin  train_<=2020  label_72h pr_auc(val) fit 53.1s
+
+  P2_rolling_origin  train_<=2021  label_24h pr_auc(val) fit 77.7s
+
+  P2_rolling_origin  train_<=2021  label_48h pr_auc(val) fit 77.0s
+
+  P2_rolling_origin  train_<=2021  label_72h pr_auc(val) fit 77.1s
+
+  P3_spatial_cv      excl_fold_1   label_24h pr_auc(val) fit 56.7s
+
+  P3_spatial_cv      excl_fold_1   label_48h pr_auc(val) fit 59.8s
+
+  P3_spatial_cv      excl_fold_1   label_72h pr_auc(val) fit 54.7s
+
+  P3_spatial_cv      excl_fold_2   label_24h pr_auc(val) fit 55.7s
+
+  P3_spatial_cv      excl_fold_2   label_48h pr_auc(val) fit 58.4s
+
+  P3_spatial_cv      excl_fold_2   label_72h pr_auc(val) fit 54.8s
+
+  P3_spatial_cv      excl_fold_3   label_24h pr_auc(val) fit 59.8s
+
+  P3_spatial_cv      excl_fold_3   label_48h pr_auc(val) fit 55.0s
+
+  P3_spatial_cv      excl_fold_3   label_72h pr_auc(val) fit 57.3s
+
+  P3_spatial_cv      excl_fold_4   label_24h pr_auc(val) fit 54.8s
+
+Phase 20 ΓÇö classical ML | families=['gradient_boosting'] | seed=20261008 | 2026-10-08 22:35:20.602720+00:00
+
+registry OK: test_policy=frozen_read_at_phase33, budgets within <=40
+
+loaded 200,665 rows x 75 cols (train 61,991 / val 17,538 / test 101,174); feature sets FULL 62 / LINEAR 35 / SELECTED 10
+
+dev grid OK: ['spatial_fold_1', 'spatial_fold_2', 'spatial_fold_3', 'spatial_fold_4', 'val_2020', 'val_2021', 'val_2022'] ΓÇö frozen test never scored
+
+
+
+=== gradient_boosting (L2-02) ΓÇö tuning 4/48 configs, cell=val_2022, score=mean PR-AUC over 3 horizons ===
+
+  [1/4] gradient_boosting_c00 mean=0.92898 (24h=0.94536 48h=0.92786 72h=0.91372) none (157s)
+
+  [2/4] gradient_boosting_c01 mean=0.94712 (24h=0.96184 48h=0.94569 72h=0.93383) none (228s)
+
+  [3/4] gradient_boosting_c02 mean=0.93471 (24h=0.94824 48h=0.93380 72h=0.92209) none (288s)
+
+  [4/4] gradient_boosting_c03 mean=0.94431 (24h=0.96063 48h=0.94334 72h=0.92896) none (346s)
+
+  -> winner gradient_boosting_c01 mean_pr_auc=0.94712 weighting=none
+
+=== gradient_boosting ΓÇö grid with gradient_boosting_c01 (8 dev cells x 3 seasons x 3 horizons) ===
+
+  P1_temporal_primary train_<2022   label_24h pr_auc(val) fit 77.7s
+
+  P1_temporal_primary train_<2022   label_48h pr_auc(val) fit 75.7s
+
+  P1_temporal_primary train_<2022   label_72h pr_auc(val) fit 77.3s
+
+  P2_rolling_origin  train_<=2019  label_24h pr_auc(val) fit 34.5s
+
+  P2_rolling_origin  train_<=2019  label_48h pr_auc(val) fit 33.9s
+
+  P2_rolling_origin  train_<=2019  label_72h pr_auc(val) fit 34.8s
+
+  P2_rolling_origin  train_<=2020  label_24h pr_auc(val) fit 57.9s
+
+  P2_rolling_origin  train_<=2020  label_48h pr_auc(val) fit 53.3s
+
+  P2_rolling_origin  train_<=2020  label_72h pr_auc(val) fit 51.2s
+
+  P2_rolling_origin  train_<=2021  label_24h pr_auc(val) fit 80.7s
+
+  P2_rolling_origin  train_<=2021  label_48h pr_auc(val) fit 75.9s
+
+  P2_rolling_origin  train_<=2021  label_72h pr_auc(val) fit 75.3s
+
+  P3_spatial_cv      excl_fold_1   label_24h pr_auc(val) fit 56.2s
+
+  P3_spatial_cv      excl_fold_1   label_48h pr_auc(val) fit 56.6s
+
+  P3_spatial_cv      excl_fold_1   label_72h pr_auc(val) fit 55.6s
+
+  P3_spatial_cv      excl_fold_2   label_24h pr_auc(val) fit 56.5s
+
+  P3_spatial_cv      excl_fold_2   label_48h pr_auc(val) fit 56.8s
+
+  P3_spatial_cv      excl_fold_2   label_72h pr_auc(val) fit 54.6s
+
+  P3_spatial_cv      excl_fold_3   label_24h pr_auc(val) fit 60.7s
+
+  P3_spatial_cv      excl_fold_3   label_48h pr_auc(val) fit 56.5s
+
+  P3_spatial_cv      excl_fold_3   label_72h pr_auc(val) fit 57.5s
+
+  P3_spatial_cv      excl_fold_4   label_24h pr_auc(val) fit 54.6s
+
+  P3_spatial_cv      excl_fold_4   label_48h pr_auc(val) fit 57.3s
+
+  P3_spatial_cv      excl_fold_4   label_72h pr_auc(val) fit 52.7s
+
+  checkpoint: phase20_search.csv (28 rows), phase20_metrics.csv (216 rows), phase20_L2-02.pkl, family time 2443s
+
+
+
+==============================================================================
+
+PHASE 20 summary
+
+==============================================================================
+
+
+
+-- tuning budgets actually used (registry max = 40) --
+
+                   configs  space  budget     best   fit_s
+
+family                                                    
+
+gradient_boosting        4     48       4  0.94712  1019.1
+
+random_forest           12     72      12  0.95230  2784.8
+
+xgboost_selected        12    432      12  0.95393   217.7
+
+
+
+-- selected config per family --
+
+           family             config_id                                                                                                                         params             weighting  mean_pr_auc
+
+gradient_boosting gradient_boosting_c01                                                  {"n_estimators": 100, "learning_rate": 0.1, "max_depth": 3, "subsample": 0.8}                  none     0.947121
+
+    random_forest     random_forest_c07                {"n_estimators": 200, "max_depth": 24, "min_samples_leaf": 20, "max_features": 0.5, "class_weight": "balanced"} class_weight=balanced     0.952300
+
+ xgboost_selected  xgboost_selected_c00 {"n_estimators": 300, "learning_rate": 0.03, "max_depth": 6, "min_child_weight": 1, "subsample": 1.0, "colsample_bytree": 1.0}                  none     0.953934
+
+
+
+=== selection cell val_2022 (P1, season=all) ΓÇö Phase 20 vs Phase 16 ===
+
+                      brier                        pr_auc                        recall                    
+
+horizon           label_24h label_48h label_72h label_24h label_48h label_72h label_24h label_48h label_72h
+
+model                                                                                                      
+
+gradient_boosting    0.0079    0.0111    0.0139    0.9618    0.9457    0.9338    0.8889    0.8676    0.8470
+
+logreg_linear        0.0099    0.0133    0.0168    0.9401    0.9241    0.9053    0.8474    0.8179    0.8052
+
+persistence          0.0118    0.0166    0.0214    0.9203    0.8954    0.8683    0.8777    0.8189    0.7625
+
+random_forest        0.0125    0.0169    0.0206    0.9665    0.9515    0.9389    0.8878    0.8666    0.8808
+
+xgboost_selected     0.0076    0.0106    0.0131    0.9663    0.9533    0.9422    0.8855    0.8685    0.8674
+
+
+
+=== spatial CV (P3, mean over folds, season=all) ΓÇö PR-AUC ===
+
+horizon            label_24h  label_48h  label_72h
+
+model                                             
+
+gradient_boosting     0.9452     0.9390     0.9258
+
+logreg_linear         0.9277     0.9032     0.8803
+
+persistence           0.9370     0.9182     0.8979
+
+random_forest         0.9744     0.9606     0.9475
+
+xgboost_selected      0.9740     0.9589     0.9439
+
+
+
+=== rolling origin (P2, per year, season=all) ΓÇö PR-AUC ===
+
+horizon                     label_24h  label_48h  label_72h
+
+model             cell                                     
+
+gradient_boosting val_2020     0.9812     0.9719     0.9620
+
+                  val_2021     0.9514     0.9628     0.9509
+
+                  val_2022     0.9618     0.9457     0.9338
+
+random_forest     val_2020     0.9847     0.9742     0.9645
+
+                  val_2021     0.9798     0.9702     0.9558
+
+                  val_2022     0.9665     0.9515     0.9389
+
+xgboost_selected  val_2020     0.9854     0.9757     0.9644
+
+                  val_2021     0.9819     0.9717     0.9580
+
+                  val_2022     0.9663     0.9533     0.9422
+
+
+
+wrote phase20_search.csv (28 rows), phase20_metrics.csv (216 rows), models/phase20_L2-0*.pkl
+
+
+
+TOTAL 2447s ΓÇö exit=0
+
+Phase 20 ΓÇö classical ML | families=['xgboost', 'lightgbm'] | seed=20261008 | 2026-10-08 23:16:17.864122+00:00
+
+registry OK: test_policy=frozen_read_at_phase33, budgets within <=40
+
+loaded 200,665 rows x 75 cols (train 61,991 / val 17,538 / test 101,174); feature sets FULL 62 / LINEAR 35 / SELECTED 10
+
+dev grid OK: ['spatial_fold_1', 'spatial_fold_2', 'spatial_fold_3', 'spatial_fold_4', 'val_2020', 'val_2021', 'val_2022'] ΓÇö frozen test never scored
+
+
+
+=== xgboost (L2-03) ΓÇö tuning 16/432 configs, cell=val_2022, score=mean PR-AUC over 3 horizons ===
+
+  [1/16] xgboost_c00 mean=0.95433 (24h=0.96790 48h=0.95401 72h=0.94109) none (22s)
+
+  [2/16] xgboost_c01 mean=0.95463 (24h=0.96812 48h=0.95494 72h=0.94084) none (25s)
+
+  [3/16] xgboost_c02 mean=0.95375 (24h=0.96723 48h=0.95349 72h=0.94052) none (31s)
+
+  [4/16] xgboost_c03 mean=0.95321 (24h=0.96782 48h=0.95335 72h=0.93846) none (30s)
+
+  [5/16] xgboost_c04 mean=0.95275 (24h=0.96660 48h=0.95293 72h=0.93871) none (31s)
+
+  [6/16] xgboost_c05 mean=0.95139 (24h=0.96551 48h=0.95272 72h=0.93594) none (23s)
+
+  [7/16] xgboost_c06 mean=0.94973 (24h=0.96722 48h=0.95199 72h=0.92999) none (26s)
+
+  [8/16] xgboost_c07 mean=0.95021 (24h=0.96653 48h=0.95117 72h=0.93294) none (23s)
+
+  [9/16] xgboost_c08 mean=0.95137 (24h=0.96764 48h=0.95224 72h=0.93423) none (38s)
+
+  [10/16] xgboost_c09 mean=0.94985 (24h=0.96687 48h=0.95084 72h=0.93184) none (37s)
+
+  [11/16] xgboost_c10 mean=0.95066 (24h=0.96663 48h=0.95163 72h=0.93372) none (55s)
+
+  [12/16] xgboost_c11 mean=0.95129 (24h=0.96559 48h=0.95174 72h=0.93655) none (58s)
+
+  [13/16] xgboost_c12 mean=0.95188 (24h=0.96716 48h=0.95331 72h=0.93518) none (81s)
+
+  [14/16] xgboost_c13 mean=0.94954 (24h=0.96468 48h=0.95096 72h=0.93297) none (65s)
+
+  [15/16] xgboost_c14 mean=0.95028 (24h=0.96604 48h=0.95112 72h=0.93367) none (69s)
+
+  [16/16] xgboost_c15 mean=0.94687 (24h=0.96481 48h=0.94973 72h=0.92608) none (70s)
+
+  -> winner xgboost_c01 mean_pr_auc=0.95463 weighting=none
+
+=== xgboost ΓÇö grid with xgboost_c01 (8 dev cells x 3 seasons x 3 horizons) ===
+
+  P1_temporal_primary train_<2022   label_24h pr_auc(val) fit 9.9s
+
+  P1_temporal_primary train_<2022   label_48h pr_auc(val) fit 9.0s
+
+  P1_temporal_primary train_<2022   label_72h pr_auc(val) fit 8.1s
+
+  P2_rolling_origin  train_<=2019  label_24h pr_auc(val) fit 5.1s
+
+  P2_rolling_origin  train_<=2019  label_48h pr_auc(val) fit 5.4s
+
+  P2_rolling_origin  train_<=2019  label_72h pr_auc(val) fit 5.2s
+
+  P2_rolling_origin  train_<=2020  label_24h pr_auc(val) fit 7.3s
+
+  P2_rolling_origin  train_<=2020  label_48h pr_auc(val) fit 7.4s
+
+  P2_rolling_origin  train_<=2020  label_72h pr_auc(val) fit 6.9s
+
+  P2_rolling_origin  train_<=2021  label_24h pr_auc(val) fit 8.5s
+
+  P2_rolling_origin  train_<=2021  label_48h pr_auc(val) fit 8.6s
+
+  P2_rolling_origin  train_<=2021  label_72h pr_auc(val) fit 8.6s
+
+  P3_spatial_cv      excl_fold_1   label_24h pr_auc(val) fit 7.1s
+
+  P3_spatial_cv      excl_fold_1   label_48h pr_auc(val) fit 8.2s
+
+  P3_spatial_cv      excl_fold_1   label_72h pr_auc(val) fit 7.4s
+
+  P3_spatial_cv      excl_fold_2   label_24h pr_auc(val) fit 7.4s
+
+  P3_spatial_cv      excl_fold_2   label_48h pr_auc(val) fit 7.5s
+
+  P3_spatial_cv      excl_fold_2   label_72h pr_auc(val) fit 8.3s
+
+  P3_spatial_cv      excl_fold_3   label_24h pr_auc(val) fit 7.0s
+
+  P3_spatial_cv      excl_fold_3   label_48h pr_auc(val) fit 6.6s
+
+  P3_spatial_cv      excl_fold_3   label_72h pr_auc(val) fit 6.8s
+
+  P3_spatial_cv      excl_fold_4   label_24h pr_auc(val) fit 6.6s
+
+  P3_spatial_cv      excl_fold_4   label_48h pr_auc(val) fit 6.8s
+
+  P3_spatial_cv      excl_fold_4   label_72h pr_auc(val) fit 6.1s
+
+  checkpoint: phase20_search.csv (44 rows), phase20_metrics.csv (288 rows), phase20_L2-03.pkl, family time 891s
+
+
+
+=== lightgbm (L2-04) ΓÇö tuning 16/216 configs, cell=val_2022, score=mean PR-AUC over 3 horizons ===
+
+  [1/16] lightgbm_c00 mean=0.95344 (24h=0.96816 48h=0.95379 72h=0.93838) none (18s)
+
+  [2/16] lightgbm_c01 mean=0.95310 (24h=0.96857 48h=0.95427 72h=0.93647) none (25s)
+
+  [3/16] lightgbm_c02 mean=0.95274 (24h=0.96837 48h=0.95439 72h=0.93545) none (34s)
+
+  [4/16] lightgbm_c03 mean=0.95127 (24h=0.96825 48h=0.95190 72h=0.93365) none (28s)
+
+  [5/16] lightgbm_c04 mean=0.95127 (24h=0.96825 48h=0.95190 72h=0.93365) none (23s)
+
+  [6/16] lightgbm_c05 mean=0.94928 (24h=0.96612 48h=0.94982 72h=0.93192) none (27s)
+
+  [7/16] lightgbm_c06 mean=0.95063 (24h=0.96837 48h=0.95246 72h=0.93106) none (45s)
+
+  [8/16] lightgbm_c07 mean=0.94817 (24h=0.96671 48h=0.94871 72h=0.92910) none (38s)
+
+  [9/16] lightgbm_c08 mean=0.94918 (24h=0.96719 48h=0.94927 72h=0.93107) none (31s)
+
+  [10/16] lightgbm_c09 mean=0.94717 (24h=0.96604 48h=0.94811 72h=0.92735) none (35s)
+
+  [11/16] lightgbm_c10 mean=0.94863 (24h=0.96680 48h=0.95001 72h=0.92909) none (50s)
+
+  [12/16] lightgbm_c11 mean=0.94990 (24h=0.96750 48h=0.95152 72h=0.93069) none (50s)
+
+  [13/16] lightgbm_c12 mean=0.95060 (24h=0.96689 48h=0.95276 72h=0.93214) none (85s)
+
+  [14/16] lightgbm_c13 mean=0.95089 (24h=0.96725 48h=0.95242 72h=0.93300) none (142s)
+
+  [15/16] lightgbm_c14 mean=0.94855 (24h=0.96621 48h=0.95022 72h=0.92922) none (133s)
+
+  [16/16] lightgbm_c15 mean=0.94888 (24h=0.96672 48h=0.94972 72h=0.93019) none (86s)
+
+  -> winner lightgbm_c00 mean_pr_auc=0.95344 weighting=none
+
+=== lightgbm ΓÇö grid with lightgbm_c00 (8 dev cells x 3 seasons x 3 horizons) ===
+
+  P1_temporal_primary train_<2022   label_24h pr_auc(val) fit 6.4s
+
+  P1_temporal_primary train_<2022   label_48h pr_auc(val) fit 6.7s
+
+  P1_temporal_primary train_<2022   label_72h pr_auc(val) fit 6.2s
+
+  P2_rolling_origin  train_<=2019  label_24h pr_auc(val) fit 3.9s
+
+  P2_rolling_origin  train_<=2019  label_48h pr_auc(val) fit 4.0s
+
+  P2_rolling_origin  train_<=2019  label_72h pr_auc(val) fit 3.7s
+
+  P2_rolling_origin  train_<=2020  label_24h pr_auc(val) fit 5.2s
+
+  P2_rolling_origin  train_<=2020  label_48h pr_auc(val) fit 5.2s
+
+  P2_rolling_origin  train_<=2020  label_72h pr_auc(val) fit 4.7s
+
+  P2_rolling_origin  train_<=2021  label_24h pr_auc(val) fit 6.8s
+
+  P2_rolling_origin  train_<=2021  label_48h pr_auc(val) fit 7.3s
+
+  P2_rolling_origin  train_<=2021  label_72h pr_auc(val) fit 6.8s
+
+  P3_spatial_cv      excl_fold_1   label_24h pr_auc(val) fit 5.3s
+
+  P3_spatial_cv      excl_fold_1   label_48h pr_auc(val) fit 5.5s
+
+  P3_spatial_cv      excl_fold_1   label_72h pr_auc(val) fit 6.8s
+
+  P3_spatial_cv      excl_fold_2   label_24h pr_auc(val) fit 6.0s
+
+  P3_spatial_cv      excl_fold_2   label_48h pr_auc(val) fit 5.6s
+
+  P3_spatial_cv      excl_fold_2   label_72h pr_auc(val) fit 5.8s
+
+  P3_spatial_cv      excl_fold_3   label_24h pr_auc(val) fit 5.8s
+
+  P3_spatial_cv      excl_fold_3   label_48h pr_auc(val) fit 5.2s
+
+  P3_spatial_cv      excl_fold_3   label_72h pr_auc(val) fit 5.1s
+
+  P3_spatial_cv      excl_fold_4   label_24h pr_auc(val) fit 4.8s
+
+  P3_spatial_cv      excl_fold_4   label_48h pr_auc(val) fit 4.6s
+
+  P3_spatial_cv      excl_fold_4   label_72h pr_auc(val) fit 4.9s
+
+  checkpoint: phase20_search.csv (60 rows), phase20_metrics.csv (360 rows), phase20_L2-04.pkl, family time 1019s
+
+
+
+==============================================================================
+
+PHASE 20 summary
+
+==============================================================================
+
+
+
+-- tuning budgets actually used (registry max = 40) --
+
+                   configs  space  budget     best   fit_s
+
+family                                                    
+
+gradient_boosting        4     48       4  0.94712  1019.1
+
+lightgbm                16    216      16  0.95344   849.8
+
+random_forest           12     72      12  0.95230  2784.8
+
+xgboost                 16    432      16  0.95463   684.1
+
+xgboost_selected        12    432      12  0.95393   217.7
+
+
+
+-- selected config per family --
+
+           family             config_id                                                                                                                          params             weighting  mean_pr_auc
+
+gradient_boosting gradient_boosting_c01                                                   {"n_estimators": 100, "learning_rate": 0.1, "max_depth": 3, "subsample": 0.8}                  none     0.947121
+
+         lightgbm          lightgbm_c00                {"n_estimators": 300, "learning_rate": 0.03, "num_leaves": 31, "min_child_samples": 50, "feature_fraction": 0.8}                  none     0.953442
+
+    random_forest     random_forest_c07                 {"n_estimators": 200, "max_depth": 24, "min_samples_leaf": 20, "max_features": 0.5, "class_weight": "balanced"} class_weight=balanced     0.952300
+
+          xgboost           xgboost_c01 {"n_estimators": 300, "learning_rate": 0.03, "max_depth": 6, "min_child_weight": 10, "subsample": 1.0, "colsample_bytree": 0.8}                  none     0.954634
+
+ xgboost_selected  xgboost_selected_c00  {"n_estimators": 300, "learning_rate": 0.03, "max_depth": 6, "min_child_weight": 1, "subsample": 1.0, "colsample_bytree": 1.0}                  none     0.953934
+
+
+
+=== selection cell val_2022 (P1, season=all) ΓÇö Phase 20 vs Phase 16 ===
+
+                      brier                        pr_auc                        recall                    
+
+horizon           label_24h label_48h label_72h label_24h label_48h label_72h label_24h label_48h label_72h
+
+model                                                                                                      
+
+gradient_boosting    0.0079    0.0111    0.0139    0.9618    0.9457    0.9338    0.8889    0.8676    0.8470
+
+lightgbm             0.0075    0.0107    0.0136    0.9682    0.9538    0.9384    0.8799    0.8627    0.8665
+
+logreg_linear        0.0099    0.0133    0.0168    0.9401    0.9241    0.9053    0.8474    0.8179    0.8052
+
+persistence          0.0118    0.0166    0.0214    0.9203    0.8954    0.8683    0.8777    0.8189    0.7625
+
+random_forest        0.0125    0.0169    0.0206    0.9665    0.9515    0.9389    0.8878    0.8666    0.8808
+
+xgboost              0.0074    0.0105    0.0131    0.9681    0.9549    0.9408    0.8878    0.8783    0.8523
+
+xgboost_selected     0.0076    0.0106    0.0131    0.9663    0.9533    0.9422    0.8855    0.8685    0.8674
+
+
+
+=== spatial CV (P3, mean over folds, season=all) ΓÇö PR-AUC ===
+
+horizon            label_24h  label_48h  label_72h
+
+model                                             
+
+gradient_boosting     0.9452     0.9390     0.9258
+
+lightgbm              0.9752     0.9610     0.9498
+
+logreg_linear         0.9277     0.9032     0.8803
+
+persistence           0.9370     0.9182     0.8979
+
+random_forest         0.9744     0.9606     0.9475
+
+xgboost               0.9757     0.9618     0.9493
+
+xgboost_selected      0.9740     0.9589     0.9439
+
+
+
+=== rolling origin (P2, per year, season=all) ΓÇö PR-AUC ===
+
+horizon                     label_24h  label_48h  label_72h
+
+model             cell                                     
+
+gradient_boosting val_2020     0.9812     0.9719     0.9620
+
+                  val_2021     0.9514     0.9628     0.9509
+
+                  val_2022     0.9618     0.9457     0.9338
+
+lightgbm          val_2020     0.9852     0.9750     0.9645
+
+                  val_2021     0.9802     0.9672     0.9526
+
+                  val_2022     0.9682     0.9538     0.9384
+
+random_forest     val_2020     0.9847     0.9742     0.9645
+
+                  val_2021     0.9798     0.9702     0.9558
+
+                  val_2022     0.9665     0.9515     0.9389
+
+xgboost           val_2020     0.9862     0.9772     0.9670
+
+                  val_2021     0.9815     0.9688     0.9534
+
+                  val_2022     0.9681     0.9549     0.9408
+
+xgboost_selected  val_2020     0.9854     0.9757     0.9644
+
+                  val_2021     0.9819     0.9717     0.9580
+
+                  val_2022     0.9663     0.9533     0.9422
+
+
+
+wrote phase20_search.csv (60 rows), phase20_metrics.csv (360 rows), models/phase20_L2-0*.pkl
+
+
+
+TOTAL 1914s ΓÇö exit=0
+

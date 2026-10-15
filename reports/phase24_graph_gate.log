@@ -1,0 +1,36 @@
+==============================================================================
+PHASE 24 GATE (stage 39, D13) - station graph & GNN justification
+==============================================================================
+[PASS] G1: station master: 133 stations, 80 rivers, 5 basins
+
+-- edge sets / coverage ------------------------------------------------
+graph               edges  cover  iso  comp  largest   conn
+river_upstream         52     82   51    81       10  False
+river_undirected       52     82   51    81       10  False
+same_river_250km      111     83   50    80       10  False
+basin_clique         2178    133    0     5       50  False
+knn3                  260    133    0     2      128  False
+knn5                  415    133    0     1      133   True
+river_upstream directed: 52 downstream stations, 44 upstream roles, 52 directed edges
+stations reached by the river-upstream graph: 82/133; uncovered (need fallback): 51
+[PASS] G2: sequence_index 133 stations, 2017-01-06..2026-10-05; WL matrix 2479 dates x 133 stations
+[PASS] G3: edge identity vs the stored Phase-11C up_* column: 50/50 edges reproduce upstream WL(t-1) exactly (match>=0.99), 50 edges have data; 50 stations carry up_* (Phase 11C reported 50 in model-ready)
+
+-- edge temporal overlap & missingness (river-upstream edges) ----------
+overlap days (WL finite at both ends): min 69, median 1226, max 2062
+Jaccard overlap: median 0.677; edges with < 1 year (365 d) overlap: 10/52
+per-edge missingness (1 - Jaccard): median 0.323
+
+-- cross-station dependence: upstream WL(t-lag) vs downstream WL(t) -----
+ lag  edge_r_mean  edge_r_med  null_r_mean  null_r_med    delta
+   0        0.900       0.958        0.578       0.598    0.322
+   1        0.892       0.953        0.574       0.591    0.317
+   2        0.863       0.940        0.568       0.583    0.296
+   3        0.832       0.916        0.559       0.574    0.273
+fraction of river edges with lag-1 r >= 0.5: 1.000
+incremental label_24h: own pr_auc 0.9267 -> own+upstream 0.9293 (delta +0.0026)
+incremental label_48h: own pr_auc 0.9017 -> own+upstream 0.9106 (delta +0.0089)
+incremental label_72h: own pr_auc 0.8774 -> own+upstream 0.8891 (delta +0.0117)
+
+edge-subset rows with an upstream: 59463 (50 stations)
+figure: figures\phase24_gate.png

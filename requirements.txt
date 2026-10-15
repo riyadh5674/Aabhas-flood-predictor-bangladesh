@@ -12,6 +12,10 @@ matplotlib==3.10.6
 requests==2.32.5
 tabulate          # pandas .to_markdown() used by reports/baseline_summary.md
 
+# --- workflow Phase 18 (prerequisite) + Phase 21/22: deep temporal models ---
+# CPU build from the PyTorch index: pip install torch --index-url https://download.pytorch.org/whl/cpu
+torch==2.14.1+cpu
+
 # --- workflow Phase 16/17: candidate models ---
 lightgbm
 xgboost
@@ -27,7 +31,7 @@ jupyter
 tqdm
 
 # --- deferred: installed when their phase arrives ---
-# shap                # Phase 28 explainable AI
-# imbalanced-learn    # Phase 19 class imbalance
-# geopandas, folium   # Phase 31 Bangladesh risk map
-# fastapi, uvicorn    # Phase 33 real-time pipeline
+# shap                # Phase 34 explainable AI (workflow stage 58)
+# imbalanced-learn    # not used - imbalance handled inside the training fold (R4)
+# geopandas, folium   # risk-map figures (system part)
+# fastapi, uvicorn    # real-time API (system part)

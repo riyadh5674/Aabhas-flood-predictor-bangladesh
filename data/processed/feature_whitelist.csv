@@ -1,0 +1,74 @@
+column,group,latest_day_used,available_at_issue,ruling,in_full_set,reason
+station_id,identity / date key,key,no,BAN,False,target / label-window information / identity-date key (phase0 §5)
+name,identity / date key,key,no,BAN,False,target / label-window information / identity-date key (phase0 §5)
+river,identity / published threshold,static (station-constant),yes,ADMIT,True,computable at 24:00 UTC of t; formula-verified in L2/L3/L4
+basin,identity / published threshold,static (station-constant),yes,ADMIT,True,computable at 24:00 UTC of t; formula-verified in L2/L3/L4
+division,identity / published threshold,static (station-constant),yes,ADMIT,True,computable at 24:00 UTC of t; formula-verified in L2/L3/L4
+district,identity / published threshold,static (station-constant),yes,ADMIT,True,computable at 24:00 UTC of t; formula-verified in L2/L3/L4
+upazilla,identity / published threshold,static (station-constant),yes,ADMIT,True,computable at 24:00 UTC of t; formula-verified in L2/L3/L4
+lat,identity / published threshold,static (station-constant),yes,ADMIT,True,computable at 24:00 UTC of t; formula-verified in L2/L3/L4
+lon,identity / published threshold,static (station-constant),yes,ADMIT,True,computable at 24:00 UTC of t; formula-verified in L2/L3/L4
+danger_level,identity / published threshold,static (station-constant),yes,ADMIT,True,computable at 24:00 UTC of t; formula-verified in L2/L3/L4
+date,identity / date key,key,no,BAN,False,target / label-window information / identity-date key (phase0 §5)
+n_readings,observation at day t,t,yes,ADMIT-WATCH,True,"available at t; observation-process signal - L8 evidence, ablate in Phase 38"
+day_observed,observation at day t,t,yes,ADMIT-CONSTANT,False,available at t but constant in model-ready; dropped at Phase 12 step 18a
+wl_mean,observation at day t,t,yes,ADMIT,True,computable at 24:00 UTC of t; formula-verified in L2/L3/L4
+wl_max,observation at day t,t,yes,ADMIT,True,computable at 24:00 UTC of t; formula-verified in L2/L3/L4
+wl_min,observation at day t,t,yes,ADMIT,True,computable at 24:00 UTC of t; formula-verified in L2/L3/L4
+wl_first,observation at day t,t,yes,ADMIT,True,computable at 24:00 UTC of t; formula-verified in L2/L3/L4
+wl_last,observation at day t,t,yes,ADMIT,True,computable at 24:00 UTC of t; formula-verified in L2/L3/L4
+elevation_m,static geography (Phase 11A),static (time-invariant),yes,ADMIT,True,computable at 24:00 UTC of t; formula-verified in L2/L3/L4
+slope_deg,static geography (Phase 11A),static (time-invariant),yes,ADMIT,True,computable at 24:00 UTC of t; formula-verified in L2/L3/L4
+dist_to_coast_km,static geography (Phase 11A),static (time-invariant),yes,ADMIT,True,computable at 24:00 UTC of t; formula-verified in L2/L3/L4
+dist_river_km,static geography (Phase 11A),static (time-invariant),yes,ADMIT,True,computable at 24:00 UTC of t; formula-verified in L2/L3/L4
+dist_major_river_km,static geography (Phase 11A),static (time-invariant),yes,ADMIT,True,computable at 24:00 UTC of t; formula-verified in L2/L3/L4
+river_density_10km_km_per_km2,static geography (Phase 11A),static (time-invariant),yes,ADMIT,True,computable at 24:00 UTC of t; formula-verified in L2/L3/L4
+n_river_lines_10km,static geography (Phase 11A),static (time-invariant),yes,ADMIT,True,computable at 24:00 UTC of t; formula-verified in L2/L3/L4
+wl_last_lag1,hydrology lag,t-1,yes,ADMIT,True,computable at 24:00 UTC of t; formula-verified in L2/L3/L4
+wl_last_lag2,hydrology lag,t-2,yes,ADMIT,True,computable at 24:00 UTC of t; formula-verified in L2/L3/L4
+wl_last_lag3,hydrology lag,t-3,yes,ADMIT,True,computable at 24:00 UTC of t; formula-verified in L2/L3/L4
+wl_last_lag4,hydrology lag,t-4,yes,ADMIT,True,computable at 24:00 UTC of t; formula-verified in L2/L3/L4
+wl_last_lag5,hydrology lag,t-5,yes,ADMIT,True,computable at 24:00 UTC of t; formula-verified in L2/L3/L4
+wl_last_lag6,hydrology lag,t-6,yes,ADMIT,True,computable at 24:00 UTC of t; formula-verified in L2/L3/L4
+wl_last_lag7,hydrology lag,t-7,yes,ADMIT,True,computable at 24:00 UTC of t; formula-verified in L2/L3/L4
+wl_max_lag1,hydrology lag,t-1,yes,ADMIT,True,computable at 24:00 UTC of t; formula-verified in L2/L3/L4
+wl_max_lag2,hydrology lag,t-2,yes,ADMIT,True,computable at 24:00 UTC of t; formula-verified in L2/L3/L4
+wl_max_lag3,hydrology lag,t-3,yes,ADMIT,True,computable at 24:00 UTC of t; formula-verified in L2/L3/L4
+wl_rise_1d,hydrology derived / window,t-1 .. t,yes,ADMIT,True,computable at 24:00 UTC of t; formula-verified in L2/L3/L4
+wl_rise_3d,hydrology derived / window,t-3 .. t,yes,ADMIT,True,computable at 24:00 UTC of t; formula-verified in L2/L3/L4
+wl_dist_to_danger,hydrology derived / window,t,yes,ADMIT,True,computable at 24:00 UTC of t; formula-verified in L2/L3/L4
+wl_pct_danger,hydrology derived / window,t,yes,ADMIT,True,computable at 24:00 UTC of t; formula-verified in L2/L3/L4
+wl_max_roll7,hydrology derived / window,t-6 .. t,yes,ADMIT,True,computable at 24:00 UTC of t; formula-verified in L2/L3/L4
+wl_max_roll30,hydrology derived / window,t-29 .. t,yes,ADMIT,True,computable at 24:00 UTC of t; formula-verified in L2/L3/L4
+wl_exceed_days_30,hydrology derived / window,t-29 .. t,yes,ADMIT,True,computable at 24:00 UTC of t; formula-verified in L2/L3/L4
+precip_mm,observation at day t,t,yes,ADMIT,True,computable at 24:00 UTC of t; formula-verified in L2/L3/L4
+rain_1d,observation at day t,t,yes,ADMIT,True,computable at 24:00 UTC of t; formula-verified in L2/L3/L4
+rain_3d,rainfall window,t-2 .. t,yes,ADMIT,True,computable at 24:00 UTC of t; formula-verified in L2/L3/L4
+rain_7d,rainfall window,t-6 .. t,yes,ADMIT,True,computable at 24:00 UTC of t; formula-verified in L2/L3/L4
+rain_14d,rainfall window,t-13 .. t,yes,ADMIT,True,computable at 24:00 UTC of t; formula-verified in L2/L3/L4
+rain_30d,rainfall window,t-29 .. t,yes,ADMIT,True,computable at 24:00 UTC of t; formula-verified in L2/L3/L4
+rain_max_7d,rainfall window,t-6 .. t,yes,ADMIT,True,computable at 24:00 UTC of t; formula-verified in L2/L3/L4
+wet_days_7,rainfall window,t-6 .. t,yes,ADMIT,True,computable at 24:00 UTC of t; formula-verified in L2/L3/L4
+tmax_c,observation at day t,t,yes,ADMIT,True,computable at 24:00 UTC of t; formula-verified in L2/L3/L4
+tmin_c,observation at day t,t,yes,ADMIT,True,computable at 24:00 UTC of t; formula-verified in L2/L3/L4
+source,identity / date key,key,no,BAN,False,target / label-window information / identity-date key (phase0 §5)
+doy_sin,observation at day t,t,yes,ADMIT,True,computable at 24:00 UTC of t; formula-verified in L2/L3/L4
+doy_cos,observation at day t,t,yes,ADMIT,True,computable at 24:00 UTC of t; formula-verified in L2/L3/L4
+nb3_rain_7d,"neighbourhood, nearest-k gauges on day t (Phase 11B)",t,yes,ADMIT,True,computable at 24:00 UTC of t; formula-verified in L2/L3/L4
+nb3_rain_14d,"neighbourhood, nearest-k gauges on day t (Phase 11B)",t,yes,ADMIT,True,computable at 24:00 UTC of t; formula-verified in L2/L3/L4
+nb3_wl_pct_danger,"neighbourhood, nearest-k gauges on day t (Phase 11B)",t,yes,ADMIT,True,computable at 24:00 UTC of t; formula-verified in L2/L3/L4
+nb5_rain_7d,"neighbourhood, nearest-k gauges on day t (Phase 11B)",t,yes,ADMIT,True,computable at 24:00 UTC of t; formula-verified in L2/L3/L4
+nb5_rain_14d,"neighbourhood, nearest-k gauges on day t (Phase 11B)",t,yes,ADMIT,True,computable at 24:00 UTC of t; formula-verified in L2/L3/L4
+nb5_wl_pct_danger,"neighbourhood, nearest-k gauges on day t (Phase 11B)",t,yes,ADMIT,True,computable at 24:00 UTC of t; formula-verified in L2/L3/L4
+nb3_n_wl_danger,"neighbourhood, nearest-k gauges on day t (Phase 11B)",t,yes,ADMIT,True,computable at 24:00 UTC of t; formula-verified in L2/L3/L4
+nb5_n_wl_danger,"neighbourhood, nearest-k gauges on day t (Phase 11B)",t,yes,ADMIT,True,computable at 24:00 UTC of t; formula-verified in L2/L3/L4
+up_rain7d_lag1,"upstream gauge, lagged (Phase 11C)",t-1,yes,ADMIT,True,computable at 24:00 UTC of t; formula-verified in L2/L3/L4
+up_rain7d_lag2,"upstream gauge, lagged (Phase 11C)",t-2,yes,ADMIT,True,computable at 24:00 UTC of t; formula-verified in L2/L3/L4
+up_wl_pct_danger_lag1,"upstream gauge, lagged (Phase 11C)",t-1,yes,ADMIT,True,computable at 24:00 UTC of t; formula-verified in L2/L3/L4
+up_wl_pct_danger_lag2,"upstream gauge, lagged (Phase 11C)",t-2,yes,ADMIT,True,computable at 24:00 UTC of t; formula-verified in L2/L3/L4
+label_24h,target,t+1 .. t+h,no,BAN,False,target / label-window information / identity-date key (phase0 §5)
+label_48h,target,t+1 .. t+h,no,BAN,False,target / label-window information / identity-date key (phase0 §5)
+label_72h,target,t+1 .. t+h,no,BAN,False,target / label-window information / identity-date key (phase0 §5)
+obs_days_24h,label-window information,t+1 .. t+h,no,BAN,False,target / label-window information / identity-date key (phase0 §5)
+obs_days_48h,label-window information,t+1 .. t+h,no,BAN,False,target / label-window information / identity-date key (phase0 §5)
+obs_days_72h,label-window information,t+1 .. t+h,no,BAN,False,target / label-window information / identity-date key (phase0 §5)

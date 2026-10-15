@@ -1,0 +1,131 @@
+phase19_sequence_validation notebook run
+kernel=flood-predictor seed=20261008 nbconvert --execute --inplace
+started_utc=2026-10-08 20:27:37.706492+00:00
+
+Phase 19 notebook - sequence validation
+[PASS] S1a: sequence_index 200,665 rows; sample_idx is 0..n-1 contiguous
+[PASS] S1b: within every one of 133 stations the rows are strictly chronological and unique (dup=0); year coverage [2017, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026]
+[PASS] S2a: calendar 2017-01-06..2026-10-05 = 3560 days, 200,665/473,480 station-days present (42.4%)
+[PASS] S2b.3: L=3: 97.1% of windows are fully consecutive, 2.9% contain >=1 absent day, max run of absent days inside a window = 2; empty timestep == absent calendar day (mismatch 0)
+[PASS] S2b.7: L=7: 92.5% of windows are fully consecutive, 7.5% contain >=1 absent day, max run of absent days inside a window = 6; empty timestep == absent calendar day (mismatch 0)
+[PASS] S2b.14: L=14: 85.9% of windows are fully consecutive, 14.1% contain >=1 absent day, max run of absent days inside a window = 13; empty timestep == absent calendar day (mismatch 0)
+[PASS] S2b.30: L=30: 73.3% of windows are fully consecutive, 26.7% contain >=1 absent day, max run of absent days inside a window = 29; empty timestep == absent calendar day (mismatch 0)
+[PASS] S2c: R6 confirmed: 0 table rows in 2018; windows whose history reaches into 2018 by L: {3: 42, 7: 68, 14: 177, 30: 224} (all their 2018 timesteps are empty)
+gap table: {
+ "3": {
+  "pct_clean": 0.9714997632870704,
+  "pct_any": 0.02850023671292951,
+  "pct_ge3": 0.0,
+  "mean_empty": 0.04296713427852391,
+  "max_empty": 2,
+  "max_run": 2,
+  "mismatch": 0
+ },
+ "7": {
+  "pct_clean": 0.9253781177584531,
+  "pct_any": 0.07462188224154685,
+  "pct_ge3": 0.033912241796028204,
+  "mean_empty": 0.21233897291505743,
+  "max_empty": 6,
+  "max_run": 6,
+  "mismatch": 0
+ },
+ "14": {
+  "pct_clean": 0.8585702539057634,
+  "pct_any": 0.14142974609423667,
+  "pct_ge3": 0.08368674158423242,
+  "mean_empty": 0.6829990282311315,
+  "max_empty": 13,
+  "max_run": 13,
+  "mismatch": 0
+ },
+ "30": {
+  "pct_clean": 0.7330775172551267,
+  "pct_any": 0.2669224827448733,
+  "pct_ge3": 0.18151147434779358,
+  "mean_empty": 2.534577529713702,
+  "max_empty": 29,
+  "max_run": 29,
+  "mismatch": 0
+ }
+}
+                                     L=3             L=7             L=14             L=30
+R1_keep_all                     0 (0.0%)        0 (0.0%)         0 (0.0%)         0 (0.0%)
+R2_reject_any_gap          5,719 (2.85%)  14,974 (7.46%)  28,380 (14.14%)  53,562 (26.69%)
+R3_min_observed            5,719 (2.85%)  12,383 (6.17%)   13,602 (6.78%)  23,644 (11.78%)
+R4_ffill_age2_then_reject  5,630 (2.81%)  11,168 (5.57%)   19,750 (9.84%)  37,385 (18.63%)
+[PASS] S3a.3: L=3 drop cost - R1 0.0%, R2 2.85%, R3 2.85%, R4 2.81%
+[PASS] S3a.7: L=7 drop cost - R1 0.0%, R2 7.46%, R3 6.17%, R4 5.57%
+[PASS] S3a.14: L=14 drop cost - R1 0.0%, R2 14.14%, R3 6.78%, R4 9.84%
+[PASS] S3a.30: L=30 drop cost - R1 0.0%, R2 26.69%, R3 11.78%, R4 18.63%
+{
+ "drop_rate_by_split": {
+  "train": 0.2506,
+  "val": 0.3119,
+  "test": 0.2697
+ },
+ "drop_rate_by_season": {
+  "monsoon": 0.1293,
+  "non-monsoon": 0.4388
+ },
+ "label24_rate_dropped": 0.0318,
+ "label24_rate_kept": 0.0563,
+ "pct_dropped": 26.69
+}
+[PASS] S3b: R2 would drop 26.69% of L=30 samples, and unevenly: drop rate 0.129 (monsoon) vs 0.439 (non-monsoon) = 3.4x asymmetry, per-split [0.2506, 0.3119, 0.2697] - an L-dependent, season-shifting cost (label+rate dropped 0.0318 vs kept 0.0563)
+[PASS] S3c.3: sequence_mask_L3.npy written (200665, 3) uint8 (602,123 B); mask == observed-day indicator for all 601,995 timesteps: True
+[PASS] S3c.7: sequence_mask_L7.npy written (200665, 7) uint8 (1,404,783 B); mask == observed-day indicator for all 1,404,655 timesteps: True
+[PASS] S3c.14: sequence_mask_L14.npy written (200665, 14) uint8 (2,809,438 B); mask == observed-day indicator for all 2,809,310 timesteps: True
+[PASS] S3c.30: sequence_mask_L30.npy written (200665, 30) uint8 (6,020,078 B); mask == observed-day indicator for all 6,019,950 timesteps: True
+[PASS] S3d: variable-level NaNs on observed timesteps (filled with fold mean at train time): {'precip_mm': 0.00027, 'tmax_c': 0.00027, 'tmin_c': 0.00027}
+[PASS] S3e: sequence_manifest.json amended with the policy section; the 5 original artifacts unchanged (True); sequence_policy.json written (6,656 B) with the counterfactual costs
+[PASS] S4: 40 windows x 4 lengths x L timesteps = 2036 timesteps verified against their OWN (station, day) row: 0 violations - a window containing another station's day would mismatch here
+[PASS] S5a: for all 200,665 windows x 4 lengths the newest day in the window IS the anchor day t and no day is later than t (max index [3559, 3559, 3559, 3559]) - the label window t+1..t+3 is never inside a tensor
+[PASS] S5b: history may legally reach BACK across a split boundary: 1,310 L=30 windows start in an earlier calendar year than their anchor (by split: {'test': 1024, 'train': 286}) - past days at issue time are legal (D5); no window ever reaches forward
+[PASS] S5c: labels are not tensor variables (label_* excluded at build time, re-verified)
+raw readings kept for 68 stations: 597,098
+[PASS] S6: 100 windows x 3 horizons: 292 comparable labels recomputed from the raw 3-hourly readings at the same station and day t, mismatches=0, one-sided=0
+[PASS] S7a: all 200,665 windows inherit the anchor day's split/fold/holdout/season 1:1 with Phase-15: {'split': 0, 'spatial_fold': 0, 'station_holdout': 0, 'season': 0}
+[PASS] S7b: every training cell contains 0 holdout-station rows and 0 frozen-test rows: {'P1 train_<2022': 0, 'P2 train<=2019': 0, 'P2 train<=2020': 0, 'P2 train<=2021': 0, 'P3 excl_fold_1': 0, 'P3 excl_fold_2': 0, 'P3 excl_fold_3': 0, 'P3 excl_fold_4': 0}; cell sizes {'P1 train_<2022': 61991, 'P2 train<=2019': 28711, 'P2 train<=2020': 44614, 'P2 train<=2021': 61991, 'P3 excl_fold_1': 46793, 'P3 excl_fold_2': 45727, 'P3 excl_fold_3': 47207, 'P3 excl_fold_4': 46246}
+[PASS] S7c: holdout stations (39,725 rows) are reachable only through their own eval cells; test_unseen = 19,763 rows, all holdout
+[PASS] S7d: 26 holdout stations appear in 0 training cell station sets (must be 0)
+==============================================================================
+PHASE 19 / STAGE 33   sequences validated - policy P19-M1 published
+==============================================================================
+  PASS  S1a
+  PASS  S1b
+  PASS  S2a
+  PASS  S2b.3
+  PASS  S2b.7
+  PASS  S2b.14
+  PASS  S2b.30
+  PASS  S2c
+  PASS  S3a.3
+  PASS  S3a.7
+  PASS  S3a.14
+  PASS  S3a.30
+  PASS  S3b
+  PASS  S3c.3
+  PASS  S3c.7
+  PASS  S3c.14
+  PASS  S3c.30
+  PASS  S3d
+  PASS  S3e
+  PASS  S4
+  PASS  S5a
+  PASS  S5b
+  PASS  S5c
+  PASS  S6
+  PASS  S7a
+  PASS  S7b
+  PASS  S7c
+  PASS  S7d
+
+28/28 checks passed, 0 warnings, 26.9s
+policy P19-M1 (keep-all + observation mask): 0 samples dropped at every L
+outputs: sequence_mask_L{3,7,14,30}.npy, sequence_policy.json, sequence_manifest.json (amended)
+next: Phase 20 - classical machine learning (L2 candidates)
+ALL PHASE-19 CHECKS PASSED - experimental_dataset.csv byte-stable
+
+exit_code=0
+finished_utc=2026-10-08 20:27:37.706545+00:00

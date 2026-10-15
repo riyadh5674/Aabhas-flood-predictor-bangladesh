@@ -1,0 +1,37 @@
+{
+  "phase": "Phase 23 static vector (stage 38, branch 2)",
+  "created": "2026-10-10T18:54:13.465502+00:00",
+  "source": "data/processed/experimental_dataset.csv",
+  "source_sha256": "a6748529083fcdceb8bb8a657b067bf12b5c861f3a7a6b09c8977ea63be73c8e",
+  "rows": 133,
+  "numeric": [
+    "lat",
+    "lon",
+    "danger_level",
+    "elevation_m",
+    "slope_deg",
+    "dist_to_coast_km",
+    "dist_river_km",
+    "dist_major_river_km",
+    "river_density_10km_km_per_km2",
+    "n_river_lines_10km"
+  ],
+  "categorical": [
+    "river",
+    "basin",
+    "division",
+    "district",
+    "upazilla"
+  ],
+  "static_dim": 15,
+  "encoding": "numeric standardised on train; categorical frequency-encoded on train (unseen/NaN -> 0, as Phase 14/16 FreqEncoder)",
+  "cardinality": {
+    "river": 80,
+    "basin": 5,
+    "division": 8,
+    "district": 55,
+    "upazilla": 115
+  },
+  "output_csv": "data/processed/static_vectors.csv",
+  "output_sha256": "ed08648efa15deda8c49658b6c5b2f33bce84ff04271dcf5d6e5415bf5cc58aa"
+}
