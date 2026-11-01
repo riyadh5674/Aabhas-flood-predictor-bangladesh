@@ -10,11 +10,15 @@ resources:
 | Web app | HF **Static** Space | <https://riyadhuggy-aabhas-flood-outlook.static.hf.space/> |
 | Feature store | HF Dataset (private) | <https://huggingface.co/datasets/riyadhuggy/aabhas-flood-features> |
 | Model + API code | GitHub (private) | `riyadh5674/flood-predictor` |
+| CI/CD | GitHub Actions | `.github/workflows/deploy.yml` |
 
-**Verified 2026-11-01:** Space stage `RUNNING` (public); `/`, `/index.html`,
-`/data/snapshot/health.json`, one date's predictions, and a station trend all
-return HTTP 200; `dates.json` lists 2,611 dates from `2017-01-01` through
-`2026-10-30`.
+**Verified 2026-11-01 (after a full `workflow_dispatch` deploy):** the run
+downloaded all 2,611 partitions, rebuilt the snapshot, built the frontend, and
+published it in 3m8s. Live checks: Space stage `RUNNING` (public); `/`,
+`/index.html`, hashed JS/CSS assets, `/data/snapshot/health.json`, one date's
+predictions, and a station trend all return HTTP 200. `health.json` reports
+`model_version: D16`, `feature_store_dates: 2611`, `latest_feature_date:
+2026-10-30`, `station_count: 141`.
 
 ```
 ┌──────────────────────────────┐
@@ -197,6 +201,18 @@ git), builds the snapshot locally in one pass, builds the frontend, and calls
 `scripts/deploy_static_space.py`, which publishes `index.html` last so the
 Space keeps serving the previous build until the new snapshot is complete.
 
+Secrets are already configured on `riyadh5674/flood-predictor`, and the default
+branch is `master`. Dispatch and watch from the repository root:
+
+```powershell
+gh workflow run deploy.yml --ref master
+gh run list --workflow deploy.yml --limit 1
+gh run watch --exit-status
+```
+
+End-to-end (download 262 MB of partitions, score 2,611 dates, build, publish
+~227 MB) takes about 3 minutes on the free runner.
+
 **Deliberately not automated:** the FastAPI service. Docker Spaces on free
 `cpu-basic` return `402 Payment Required`, so `Dockerfile` and
 `docker-compose.yml` are for local or paid hosts only. The previous Cloudflare
@@ -317,7 +333,7 @@ All services used are **free tier**. Monitor:
 
 ## 📞 Support
 
-- **HF Spaces issues**: Check Space logs, HF Community forums
-- **Cloudflare Pages**: Cloudflare Dashboard → Pages → Deployments
+- **HF Spaces issues**: Space → Files/Logs, then HF Community forums
+- **Static Space**: `https://huggingface.co/spaces/riyadhuggy/aabhas-flood-outlook`
 - **GitHub Actions**: Actions tab → Failed workflow → Logs
 - **Model/API bugs**: Check `system/logs/daily_pipeline.log` and API `/health`

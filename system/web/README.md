@@ -27,13 +27,25 @@ npm run build        # -> dist/
 npm run preview
 ```
 
-For production, deploy the FastAPI model service and the built `dist/` frontend
-as separately managed services behind a same-origin reverse proxy (`/api` to
-FastAPI). Configure `VITE_API_BASE` to your public API route at build time when
-the frontend and API use different origins, and configure CORS on the API.
-The local launcher is a development convenience, not a production process
-manager. Add HTTPS, service supervision, monitoring, and operational forecast
-validation in the deployment environment.
+Production is a **static Hugging Face Space**: the app ships precomputed
+forecasts, so no API process runs there. Build with
+`VITE_AABHAS_STATIC_SNAPSHOT=true` after generating the snapshot:
+
+```bash
+cd "D:\Flood predictor"
+.venv\Scripts\python.exe system\deploy\build_static_snapshot.py
+cd system\web
+npm run build          # -> dist/ with data/snapshot/
+cd ..\..
+.venv\Scripts\python.exe scripts\deploy_static_space.py
+```
+
+The static build uses hash routing (`/#/stations/1`) because HF static Spaces
+return 404 for arbitrary deep links. Serving the FastAPI service and `dist/`
+behind a same-origin reverse proxy remains an option for a live-API deployment;
+in that case build without the snapshot flag and set `VITE_API_BASE` plus CORS
+on the API. The local launcher is a development convenience, not a production
+process manager.
 
 ## Layout
 
