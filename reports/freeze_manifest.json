@@ -1,0 +1,299 @@
+{
+  "frozen_at": "2026-10-22T23:52:47",
+  "seed": 20261008,
+  "test_policy": "closed - no read in this freeze; D16 headline is the valid MI-6 read",
+  "headline": {
+    "val_2022_d16_per_horizon": {
+      "label_24h": 0.9707888163782572,
+      "label_48h": 0.9564845353275488,
+      "label_72h": 0.9450067241240792
+    },
+    "val_2022_d16_horizon_mean": 0.957427,
+    "test_d16_per_horizon": {
+      "24h": 0.836227,
+      "48h": 0.768959,
+      "72h": 0.707087
+    },
+    "test_d16_horizon_mean": 0.770758,
+    "test_d7_per_horizon": {
+      "24h": 0.733961,
+      "48h": 0.662517,
+      "72h": 0.606167
+    },
+    "test_d7_horizon_mean": 0.667549,
+    "best_ml_val_2022": 0.954634,
+    "best_dl_val_2022": 0.93557,
+    "event_level": {
+      "mean_event_recall": {
+        "d16_frozen": {
+          "label_24h": 0.5085111283422207,
+          "label_48h": 0.7238589521147635,
+          "label_72h": 0.8810510529155787
+        },
+        "d7_persistence": {
+          "label_24h": 0.4520981417684898,
+          "label_48h": 0.6492458532494012,
+          "label_72h": 0.7668191270641482
+        }
+      },
+      "mean_fa_per_station_year": {
+        "d16_frozen": {
+          "label_24h": 0.5821976816313559,
+          "label_48h": 0.9798329981756213,
+          "label_72h": 2.2998603241384514
+        },
+        "d7_persistence": {
+          "label_24h": 1.556985813325941,
+          "label_48h": 1.9716403230954984,
+          "label_72h": 2.43866548353621
+        }
+      }
+    }
+  },
+  "checks": [
+    {
+      "check": "MI-10 summary not void",
+      "pass": true,
+      "detail": "None"
+    },
+    {
+      "check": "MI-10 gates",
+      "pass": true,
+      "detail": "18/18 pass"
+    },
+    {
+      "check": "D16 val_2022 label_24h",
+      "pass": true,
+      "detail": "0.970789 vs 0.970789"
+    },
+    {
+      "check": "D16 val_2022 label_48h",
+      "pass": true,
+      "detail": "0.956485 vs 0.956485"
+    },
+    {
+      "check": "D16 val_2022 label_72h",
+      "pass": true,
+      "detail": "0.945007 vs 0.945007"
+    },
+    {
+      "check": "D16 val_2022 horizon-mean",
+      "pass": true,
+      "detail": "0.957427"
+    },
+    {
+      "check": "D16 test per-horizon",
+      "pass": true,
+      "detail": "0.836227 / 0.768959 / 0.707087"
+    },
+    {
+      "check": "D16 test horizon-mean",
+      "pass": true,
+      "detail": "0.770758"
+    },
+    {
+      "check": "D7 test horizon-mean",
+      "pass": true,
+      "detail": "0.667549"
+    },
+    {
+      "check": "event analysis is dev-only",
+      "pass": true,
+      "detail": "0"
+    },
+    {
+      "check": "event analysis has all cells",
+      "pass": true,
+      "detail": "7"
+    },
+    {
+      "check": "dataset row count",
+      "pass": true,
+      "detail": "200665"
+    },
+    {
+      "check": "all frozen files exist",
+      "pass": true,
+      "detail": "26/26"
+    }
+  ],
+  "environment": {
+    "python": "3.13.7",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "packages": {
+      "numpy": "2.3.2",
+      "pandas": "3.0.6",
+      "scikit-learn": "1.9.1",
+      "scipy": "1.18.1",
+      "xgboost": "3.4.1",
+      "lightgbm": "4.7.0",
+      "torch": "2.14.1+cpu",
+      "matplotlib": "3.10.6",
+      "shap": "0.53.0"
+    }
+  },
+  "git": {
+    "commit": "76bdbd137bce409db3e5bbf565890e0040d859d3",
+    "branch": "master",
+    "dirty": true
+  },
+  "files": [
+    {
+      "path": "data/processed/experimental_dataset.csv",
+      "exists": true,
+      "sha256": "a6748529083fcdceb8bb8a657b067bf12b5c861f3a7a6b09c8977ea63be73c8e",
+      "bytes": 125682549
+    },
+    {
+      "path": "data/processed/mi_v2_features.csv",
+      "exists": true,
+      "sha256": "16287675df99eb5afb521c5c99252efd119c480fd1c7166435519fd43ff62a3c",
+      "bytes": 138077364
+    },
+    {
+      "path": "data/processed/mi8_features.csv",
+      "exists": true,
+      "sha256": "57ea7e8ccbf15c9ab4df153834f3aa1d219ad7addd5aef9725970f7479d23a6f",
+      "bytes": 164445566
+    },
+    {
+      "path": "models/final_v2/selected_model_v2.pkl",
+      "exists": true,
+      "sha256": "0b1cd34074d860b6797889410728905003909902bc1613a7da512a77291a0d79",
+      "bytes": 5496212
+    },
+    {
+      "path": "models/final_v2/final_config_v2.json",
+      "exists": true,
+      "sha256": "091f08bbad0c3bb4d2a160eb1618fb6c4a97a58933afb854108a3b64215f1d37",
+      "bytes": 3721
+    },
+    {
+      "path": "reports/p2p3_rescore/summary.json",
+      "exists": true,
+      "sha256": "b0ab1f97723da72d795054f2de271dd79a5b1b70f70c754fbe705ba97e710300",
+      "bytes": 7921
+    },
+    {
+      "path": "reports/p2p3_rescore/probe_p2p3.csv",
+      "exists": true,
+      "sha256": "3326ccceb63b364fd523a4a99a6fa762bea4cd38771534e14060dc0486c9e53e",
+      "bytes": 24727
+    },
+    {
+      "path": "reports/p2p3_rescore/arms_p2p3.csv",
+      "exists": true,
+      "sha256": "1e1c8c8cd5ec891d4f933f2f8bcab3cbe7e3ce7b0dbb8f910bc1548e09bda5bb",
+      "bytes": 23575
+    },
+    {
+      "path": "reports/p2p3_rescore/d7_p2p3.csv",
+      "exists": true,
+      "sha256": "518215b84168d5bcbc80bbd8d5a70a20ad684df5db96e0f324f9cdedc2d69493",
+      "bytes": 8246
+    },
+    {
+      "path": "reports/p2p3_rescore/d7_margins_p2p3.csv",
+      "exists": true,
+      "sha256": "d3f1b77e5a06f59cb3249787217a5c3fddd15e95bf0e208207c66fdbf021b901",
+      "bytes": 5911
+    },
+    {
+      "path": "reports/p2p3_correction.md",
+      "exists": true,
+      "sha256": "94f71f43e52babcd84541e09a1dc0166756e0256e695e2a910cfee5fbe86dff3",
+      "bytes": 11654
+    },
+    {
+      "path": "reports/event_level/summary.json",
+      "exists": true,
+      "sha256": "1db43aaf293ab3582650dc1efbbe873235bd20c068a34c4018712f17181081b3",
+      "bytes": 1816
+    },
+    {
+      "path": "reports/event_level/event_metrics.csv",
+      "exists": true,
+      "sha256": "77d89891a7b0630489f335f1f45ac99c20f82712a24e922a2113f9b1dd8f3eb9",
+      "bytes": 6060
+    },
+    {
+      "path": "reports/event_level/summary.md",
+      "exists": true,
+      "sha256": "3379cf5c932846a23652a6bbaf1e328ac41646d4541741b430a27c9708342bdd",
+      "bytes": 3506
+    },
+    {
+      "path": "reports/mi6_summary.json",
+      "exists": true,
+      "sha256": "ece2cfe9803e2a3f14247324141a443dff78e8d67b8b96b32726e87f6fd3e158",
+      "bytes": 2361
+    },
+    {
+      "path": "reports/mi9_summary.json",
+      "exists": true,
+      "sha256": "60203f2f9c90302c0e74c5eca66e709dc49e4e40499aa50d8248124ef21a6d52",
+      "bytes": 1116
+    },
+    {
+      "path": "reports/phase27_summary.json",
+      "exists": true,
+      "sha256": "a9555d7d28803bb452346a4271bca1b524ca4227827b729f5e864704e5ed252d",
+      "bytes": 7391
+    },
+    {
+      "path": "reports/phase31_summary.json",
+      "exists": true,
+      "sha256": "2122d3f9ceb99c83f7a25d20c8f0538051031612851e9c334f9e9226f14fc05e",
+      "bytes": 4374
+    },
+    {
+      "path": "reports/phase28_summary.json",
+      "exists": true,
+      "sha256": "f86d8379915c233062405f76c21e7ddd136f1686fec028a472b7b0a1659008d0",
+      "bytes": 1782
+    },
+    {
+      "path": "reports/phase34_summary.json",
+      "exists": true,
+      "sha256": "c0b2a4635433185b9ee2ee0cea049fd82051a6cd568fc81b67205a79b2d02c86",
+      "bytes": 12971
+    },
+    {
+      "path": "reports/test_read_ledger.md",
+      "exists": true,
+      "sha256": "61facbe76b23e6e1723216409bc73749c7d747a2ff26817790af0af096e564cd",
+      "bytes": 5766
+    },
+    {
+      "path": "reports/phase27_ml_vs_dl.md",
+      "exists": true,
+      "sha256": "4a86be65cebe95222c43d54dc80ed5822c91496ecc170d5d873a5fb5316d700a",
+      "bytes": 20394
+    },
+    {
+      "path": "reports/phase31_robustness.md",
+      "exists": true,
+      "sha256": "693430167cbfad749c0591470e3214ed25d02e4aceeab5b3df72a3070af3a092",
+      "bytes": 14117
+    },
+    {
+      "path": "reports/phase28_calibration.md",
+      "exists": true,
+      "sha256": "99f8b1b0573221b6e24ad08d3aa0648aa65100bac4cc8daeb9a69a2b6339b442",
+      "bytes": 12641
+    },
+    {
+      "path": "reports/phase34_xai.md",
+      "exists": true,
+      "sha256": "296215e0afc8e385d930d380aca13178d863cb762ae861022d7f506d1706a8f4",
+      "bytes": 17511
+    },
+    {
+      "path": "reports/mi6_test_read.md",
+      "exists": true,
+      "sha256": "a49bf7397d076da6d97e510e9d4fa6e1ba8fe471f6c62fd28a772f35bf0974c2",
+      "bytes": 6129
+    }
+  ],
+  "manifest_sha256": "82d1912a70223247cc4354e390ad5419af7b12accf227e4743d0e4b45bcdfddd"
+}

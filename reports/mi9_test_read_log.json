@@ -1,0 +1,92 @@
+{
+  "n_reads": 1,
+  "project_test_reads_total": 3,
+  "reads": [
+    {
+      "utc": "2026-10-21T17:26:46.167827+00:00",
+      "user": "user",
+      "host": "DESKTOP-K8D2H3K",
+      "phase": "MI-9",
+      "kind": "corrected_read",
+      "supersedes": "mi4_test_read (invalid - complete-case filter)",
+      "models": [
+        "hpo_perhorizon_FULL_V2",
+        "hybrid_d17_v4_24h",
+        "persistence"
+      ],
+      "horizons": [
+        "label_24h",
+        "label_48h",
+        "label_72h"
+      ],
+      "test_years": [
+        2023,
+        2024,
+        2025,
+        2026
+      ],
+      "cells": [
+        "test_2023",
+        "test_2024",
+        "test_2025",
+        "test_2026",
+        "test_trained",
+        "test_new_network",
+        "test_unseen"
+      ],
+      "seasons": [
+        "all",
+        "monsoon",
+        "non-monsoon"
+      ],
+      "distinct_test_rows": 101174,
+      "test_rows_read": 3594168,
+      "thresholds": "D7 = Phase-29 frozen; D16/hybrid = best_exact on val_2022, C_FN=10",
+      "sanity_d16_vs_mi6": {
+        "rows_compared": 63,
+        "max_abs_delta_pr_auc": 0.0,
+        "max_abs_delta_brier": 9.8879238130678e-17,
+        "max_abs_delta_n": 0,
+        "tolerance": 1e-09,
+        "passed": true
+      },
+      "decision_rule": {
+        "R2_label_24h_hyb_ge_d16": false,
+        "R2_label_24h_mean_delta": -0.0003031857648775179,
+        "R2_label_48h_hyb_ge_d16": true,
+        "R2_label_48h_mean_delta": 0.0,
+        "R2_label_72h_hyb_ge_d16": true,
+        "R2_label_72h_mean_delta": 0.0,
+        "R2_all_horizons": false,
+        "R3_hyb_beats_d7_count": 21,
+        "R3_pass": true,
+        "R4_pass": false,
+        "D17_reinstated": false
+      },
+      "bootstrap_2024": {
+        "label_24h": {
+          "mean": -0.0013320517303517696,
+          "lo": -0.0060508742415665085,
+          "hi": 0.0031234772217411644,
+          "p_gt_0": 0.2825,
+          "n": 400
+        },
+        "label_48h": {
+          "mean": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "p_gt_0": 0.0,
+          "n": 400
+        },
+        "label_72h": {
+          "mean": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "p_gt_0": 0.0,
+          "n": 400
+        }
+      },
+      "wall_secs": 195.7
+    }
+  ]
+}

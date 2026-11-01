@@ -1,0 +1,35 @@
+{
+  "n_reads": 1,
+  "timestamp": "2026-10-21T16:05:57.065708+00:00",
+  "models": {
+    "label_24h": {
+      "family": "lgbm",
+      "cfg": "mi4_hpo_v4_label_24h.json",
+      "feat_set": "FULL_V4"
+    },
+    "label_48h": {
+      "family": "lgbm",
+      "cfg": "mi_hpo_label_48h.json",
+      "feat_set": "FULL_V2"
+    },
+    "label_72h": {
+      "family": "xgb",
+      "cfg": "mi_hpo_label_72h.json",
+      "feat_set": "FULL_V2"
+    }
+  },
+  "thresholds": {
+    "label_24h": 0.05,
+    "label_48h": 0.08,
+    "label_72h": 0.09999999999999999
+  },
+  "test_cells": [
+    "test_2023",
+    "test_2024",
+    "test_2025",
+    "test_2026",
+    "test_trained",
+    "test_new_network",
+    "test_unseen"
+  ]
+}

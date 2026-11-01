@@ -1,0 +1,22 @@
+{
+  "label_24h": {
+    "FULL_mean": 0.98911,
+    "FULL_V2_mean": 0.99118,
+    "delta": 0.00207
+  },
+  "label_48h": {
+    "FULL_mean": 0.98392,
+    "FULL_V2_mean": 0.98699,
+    "delta": 0.00307
+  },
+  "label_72h": {
+    "FULL_mean": 0.97719,
+    "FULL_V2_mean": 0.98237,
+    "delta": 0.00518
+  },
+  "val_2022_horizon_mean": {
+    "FULL": 0.95463,
+    "FULL_V2": 0.95589
+  },
+  "wall_clock_s": 153.0
+}

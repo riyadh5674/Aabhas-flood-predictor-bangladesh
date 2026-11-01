@@ -1,0 +1,4 @@
+horizon,threshold
+label_24h,0.05
+label_48h,0.08
+label_72h,0.09999999999999999

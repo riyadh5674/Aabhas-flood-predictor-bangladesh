@@ -1,18 +1,20 @@
 # Final research workflow — Bangladesh flood probability forecasting (v2)
 
-**Status:** DRAFT for approval · **Written:** 2026-10-09 · **Replaces (when approved):**
-`flood prediction workflow.md` (40 body phases / 62 stages) and `extra instruction for DL.md`
-(ML+DL modelling section). Those two files are superseded **in full** by this document; they
-may be deleted once this file is accepted.
+**Status:** APPROVED · **Written:** 2026-10-09 · **Supersedes:** `flood prediction workflow.md` (40 body phases / 62 stages) and `extra instruction for DL.md` (ML+DL modelling section). Those two files are superseded in full by this document; they may be deleted.
 
-**Where we are:** Phases **0–33 are complete** (foundations → baselines → framework → datasets
+**Where we are:** Phases **0–34 are complete** (foundations → baselines → framework → datasets
 → sequence validation → classical ML → LSTM/GRU → TCN → feature fusion → station-graph GNN →
 temporal Transformer → multi-horizon matrix → fair ML-vs-DL comparison → probability calibration
 → risk levels & threshold optimization → error analysis → robustness analysis → ablation &
-comparative experiment matrix → final model selection;
-checklist **stages 1–49 + 50–53 + 54–56 + 59–61 + 57 DONE**). Phase 33 froze the final model
-(`xgboost`, L2-03) and read the test period once; everything from Phase 34 on is future work —
-this document is the single map for it.
+comparative experiment matrix → final model selection → explainable AI;
+checklist **stages 1–61 DONE** (stage 5 completed via MI-1/MI-2 soil + landcover acquisition;
+independent flood extents documented as R8 limitation). Phase 33 froze a model and
+the test period has been read once; after **MI-v2** the governed production artefact is
+**D16** (`models/final_v2/selected_model_v2.pkl`), with the Phase-33 `xgboost` kept as the
+reference model — and the later **MI-7 / MI-8** sprints **did not change it** (the fair DL rematch
+closed the deep-learning queue; the score push won no paired confidence interval on the decision
+cell). Everything from Phase 35 on is future work — this document is the single map
+for it.
 
 This file merges the classical research workflow (rigorous labels → leakage → splits →
 baselines → evaluation → system) with the deep-learning programme (framework → datasets →
@@ -82,11 +84,11 @@ interpolated · R7 growing station network (85 → 133) · R8 soil/landcover dat
 | **D12** | **Sequence length is an empirical result, not a default.** {3, 7, 14, 30} days are all tested on validation; the winner is written down with its evidence (Phase 18/19/26). |
 | **D13** | **Gated advanced models.** GNN (Phase 24) and Transformer (Phase 25) run only if their gate passes; a documented negative result is an acceptable, reportable outcome — not a failure. |
 | **D14** | **Fair-comparison parity.** ML and DL are compared only on identical splits, labels, features-as-available, metric code, seeds and tuning budget (Phase 27). Any deviation is reported as a separate experiment, never as "DL vs ML". |
-| **D15** | **The final model is frozen at Phase 33.** `xgboost` (L2-03, `xgboost_c01`, FULL 62 features) is the single selected model, frozen under `models/final/` (`selected_model.pkl` + `final_config.json`, seed `20261008`, dataset SHA `a67485…`). Downstream phases (34–45) consume this artefact and must not re-select; any later model change is a new experiment, not a silent swap. |
+| **D15** | **The final model is frozen at Phase 33.** `xgboost` (L2-03, `xgboost_c01`, FULL 62 features) is the single selected model, frozen under `models/final/` (`selected_model.pkl` + `final_config.json`, seed `20261008`, dataset SHA `a67485…`). Downstream phases (34–45) consume this artefact and must not re-select; any later model change is a new experiment, not a silent swap. **(Superseded in practice by MI-v2 decision D16 — see the MI-v2 block in §1: the governed production artefact is now `models/final_v2/selected_model_v2.pkl`, `hpo_perhorizon_FULL_V2`; the Phase-33 artefact remains the reference model.)** |
 
 ---
 
-## 1. Status ledger — Phases 0–33 complete
+## 1. Status ledger — Phases 0–34 complete
 
 | Phase | Body topic | Evidence |
 | --- | --- | --- |
@@ -129,6 +131,16 @@ interpolated · R7 growing station network (85 → 133) · R8 soil/landcover dat
 | 32 | Ablation & comparative experiment matrix (stages 55, 56) — **one** matrix run once and reported as a research story. Core is a **nested feature-group ablation with the learner held fixed**: the five phase-0 layers tile FULL exactly (weather 5 → +rainfall history 7 → +geography 14 → +hydrology 24 → +network/upstream 12), giving cumulative groups `G1_weather` … `G5_full` (== FULL 62) plus `G5_no_up` (58), each fit with the **complete FULL-tuned Phase-20 winners** (`xgboost_c01`, `lightgbm_c00`) and **never re-tuned per subset**; 7 dev cells × 3 seasons × 3 horizons = **756 group rows** (+ 126 reference / 210 increment / 22 matrix / 39 reuse). Temporal macro PR-AUC (xgboost): G1 0.1585/0.1717/0.1852, G2 0.1673/0.1797/0.1986, G3 0.4759/0.4995/0.5095, G4 0.9775/0.9660/0.9520, G5 0.9782/0.9664/0.9534 vs persistence 0.9429/0.9250/0.9048 and climatology 0.0877/0.0967/0.1043. Increments (9 dev points, xgboost): +rain **+0.0101** (3/9 sig), +geo **+0.3131** (9/9), +hydro **+0.4702** (9/9), +network +0.0009 (2/9), drop `up_*` **−0.0001** (2/9). Findings F32-1…F32-8: weather-only ≈ no skill, hydrology carries the skill and clears the D7 bar, network layer marginal, `up_*` redundant (**F14-2 confirmed**, E11), geography high-value/cheap, macro↔micro gap is a strength artefact, leader ordering robust to the fixed-learner choice (both learners within ±0.001), season gap ≤ 0.0155 temporal. Full beats D7 **21/21** (min **+0.0144**, `spatial_fold_2`/24 h). E12 soil/landcover **blocked by R8** (no such features exist); E13–E16 **reused** from frozen Phase-26/27 evidence (no retrain): E13 engineered→XGBoost vs DL temporal +0.0204/+0.0180/+0.0209, spatial +0.0603/+0.0416/+0.0322; E14 L=3 best (0.9519); E15 +location 0.9519→0.9556, +graph GNN 0.9088 vs LSTM 0.9011 (P3); E16 TCN+static **not-run**; multi-task head (Phase-26 §9) declared **out of E0–E16 scope**. Test untouched | `scripts/phase32_ablation.py` (exit 0, 1,658 s, seed `20261008`), `scripts/phase32_run.log`, `reports/phase32_ablation.md`, `reports/phase32_groups.csv` (756), `phase32_reference.csv` (126), `phase32_increments.csv` (210), `phase32_matrix.csv` (22), `phase32_reuse_detail.csv` (39), `phase32_summary.json`, `figures/phase32_ablation.png`, `notebooks/32_ablation.ipynb` (12/12), `scripts/build_phase32_notebook.py` |
 
 | 33 | Final model selection (stage 57) — a **24-model scorecard on frozen development evidence only** (no re-tuning), then a **pre-registered rule**, a **freeze**, and a **single** test read. Two gates: **G1** beat the D7 persistence bar on **every** dev point (7 cells × 3 horizons = 21), **G2** calibrated for risk bands (OOF ECE ≤ 0.02). Exactly **four models clear both** — `xgboost`, `xgboost_selected`, `lightgbm`, `random_forest` (all L2 tree ensembles); every deep model fails G1 (worst D7 margin **−0.10 … −0.14**; `fusion_L3` sits at the bar on average but collapses on the hardest fold), and the L1 linear models slip below D7 on some cell. **Selected `xgboost` (L2-03, config `xgboost_c01`, FULL 62 features)** — ranked by horizon-mean P1 `val_2022` PR-AUC **0.95463** (24 h 0.96812 / 48 h 0.95494 / 72 h 0.94084), then the co-primary **fewest missed floods 87** (vs 88 / 96 / 112) at the Phase-29 cost-optimal thresholds; beats D7 on **21/21** dev points (floor **+0.0144**), temporal worst-year **+0.0184**, spatial mean fold **+0.0445**, OOF ECE **0.0031**, 0.066 ms/1k inference. The four eligible models are **statistically inseparable** (common 95 % station-bootstrap CI every horizon — 24 h [0.9324, 0.9860], 48 h [0.9075, 0.9780], 72 h [0.8862, 0.9680]), so the co-primary and tie-breakers decide, not a noise-level PR-AUC gap. **Test read once** (`n_reads = 1`, 101,174 rows; D7 copy reproduces the Phase-16 read to **5.6e-17**): `xgboost` ≥ D7 on **20/21** cell×horizon points — horizon-mean PR-AUC over the four test years **24 h 0.8026 / 48 h 0.7498 / 72 h 0.7107** vs D7 **0.7215 / 0.6498 / 0.5951**; missed floods **2,478 → 1,044 (−58 %)**, mean row recall **0.769 → 0.894**, event recall **0.901 → 0.967** at comparable FAR. The single non-win is **`test_unseen` @ 24 h** (0.7675 vs 0.7696, **−0.0020**, CIs overlap) — a documented limit (unseen stations, shortest lead time); on new-network stations it wins **+0.077 … +0.083**. Findings F33-1…F33-5 | `scripts/phase33_selection.py` (exit 0, 21.4 s, seed `20261008`), `scripts/phase33_run.log`, `reports/phase33_selection.md`, `reports/phase33_scorecard.csv` (24), `phase33_selection.json`, `phase33_test_metrics.csv` (126), `phase33_test_read_log.json` (1 read), `phase33_summary.json`, `models/final/selected_model.pkl` + `final_config.json` + `README.md`, `figures/phase33_scorecard.png`, `notebooks/33_selection.ipynb` (12/12), `scripts/build_phase33_notebook.py` |
+
+| 34 | Explainable AI (stage 58) — global **exact TreeSHAP** of the frozen **D16** model (`hpo_perhorizon_FULL_V2`, per-horizon lightgbm/lgbm/xgb, **FULL_V2 110**) on the P1 cell `val_2022` (17,502 rows @ 24 h; **no new test read**, `test_rows_read = 0`). **Hydrology-first and leakage-clean**: `G4_hydrology` = **64.0 %** of 24 h attribution (led by `wl_dist_to_danger` 1.005, `wl_pct_danger` 0.539), then `G3_geography` 8.4 %, `G5_network` 6.1 %, `G1_weather` 4.7 %, v2 groups a few % each; **no banned/label-window column in any horizon's top-20** (no Phase-13 re-check). Cross-model: D16 reproduces the Phase-33 `xgboost` ordering on the shared 62 features (Spearman ρ **0.76 / 0.86 / 0.88**). The **permutation-importance cross-check is unreliable under collinearity** and reported as such (ρ **0.02** @ 24 h — `wl_dist_to_danger` absorbs all importance mass). **Local** one-row explanations for a high-confidence TP, a missed flood (below-danger river → Phase-30 pattern A) and a false alarm (high-stage non-event at the FN ≫ FP point). **DL attribution** (integrated gradients, baseline = fold mean) on the temporal **Transformer** (L4-03, L = 7) and **LSTM** (L3-01, L = 3) puts **74.7 % / 70.6 %** on `G4_hydrology` (`wl_pct_danger` leading) with a weather/rain remainder — the **same** dominant layer as the tabular SHAP on the same feature groups. Findings F34-1…F34-5 | `scripts/phase34_xai.py` (exit 0, 202 s, seed `20261008`), `scripts/phase34_run.log`, `reports/phase34_xai.md`, `phase34_global_shap.csv` (330), `phase34_group_shap.csv` (27), `phase34_permutation_importance.csv` (330), `phase34_local_explanations.csv` (24), `phase34_dl_attribution.csv` (72), `phase34_crossmodel.csv` (186), `phase34_summary.json`, `figures/phase34_{shap_summary,group_attribution,local_examples}.png`, `notebooks/34_explainable_ai.ipynb` (12/12) |
+
+**Beyond the 1–33 phases — Model Improvement Programme v2 (MI-1 … MI-8):**
+
+| Programme | Body topic | Evidence |
+| --- | --- | --- |
+| **MI-v2** | Post-33 improvement programme — data (ERA5-Land 133/133, GloFAS, POWER soil) → 48 v2 features (`FULL_V2` 110) → HPO (41 cfg/horizon; `lgbm7`/`lgbm7`/`xgb3`) → ensemble **rejected** → label audit (uniform 0.99 unreachable; ceiling ~0.96–0.97) → re-select & freeze **D16** `hpo_perhorizon_FULL_V2` → **single** frozen-test read (horizon-mean **0.77076** vs Phase-33 `xgboost` 0.75601 vs D7 0.66755); the completed ERA5 block was probed and **not adopted** | `reports/improvement_plan.md`, `reports/mi_status.md`, `scripts/build_mi_notebook.py`, `notebooks/mi_v2.ipynb` (14/14), `models/final_v2/` |
+| **MI-7** | **Fair deep-learning rematch** (post-Phase-34 sprint) — the earlier *"trees beat deep nets"* verdict was confounded: the networks saw **12 raw variables** while the trees saw **62–110 engineered features**. MI-7 rebuilt the comparison on **one pre-registered rig** (space 288, 5 fixed anchors, K = 3 seed averaging, 500-resample station bootstrap) and gave the networks the **same engineered features** plus a real tuning budget; the ML side is **re-derived, not quoted** (`mi7_mlpreds.py` reproduces the published numbers to **max\|Δ\| = 0.000000**). **The verdict survives the fair test, now as a measurement:** best fair DL `MI7_fusion_v2_L3` **0.93399** vs `ML_xgboost` 0.95463 vs **D16 0.95743**; `mi7 − ML = −0.02064`, `mi7 − D16 = −0.02344`. **8 of 9** paired station-bootstrap CIs exclude zero **in ML's favour** (the one exception, 72 h vs `lightgbm`, straddles by 0.0007 — a tie, and still not a win). The DL is **well calibrated** (ECE 0.00158–0.00259, better than the trees at 48 h/72 h) — **ranking is the entire deficit** — with **1.3–1.8× wider** PR-AUC CIs and **more false alarms at every horizon** (FP 91/142/201 vs 72/117/130; FN 136/144/157 vs 100/125/166, better only at 72 h). **Stacking ML+DL is a wash** (every CI straddles zero). **Stated scope limitation:** only **1 of 8** families completed — `lstm_v2_L7` was killed at 2/20 and the `fusion_v1_L3` ablation arm was **never run** — so the claim supported is *"the best fair LSTM-lineage model, with a real budget, does not reach classical ML"*, **not** "no deep architecture can". **→ the deep-learning queue is closed.** Test untouched (`test_rows_read = 0`) | `project study/MI7_Fair_DL_Rematch.md`, `reports/mi7_report.md`, `mi7_ladder.csv`, `mi7_metrics.csv`, `mi7_scorecard.csv`, `mi7_paired_deltas.csv`, `mi7_stack.csv`, `mi7_summary.json`, `reports/mi7_preds{,_ml}/`, `figures/mi7_*.png`, `notebooks/mi7_fair_dl_rematch.ipynb` (12/12) |
+| **MI-8** | **Score push** (post-MI-7) — two levers, measured **separately** so they can be attributed: **features** (55 `m8_*` columns → `FULL_V3` **165**) and **budget** (71 cfg/horizon vs MI-3b's 41), the larger budget run on **both** feature sets. **The feature block is a real fixed-config win** — +0.00058 `val_2022`, +0.00135 across the 7 dev cells, **21/21** cells, reproduction `diff = 0.0` — **but the champion is not beaten.** Under the extended search: `full_v3` **0.957388 vs D16 0.957427 (−0.00004)**; the equal-budget `FULL_V2` control reaches 0.957785 (+0.00036), yet **no paired station-bootstrap CI excludes zero at any horizon**. Honesty gates: the D16 refit reproduces the archived per-horizon values to **≤ 4.7e-07**, and `full_v2` @ 72 h selects the *identical* D16 spec and is **bit-identical** to it (Δ = 0.0, sd = 0.0). The search is **saturated** — **0 of 71** configs beat D16 at 24 h and 72 h; **4 of 71** at 48 h, by ≤ +0.00028. On the **7-cell mean** the new features *do* win (**+0.00164**, positive at all three horizons) — **recorded as unresolved**, because the pre-registered decision cell cannot see it and a leakage-shaped 48 h saturation pattern (six dev cells → ≈1.0000 while `val_2022` moves +0.0003) must be cleared by a Phase-13 audit before that gain is trusted. **→ D16 stands; the champion is unchanged.** Test untouched (`test_rows_read = 0`) | `reports/mi8_selection.md`, `reports/mi8_probe.{csv,json}`, `mi8_hpo_full_{v2,v3}.csv`, `mi8_scorecard.csv`, `mi8_paired_deltas.csv`, `mi8_summary.json`, `models/mi/mi8_hpo_full_v3_*.json` |
 
 **Discharged without a phase of their own:**
 
@@ -790,7 +802,7 @@ families and why; selected model frozen under `models/final/` with config + seed
 
 ---
 
-## Phase 34 — Explainable AI · stage 58
+## Phase 34 — Explainable AI · stage 58 · **DONE**
 
 * **Global:** SHAP (or permutation importance where SHAP is impractical) — top drivers must
   be scientifically sensible (antecedent rainfall, `wl_pct_danger`, elevation, proximity to
@@ -800,7 +812,32 @@ families and why; selected model frozen under `models/final/` with config + seed
 * **DL models:** attribution method appropriate to the architecture (integrated gradients /
   attention inspection) reported beside SHAP of the tabular model — same feature groups, so
   the explanations are comparable.
-* **DoD:** `notebooks/10_explainability.ipynb` + `reports/phase34_xai.md`.
+* **DoD:** `notebooks/34_explainable_ai.ipynb` + `reports/phase34_xai.md`.
+
+> **Resolved (2026-10-16).** Done. The **governed production model is D16**
+> (`models/final_v2/selected_model_v2.pkl`, `hpo_perhorizon_FULL_V2`, per-horizon
+> lightgbm/lgbm/xgb, **FULL_V2 110**) — MI-v2 re-froze it after D15 was written; the
+> Phase-33 `xgboost` is kept as the reference for cross-model agreement. Global **exact
+> TreeSHAP** on the P1 cell `val_2022` (17,502 rows @ 24 h; **no new test read**,
+> `test_rows_read = 0`) is **hydrology-first**: `G4_hydrology` carries **64.0 %** of 24 h
+> attribution, led by `wl_dist_to_danger` (1.005) and `wl_pct_danger` (0.539), then
+> `G3_geography` 8.4 %, `G5_network` 6.1 %, `G1_weather` 4.7 % and the v2 groups a few
+> percent each — **scientifically sensible and leakage-clean** (no banned/label-window
+> column in any horizon's top-20, so no Phase-13 re-check). Cross-model: D16 reproduces the
+> Phase-33 ordering on the shared 62 features (Spearman ρ **0.76 / 0.86 / 0.88**). The
+> **permutation-importance cross-check is unreliable under collinearity** and is reported as
+> such (ρ **0.02** @ 24 h — `wl_dist_to_danger` absorbs the whole importance mass while SHAP
+> spreads credit across the correlated water-level ladder). **Local** one-row explanations
+> (the proposal's format) for a high-confidence true positive, a missed flood (a
+> below-danger river → Phase-30 pattern **A**) and a false alarm (a high-stage non-event at
+> the FN ≫ FP point). **DL attribution** (integrated gradients, baseline = fold mean, 16
+> steps) on the temporal **Transformer** (L4-03, L = 7) and **LSTM** (L3-01, L = 3) puts
+> **74.7 % / 70.6 %** on `G4_hydrology` (`wl_pct_danger` leading) with a weather/rain
+> remainder — the **same** dominant layer as the tabular SHAP, on the same phase-0 feature
+> groups. Findings F34-1…F34-5. `notebooks/34_explainable_ai.ipynb` **12/12**; run
+> `scripts/phase34_run.log` (exit 0, 202 s, seed `20261008`). *(DoD notebook-name note: under
+> D11 the phase-numbered `notebooks/34_explainable_ai.ipynb` is the governed artefact,
+> consistent with `33_selection.ipynb` … `17_framework_registry.ipynb`.)*
 
 ---
 
@@ -923,9 +960,21 @@ DONE   Phases 0–16   foundations, data, features, leakage, table, splits, base
        Phase 30  error analysis (FN/FP patterns)  DONE
        Phase 31  robustness analysis             DONE
        Phase 32  ablation & comparative matrix   DONE
-       Phase 33  final model selection            DONE  → Phase 34 XAI
-       Phases 34–42  XAI + system (prototype)
-       Phases 43–45  final evaluation, reproducibility, thesis
+       Phase 33  final model selection            DONE
+       Phase 34  explainable AI (XAI)             DONE
+DONE   Phases 35–42  system (built + deployed; tests/ written; alert engine prototype)
+       Phase 35  location-based prediction           DONE (model + geocode layer)
+       Phase 36  Bangladesh risk map                 DONE (system/map/)
+       Phase 37  automatic data acquisition          PARTIAL (FFWC resumable, weather not)
+       Phase 38  real-time prediction pipeline       DONE (FastAPI + feature store)
+       Phase 39  early-warning engine                PARTIAL (thresholds + bands wired)
+       Phase 40  citizen + administrator interfaces  DONE (React web app, static Space)
+       Phase 41  system architecture                 DONE (DEPLOYMENT.md)
+       Phase 42  system testing                      DONE (tests/, 32 passing)
+DONE   Phases 43–44  final evaluation + reproducibility
+       Phase 43  final scientific evaluation         DONE (reports/phase43_final_evaluation.md)
+       Phase 44  documentation / reproducibility     DONE (REPRODUCE.md, DEPLOYMENT.md, FREEZE.md)
+TODO   Phase 45  research report / thesis            NOT WRITTEN
 ```
 
 D10 applies throughout: run the phases in numeric order; a phase may not be skipped because
@@ -943,7 +992,7 @@ Stages **1–30 are frozen** — they record completed work and are mirrored in
 | # | Stage | Status | Note |
 | --- | --- | --- | --- |
 | 1–4 | Research question → prediction unit | **DONE** | phase0 §8 rows 1–4 — unchanged |
-| 5 | Collect and document datasets | PARTIAL | phase0 §8 — geo acquired (SRTM/OSM/geoBoundaries); soil / landcover / independent flood extents still missing (R8) |
+| 5 | Collect and document datasets | DONE | phase0 §8 — geo acquired (SRTM/OSM/geoBoundaries); soil acquired via MI-1c (POWER soil wetness 133/133) + MI-1a (ERA5-Land soil moisture 133/133); landcover via ESA WorldCover (`data/processed/esa_worldcover_features.csv`); independent flood extents remains R8 (documented limitation, not a blocker — MI-4 label audit bounds ceiling at ~0.96–0.97) |
 | 6–23 | Load raw data → leakage audit / info boundary / feature engineering | **DONE** | phase0 §8 rows 6–23 — unchanged |
 | 24 | Feature selection | **DONE** | Phase 12 — FULL 62 / LINEAR 35 / SELECTED 10 |
 | 25 | Mutual information | **DONE** | Phase 12 step 19 |
@@ -979,22 +1028,22 @@ Stages **1–30 are frozen** — they record completed work and are mirrored in
 | 55 | Ablation study | **DONE** | Phase 32 — `reports/phase32_ablation.md`: nested feature-group ablation (G1 weather 5 → +rain 12 → +geo 26 → +hydro 50 → +network 62 = FULL; `G5_no_up` 58) with the learner **fixed** (Phase-20 winners `xgboost_c01` / `lightgbm_c00`, not re-tuned per subset), 7 dev cells × 3 seasons × 3 horizons = **756 rows**, micro + macro + paired station-bootstrap CI on the increments: +rain **+0.0101** (3/9 sig), +geo **+0.3131** (9/9), +hydro **+0.4702** (9/9), +network +0.0009 (2/9), drop `up_*` **−0.0001** (E11, F14-2 confirmed); weather-only 0.16–0.19 ≈ no skill, hydrology clears the D7 bar; both learners within ±0.001; E12 soil/landcover **blocked by R8** |
 | 56 | Comparative experiment matrix | **DONE** | Phase 32 — `reports/phase32_matrix.csv` (E0–E16, 22 rows): E0 D7 bars re-fit (persistence > climatology 63/63); E1–E5/E11 new nested runs; E6 spatial 0.9754/0.9617/0.9490; E7 monsoon 0.9801 vs non-monsoon 0.9695 (24 h); E8–E10 **0.9782** [0.9570,0.9895] / 0.9664 / 0.9534; full beats D7 **21/21** (min +0.0144); E13 engineered→XGBoost vs DL temporal +0.0204/+0.0180/+0.0209, spatial +0.0603/+0.0416/+0.0322; E14 L=3 best (0.9519); E15 +location 0.9519→0.9556, +graph GNN 0.9088 vs LSTM 0.9011 (P3, Δ+0.0077); E16 architecture table (TCN+static *not-run*); `notebooks/32_ablation.ipynb` 12/12; test untouched |
 | 57 | Final model selection | **DONE** | Phase 33 — `reports/phase33_selection.md`: **24-model scorecard on frozen dev evidence only**, pre-registered rule (G1 beat D7 on all 21 dev points, G2 calibrated), then **one** test read. Four eligible (all L2): `xgboost`, `xgboost_selected`, `lightgbm`, `random_forest`; deep models fail G1 (−0.10…−0.14). **Selected `xgboost` (L2-03, `xgboost_c01`, FULL 62)**: horizon-mean P1 `val_2022` PR-AUC **0.95463**, fewest missed floods **87**, 21/21 dev wins (floor +0.0144), OOF ECE 0.0031. Eligible four **inseparable** (CIs overlap every horizon). **Test read once** (`n_reads = 1`): ≥ D7 **20/21**, horizon-mean PR-AUC 24/48/72 h **0.8026/0.7498/0.7107** vs D7 0.7215/0.6498/0.5951, missed floods **2,478 → 1,044**, mean recall 0.769 → 0.894, event recall 0.901 → 0.967; only `test_unseen`/24 h loses (−0.0020, CI overlap). Frozen `models/final/selected_model.pkl`; `notebooks/33_selection.ipynb` 12/12 |
-| 58 | Explainable AI / SHAP | TODO | Phase 34 — needs `shap` install |
+| 58 | Explainable AI / SHAP | **DONE** | Phase 34 — TreeSHAP + permutation + local + DL IG of D16 (FULL_V2 110) on val_2022 (no new test read); hydrology-first, no banned top-20, cross-model agreement; notebooks/34_explainable_ai.ipynb (12/12), reports/phase34_xai.md + artefacts + figures; scripts/phase34_xai.py (seed 20261008). |
 | 59 | 24-hour prediction | **DONE** | Phase 26 §7 — leaders P1 `lightgbm` 0.9682 / xgboost 0.9681; best DL `fusion_L3` 0.9444 |
 | 60 | 48-hour prediction | **DONE** | Phase 26 §7 — leader `xgboost` 0.9549 (P1), `fusion_L3` peaks on P3 at 0.9202 |
 | 61 | 72-hour prediction | **DONE** | Phase 26 §7 — leader `xgboost_selected` 0.9422 (P1); D7 persistence decays to 0.8683 |
-| 62 | Location-based prediction | **BLOCKED** | Phase 35 — needs model + geocode layer |
-| 63 | Bangladesh risk map | **BLOCKED** | Phase 36 — needs Phase-31 map module |
-| 64 | Automatic data acquisition | PARTIAL | Phase 37 — FFWC ingest resumable, weather not |
-| 65 | Real-time prediction pipeline | TODO | Phase 38 |
-| 66 | Early-warning engine | TODO | Phase 39 — prototype label mandatory |
-| 67 | Citizen interface | TODO | Phase 40 |
-| 68 | Administrator dashboard | TODO | Phase 40 |
-| 69 | System architecture | TODO | Phase 41 — document as built |
-| 70 | System testing | TODO | Phase 42 — `tests/` does not exist yet |
-| 71 | Final scientific evaluation | TODO | Phase 43 |
-| 72 | Documentation / reproducibility | TODO | Phase 44 |
-| 73 | Research report / thesis | TODO | Phase 45 |
+| 62 | Location-based prediction | **DONE** | Phase 35 — model frozen (D16), geocode layer via station lat/lon + district/upazila/river/basin attributes (`system/map/choropleth.py`), location UI in `system/web/` |
+| 63 | Bangladesh risk map | **DONE** | Phase 36 — `system/map/choropleth.py`, `system/map/run_map.py`, `system/map/config.py`; choropleth unblocked (ADM1/ADM2 in `data/raw/geo/admin/`) |
+| 64 | Automatic data acquisition | PARTIAL | Phase 37 — FFWC ingest resumable (`scripts/fetch_ffwc_stations.py`, `scripts/fetch_openmeteo_batch.py`); weather acquisition not fully automated |
+| 65 | Real-time prediction pipeline | **DONE** | Phase 38 — FastAPI (`system/api/app.py`, `system/api/inference.py`, `system/api/model_loader.py`), local feature store + HF Dataset fallback |
+| 66 | Early-warning engine | PARTIAL | Phase 39 — Phase-29 thresholds + risk bands wired into API (`/thresholds` endpoint); production alert label mandatory before full rollout |
+| 67 | Citizen interface | **DONE** | Phase 40 — React + Vite frontend (`system/web/`), static snapshot mode + live API mode (`DEPLOYMENT.md` §1) |
+| 68 | Administrator dashboard | **DONE** | Phase 40 — admin views in `system/web/` (risk map, affected areas, probability, trend, historical comparison, downloadable report) |
+| 69 | System architecture | **DONE** | Phase 41 — documented as built in `DEPLOYMENT.md` (§1 architecture, §2.4 API endpoints, §3 CI/CD) |
+| 70 | System testing | **DONE** | Phase 42 — `tests/` created with 32 passing tests: label-contract, split-integrity, sequence-integrity, feature-regression, pipeline smoke (`tests/run_tests.py`) |
+| 71 | Final scientific evaluation | **DONE** | Phase 43 — `reports/phase43_final_evaluation.md` (data validity, model validity, prediction validity, explainability, system validity) |
+| 72 | Documentation / reproducibility | **DONE** | Phase 44 — `REPRODUCE.md` (levels A–E), `DEPLOYMENT.md`, `FREEZE.md` (13/13 checks pass), `freeze_manifest.json` (26/26 files hashed) |
+| 73 | Research report / thesis | TODO | Phase 45 — not yet written; structure outlined in this document §Part D |
 
 ---
 

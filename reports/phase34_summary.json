@@ -1,0 +1,522 @@
+{
+  "phase": "Phase 34 \u2014 Explainable AI",
+  "stage": 58,
+  "seed": 20261008,
+  "model": "hpo_perhorizon_FULL_V2",
+  "decision": "D16",
+  "feature_set": "FULL_V2",
+  "n_features": 110,
+  "per_horizon_family": {
+    "label_24h": "lgbm",
+    "label_48h": "lgbm",
+    "label_72h": "xgb"
+  },
+  "cell": "val_2022",
+  "test_rows_read": 0,
+  "n_rows_explained": {
+    "24h": 17502,
+    "48h": 17300,
+    "72h": 17089
+  },
+  "top15": {
+    "24h": [
+      {
+        "feature": "wl_dist_to_danger",
+        "group": "G4_hydrology",
+        "mean_abs_shap": 1.0053415226796902
+      },
+      {
+        "feature": "wl_pct_danger",
+        "group": "G4_hydrology",
+        "mean_abs_shap": 0.5388932467698007
+      },
+      {
+        "feature": "wl_exceed_days_30",
+        "group": "G4_hydrology",
+        "mean_abs_shap": 0.13410686036326822
+      },
+      {
+        "feature": "lon",
+        "group": "G3_geography",
+        "mean_abs_shap": 0.08528765837027001
+      },
+      {
+        "feature": "wl_rise_1d",
+        "group": "G4_hydrology",
+        "mean_abs_shap": 0.07435072762158305
+      },
+      {
+        "feature": "precip_mm",
+        "group": "G1_weather",
+        "mean_abs_shap": 0.06648920482751022
+      },
+      {
+        "feature": "nb3_n_wl_danger",
+        "group": "G5_network",
+        "mean_abs_shap": 0.055879595943677335
+      },
+      {
+        "feature": "ix_updis_x_wlrise",
+        "group": "G9_interactions",
+        "mean_abs_shap": 0.049710736495611
+      },
+      {
+        "feature": "api_07",
+        "group": "G8_wl_memory_api",
+        "mean_abs_shap": 0.043337251225179375
+      },
+      {
+        "feature": "nb3_wl_pct_danger",
+        "group": "G5_network",
+        "mean_abs_shap": 0.03887672059103978
+      },
+      {
+        "feature": "freq_district",
+        "group": "G3_geography",
+        "mean_abs_shap": 0.03234070455439964
+      },
+      {
+        "feature": "ix_api09_x_wet_top",
+        "group": "G9_interactions",
+        "mean_abs_shap": 0.032166817808551455
+      },
+      {
+        "feature": "nb5_wl_pct_danger",
+        "group": "G5_network",
+        "mean_abs_shap": 0.030326675541262366
+      },
+      {
+        "feature": "wl_rise_3d",
+        "group": "G4_hydrology",
+        "mean_abs_shap": 0.02727349391725239
+      },
+      {
+        "feature": "lat",
+        "group": "G3_geography",
+        "mean_abs_shap": 0.026731622993326456
+      }
+    ],
+    "48h": [
+      {
+        "feature": "wl_dist_to_danger",
+        "group": "G4_hydrology",
+        "mean_abs_shap": 1.0111589291129972
+      },
+      {
+        "feature": "wl_pct_danger",
+        "group": "G4_hydrology",
+        "mean_abs_shap": 0.5860597809974599
+      },
+      {
+        "feature": "lon",
+        "group": "G3_geography",
+        "mean_abs_shap": 0.15650511750432122
+      },
+      {
+        "feature": "wl_exceed_days_30",
+        "group": "G4_hydrology",
+        "mean_abs_shap": 0.13854352004723647
+      },
+      {
+        "feature": "precip_mm",
+        "group": "G1_weather",
+        "mean_abs_shap": 0.11319944107887046
+      },
+      {
+        "feature": "api_07",
+        "group": "G8_wl_memory_api",
+        "mean_abs_shap": 0.09279368463652331
+      },
+      {
+        "feature": "wl_rise_1d",
+        "group": "G4_hydrology",
+        "mean_abs_shap": 0.08664668839623908
+      },
+      {
+        "feature": "doy_cos",
+        "group": "G1_weather",
+        "mean_abs_shap": 0.057279592113269544
+      },
+      {
+        "feature": "ix_updis_x_wlrise",
+        "group": "G9_interactions",
+        "mean_abs_shap": 0.05690857960737539
+      },
+      {
+        "feature": "nb3_wl_pct_danger",
+        "group": "G5_network",
+        "mean_abs_shap": 0.05643089515254055
+      },
+      {
+        "feature": "nb3_n_wl_danger",
+        "group": "G5_network",
+        "mean_abs_shap": 0.05035525455436604
+      },
+      {
+        "feature": "ix_api09_x_wet_top",
+        "group": "G9_interactions",
+        "mean_abs_shap": 0.04985528129906022
+      },
+      {
+        "feature": "lat",
+        "group": "G3_geography",
+        "mean_abs_shap": 0.03892814706241
+      },
+      {
+        "feature": "rain_1d",
+        "group": "G2_rain_history",
+        "mean_abs_shap": 0.036395711618876045
+      },
+      {
+        "feature": "freq_district",
+        "group": "G3_geography",
+        "mean_abs_shap": 0.036331784428641156
+      }
+    ],
+    "72h": [
+      {
+        "feature": "wl_dist_to_danger",
+        "group": "G4_hydrology",
+        "mean_abs_shap": 2.198293685913086
+      },
+      {
+        "feature": "wl_pct_danger",
+        "group": "G4_hydrology",
+        "mean_abs_shap": 0.8186037540435791
+      },
+      {
+        "feature": "precip_mm",
+        "group": "G1_weather",
+        "mean_abs_shap": 0.29169946908950806
+      },
+      {
+        "feature": "lon",
+        "group": "G3_geography",
+        "mean_abs_shap": 0.25552329421043396
+      },
+      {
+        "feature": "gf_up_ratio",
+        "group": "G7_glofas",
+        "mean_abs_shap": 0.21512047946453094
+      },
+      {
+        "feature": "doy_cos",
+        "group": "G1_weather",
+        "mean_abs_shap": 0.2072988748550415
+      },
+      {
+        "feature": "wl_exceed_days_30",
+        "group": "G4_hydrology",
+        "mean_abs_shap": 0.16356173157691956
+      },
+      {
+        "feature": "ix_updis_x_wlrise",
+        "group": "G9_interactions",
+        "mean_abs_shap": 0.1423545479774475
+      },
+      {
+        "feature": "ps_wet_root_clim",
+        "group": "G6_soil_wetness",
+        "mean_abs_shap": 0.12829208374023438
+      },
+      {
+        "feature": "ix_api09_x_wet_top",
+        "group": "G9_interactions",
+        "mean_abs_shap": 0.11616519838571548
+      },
+      {
+        "feature": "wl_rise_1d",
+        "group": "G4_hydrology",
+        "mean_abs_shap": 0.11207400262355804
+      },
+      {
+        "feature": "gf_up_ratio_lag10",
+        "group": "G7_glofas",
+        "mean_abs_shap": 0.11140699684619904
+      },
+      {
+        "feature": "lat",
+        "group": "G3_geography",
+        "mean_abs_shap": 0.11055710166692734
+      },
+      {
+        "feature": "freq_district",
+        "group": "G3_geography",
+        "mean_abs_shap": 0.09833136200904846
+      },
+      {
+        "feature": "nb3_wl_pct_danger",
+        "group": "G5_network",
+        "mean_abs_shap": 0.09441965818405151
+      }
+    ]
+  },
+  "top_feature": {
+    "24h": "wl_dist_to_danger",
+    "48h": "wl_dist_to_danger",
+    "72h": "wl_dist_to_danger"
+  },
+  "group_share_24h": {
+    "G4_hydrology": 0.63975,
+    "G3_geography": 0.08423,
+    "G5_network": 0.06141,
+    "G1_weather": 0.0469,
+    "G7_glofas": 0.04626,
+    "G9_interactions": 0.0412,
+    "G6_soil_wetness": 0.04079,
+    "G8_wl_memory_api": 0.02413,
+    "G2_rain_history": 0.01533
+  },
+  "group_share_ranking": [
+    "G4_hydrology",
+    "G3_geography",
+    "G5_network",
+    "G1_weather",
+    "G7_glofas",
+    "G9_interactions",
+    "G6_soil_wetness",
+    "G8_wl_memory_api",
+    "G2_rain_history"
+  ],
+  "permutation_spearman": {
+    "24h": 0.021,
+    "48h": 0.404,
+    "72h": 0.262
+  },
+  "crossmodel_spearman_shared62": {
+    "24h": 0.755,
+    "48h": 0.86,
+    "72h": 0.878
+  },
+  "leakage_top20_hits": [],
+  "local_cases": [
+    {
+      "case": "high-confidence true positive",
+      "station_id": 110,
+      "station_name": "Fulchari",
+      "date": "2022-06-21",
+      "label": 1,
+      "probability": 0.9959183968493965,
+      "top": [
+        {
+          "feature": "wl_dist_to_danger",
+          "value": -0.6,
+          "shap": 6.2532
+        },
+        {
+          "feature": "wl_pct_danger",
+          "value": 1.031,
+          "shap": 3.4687
+        },
+        {
+          "feature": "wl_exceed_days_30",
+          "value": 4.0,
+          "shap": 0.3727
+        },
+        {
+          "feature": "nb3_n_wl_danger",
+          "value": 2.0,
+          "shap": 0.229
+        },
+        {
+          "feature": "ix_updis_x_wlrise",
+          "value": 0.0,
+          "shap": 0.1807
+        },
+        {
+          "feature": "nb3_wl_pct_danger",
+          "value": 1.002,
+          "shap": 0.1576
+        },
+        {
+          "feature": "wl_rise_1d",
+          "value": 0.09,
+          "shap": 0.1021
+        },
+        {
+          "feature": "nb5_wl_pct_danger",
+          "value": 1.0027,
+          "shap": 0.0639
+        }
+      ]
+    },
+    {
+      "case": "missed flood (false negative)",
+      "station_id": 70,
+      "station_name": "Lorergorh",
+      "date": "2022-06-11",
+      "label": 1,
+      "probability": 0.0035699048419195237,
+      "top": [
+        {
+          "feature": "wl_dist_to_danger",
+          "value": 1.49,
+          "shap": -0.5553
+        },
+        {
+          "feature": "api_07",
+          "value": 101.8568,
+          "shap": 0.3023
+        },
+        {
+          "feature": "wl_mean",
+          "value": 6.532,
+          "shap": 0.1988
+        },
+        {
+          "feature": "wl_pct_danger",
+          "value": 0.8149,
+          "shap": -0.1839
+        },
+        {
+          "feature": "wl_exceed_days_30",
+          "value": 1.0,
+          "shap": 0.1749
+        },
+        {
+          "feature": "lon",
+          "value": 91.2501,
+          "shap": 0.1602
+        },
+        {
+          "feature": "ix_wet_top_x_slope",
+          "value": 12.8052,
+          "shap": 0.1557
+        },
+        {
+          "feature": "ix_api09_x_wet_top",
+          "value": 326.4711,
+          "shap": 0.13
+        }
+      ]
+    },
+    {
+      "case": "false alarm (false positive)",
+      "station_id": 8,
+      "station_name": "Mongla",
+      "date": "2022-03-29",
+      "label": 0,
+      "probability": 0.9791756049581163,
+      "top": [
+        {
+          "feature": "wl_dist_to_danger",
+          "value": -0.46,
+          "shap": 5.8879
+        },
+        {
+          "feature": "wl_pct_danger",
+          "value": 1.2556,
+          "shap": 2.7352
+        },
+        {
+          "feature": "wl_exceed_days_30",
+          "value": 12.0,
+          "shap": 0.3316
+        },
+        {
+          "feature": "danger_level",
+          "value": 1.8,
+          "shap": 0.3304
+        },
+        {
+          "feature": "lon",
+          "value": 89.6,
+          "shap": 0.2018
+        },
+        {
+          "feature": "freq_district",
+          "value": null,
+          "shap": 0.1821
+        },
+        {
+          "feature": "ix_updis_x_wlrise",
+          "value": -1.9551,
+          "shap": -0.1558
+        },
+        {
+          "feature": "wl_rise_1d",
+          "value": 0.54,
+          "shap": 0.1217
+        }
+      ]
+    }
+  ],
+  "dl_top_variable_24h": {
+    "transformer_L4-03": [
+      {
+        "variable": "wl_pct_danger",
+        "group": "G4_hydrology",
+        "share": 0.49167561531066895
+      },
+      {
+        "variable": "precip_mm",
+        "group": "G1_weather",
+        "share": 0.11902320384979248
+      },
+      {
+        "variable": "wl_mean",
+        "group": "G4_hydrology",
+        "share": 0.06318923830986023
+      },
+      {
+        "variable": "wl_last",
+        "group": "G4_hydrology",
+        "share": 0.057112470269203186
+      },
+      {
+        "variable": "wl_max",
+        "group": "G4_hydrology",
+        "share": 0.05583002418279648
+      }
+    ],
+    "lstm_L3-01": [
+      {
+        "variable": "wl_pct_danger",
+        "group": "G4_hydrology",
+        "share": 0.46954092383384705
+      },
+      {
+        "variable": "precip_mm",
+        "group": "G1_weather",
+        "share": 0.09849322587251663
+      },
+      {
+        "variable": "doy_sin",
+        "group": "G1_weather",
+        "share": 0.08017488569021225
+      },
+      {
+        "variable": "wl_min",
+        "group": "G4_hydrology",
+        "share": 0.07499087601900101
+      },
+      {
+        "variable": "doy_cos",
+        "group": "G1_weather",
+        "share": 0.05972627177834511
+      }
+    ]
+  },
+  "dl_group_share_24h": {
+    "transformer_L4-03": {
+      "G1_weather": 0.25265,
+      "G4_hydrology": 0.74735
+    },
+    "lstm_L3-01": {
+      "G1_weather": 0.2938,
+      "G4_hydrology": 0.7062
+    }
+  },
+  "artefacts": [
+    "figures\\phase34_shap_summary.png",
+    "figures\\phase34_group_attribution.png",
+    "figures\\phase34_local_examples.png",
+    "reports\\phase34_global_shap.csv",
+    "reports\\phase34_group_shap.csv",
+    "reports\\phase34_permutation_importance.csv",
+    "reports\\phase34_local_explanations.csv",
+    "reports\\phase34_dl_attribution.csv",
+    "reports\\phase34_crossmodel.csv"
+  ],
+  "wall_s": 202.2
+}

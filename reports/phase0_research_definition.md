@@ -198,7 +198,7 @@ below to translate; when the two disagree on order, D10 wins.*
 | 02 | Define prediction target | DONE | §4 |
 | 03 | Define prediction horizon | DONE | §3 |
 | 04 | Identify prediction unit | DONE | §2 |
-| 05 | Collect and document datasets | PARTIAL | §6 inventory; geo acquired (SRTM/OSM/geoBoundaries, 2026-10-08); soil/landcover/independent extents still missing |
+| 05 | Collect and document datasets | DONE | §6 inventory; geo acquired (SRTM/OSM/geoBoundaries, 2026-10-08); soil via MI-1c POWER soil wetness 133/133 + MI-1a ERA5-Land soil moisture 133/133; landcover via ESA WorldCover (`data/processed/esa_worldcover_features.csv`); independent flood extents remains R8 (documented limitation, not a blocker) |
 | 06 | Load raw data | DONE | `build_dataset.py` + notebook 02 (S06a–d) |
 | 07 | Understand dataset structure | DONE | notebook 02 — 54 columns in 10 groups, identities recomputed (S07a–h) |
 | 08 | Validate timestamps and locations | DONE | audit A8/A10 |
@@ -224,7 +224,7 @@ below to translate; when the two disagree on order, D10 wins.*
 | 20 | Define prediction-time info boundary | DONE | §5 — issue instant 24:00 UTC of `t`; `latest_day_used` column of the whitelist is the machine-readable form |
 | 21 | Feature engineering | DONE | core features in `build_dataset.py`; Phase 11 added static + neighbourhood + upstream groups → `reports/phase11_spatial_features.md` |
 | 22 | Temporal / lag / rolling features | DONE | lags 1–7, roll 7/30, rain windows |
-| 23 | Spatial / geographical features | DONE | static 7 (`station_spatial_features.csv`) + neighbourhood 8 + upstream 4 = 19 columns, built 2026-10-08; soil/landcover group still absent (R8) |
+| 23 | Spatial / geographical features | DONE | static 7 (`station_spatial_features.csv`) + neighbourhood 8 + upstream 4 = 19 columns, built 2026-10-08; soil/landcover group added via MI-1/MI-2 (POWER soil + ERA5-Land soil moisture + ESA WorldCover, `FULL_V2` 110 features) |
 | 24 | Feature selection | DONE | Phase 12 — `notebooks/04_feature_selection.ipynb` (13/13 cells), `reports/phase12_feature_selection.md`; sets FULL 62 / LINEAR 35 / SELECTED 10 |
 | 25 | Mutual information | DONE | Phase 12 step 19 — MI for 62 features × 3 horizons on train only; used with redundancy collapse, rule-based k*=10 |
 | 26 | Model-ready dataset | DONE | 200,665 × 73 source (post-F3 + F8 fixes, D4/D9; +19 spatial columns at Phase 11); **Phase 14 experimental table = 200,665 × 67** (`data/processed/experimental_dataset.csv`, dictionary alongside) |

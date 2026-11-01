@@ -1,0 +1,112 @@
+{
+  "created": "2026-10-16",
+  "author": "MI-7 Track 1 (credibility fix)",
+  "purpose": "Project-level ledger of every exposure of the frozen test period (split == 'test', dates >= 2023-01-01) to a model prediction or label statistic. Corrects the per-script 'the frozen test is read exactly once' claim, which in fact counts only ONE script's own guard file and cannot see a cross-script re-read.",
+  "frozen_test_definition": "split == 'test' from data/processed/split_assignments.csv; dates >= 2023-01-01 (TEST_CUTOFF), TEST_YEARS 2023..2026",
+  "distinct_test_rows": 101174,
+  "scored_test_rows_per_full_read": 1198056,
+  "note_on_row_counts": "Both post-freeze reads log 1,198,056 as 'test_rows_read'. That number is model x horizon x cell scored rows, NOT distinct test rows. The true test population is 101,174 rows. The two counters (1,198,056 vs 101,174) are not comparable and neither is the number of times the window was opened.",
+  "freezes": {
+    "phase33": {
+      "artefact": "models/final/selected_model.pkl",
+      "decision": "Phase-33 selection (xgboost, L2-03)",
+      "utc": "2026-10-15T05:31:10Z"
+    },
+    "mi5_d16": {
+      "artefact": "models/final_v2/selected_model_v2.pkl",
+      "decision": "D16 (hpo_perhorizon_FULL_V2, lgbm/lgbm/xgb on FULL_V2-110)",
+      "utc": "2026-10-15T23:05:47Z"
+    }
+  },
+  "reads": [
+    {
+      "seq": 1,
+      "phase": "Phase 16",
+      "script": "scripts/baseline_model.py",
+      "kind": "baseline_scoring",
+      "utc_approx": "2026-10-09 (mtime only; run time not logged in the read log)",
+      "local_approx": "2026-10-09 01:18 (UTC+6)",
+      "models": ["climatology", "persistence", "logreg_linear", "logreg_linear_no_up", "logreg_selected", "tree_depth4"],
+      "rows_scored": 378,
+      "distinct_test_rows": 101174,
+      "position_vs_phase33_freeze": "BEFORE",
+      "planned": true,
+      "evidence": "reports/phase16_test_metrics.csv (mtime 2026-10-09T01:18); scripts/baseline_model.py:322-329,465; reports/phase17_experiment_registry.csv (L1 rows test_policy=read_once_phase16)",
+      "assessment": "Documented/intended baseline read. NOT an unlogged protocol break, but it means the test was NOT pristine at the Phase-33 freeze."
+    },
+    {
+      "seq": 2,
+      "phase": "Phase 33",
+      "script": "scripts/phase33_selection.py",
+      "kind": "selection_test_read",
+      "utc": "2026-10-15T05:31:10.586608Z",
+      "local": "2026-10-15 11:31 (UTC+6)",
+      "models": ["xgboost", "persistence"],
+      "rows_scored": 1198056,
+      "distinct_test_rows": 101174,
+      "position_vs_phase33_freeze": "IS the Phase-33 read",
+      "planned": true,
+      "evidence": "reports/phase33_test_read_log.json (n_reads=1, utc, models, distinct_test_rows); reports/phase33_test_metrics.csv; scripts/phase33_selection.py:276-383",
+      "assessment": "The single pre-registered selection read. Correct."
+    },
+    {
+      "seq": 3,
+      "phase": "MI-6",
+      "script": "scripts/mi6_test_read.py",
+      "kind": "selection_test_read",
+      "utc": "2026-10-15T23:34:38.367998Z",
+      "local": "2026-10-16 05:34 (UTC+6)",
+      "models": ["hpo_perhorizon_FULL_V2 (D16)", "persistence"],
+      "rows_scored": 1198056,
+      "distinct_test_rows": 101174,
+      "position_vs_phase33_freeze": "POST",
+      "planned": true,
+      "evidence": "reports/mi6_test_read_log.json (n_reads=1, utc, models, model_frozen_at_utc 2026-10-15T23:05:47Z); reports/mi6_test_metrics.csv; scripts/mi6_test_read.py:117-206",
+      "assessment": "A SECOND full model read of the frozen test, 18 h after Phase 33. It is test-informed: the MI-v2 sprint was launched because the Phase-33 test result dropped to 0.71-0.80 (reports/improvement_plan.md:40). Each selection step is individually dev-only, but the decision to build a new test-read model was informed by the first test result, and the reported production headline (D16) is the MAXIMUM over two test reads -> programme-level selection optimism."
+    },
+    {
+      "seq": 4,
+      "phase": "MI-4",
+      "script": "scripts/mi4_label_audit.py",
+      "kind": "label_statistics_only",
+      "utc_approx": "2026-10-16 (run log mi4_run.log)",
+      "local_approx": "2026-10-16 04:54 (UTC+6)",
+      "models": [],
+      "rows_scored": 0,
+      "distinct_test_rows": 101174,
+      "position_vs_phase33_freeze": "POST",
+      "planned": true,
+      "evidence": "scripts/mi4_label_audit.py:62-63; reports/mi4_label_audit.md:11",
+      "assessment": "Descriptive test-period LABEL base rates only; no model prediction is scored and no decision depends on it. NOT a leakage event, but it is a window touch outside any read log (recorded here for completeness)."
+    },
+    {
+      "seq": 5,
+      "phase": "Phase 34",
+      "script": "scripts/phase34_xai.py",
+      "kind": "none",
+      "models": [],
+      "rows_scored": 0,
+      "position_vs_phase33_freeze": "POST",
+      "planned": true,
+      "evidence": "scripts/phase34_xai.py:499,562 (test_rows_read = 0)",
+      "assessment": "Explanations computed on validation only. Zero test reads. Correct."
+    }
+  ],
+  "summary": {
+    "full_model_reads_of_frozen_test": 2,
+    "window_opens_including_baseline_and_descriptive": 4,
+    "reads_before_phase33_freeze": 1,
+    "reads_that_are_the_phase33_read": 1,
+    "reads_after_phase33_freeze": 2,
+    "production_headline_is_max_over_two_test_reads": true,
+    "distinct_test_rows": 101174,
+    "single_read_claim": "FALSE at programme level; TRUE only per script."
+  },
+  "corrections": [
+    "scripts/phase33_selection.py:8-10 and scripts/mi6_test_read.py:1-16 both assert 'the frozen test is read exactly once'. This is true of each script's OWN guard file, not of the project.",
+    "reports/mi_status.md:221-222 ('the test is read exactly once, in MI-6') is contradicted by the Phase-33 read log and by this ledger.",
+    "final workflow.md D15 (line 87) states the model is 'frozen at Phase 33 ... must not re-select'; MI-5 re-selected and MI-6 re-read the test for D16. This is disclosed (D16 supersedes), but the original 'no re-selection' rule was not honoured as written.",
+    "There is no project-level read guard. Each guard counts only its own file and counts scored rows (1,198,056), not window opens. New scripts (e.g. MI-7) must consult THIS ledger and add an entry rather than print 'read exactly once'."
+  ],
+  "operating_rule_going_forward": "MI-7 and later phases keep the frozen test SEALED (test_rows_read = 0). Any future test read must be pre-registered, added to this ledger, and reported as an additional read - the 'exactly once' framing must not be reused."
+}

@@ -1,0 +1,52 @@
+{
+  "n_reads": 1,
+  "reads": [
+    {
+      "utc": "2026-10-15T23:34:38.367998+00:00",
+      "user": "user",
+      "host": "DESKTOP-K8D2H3K",
+      "phase": "MI-6",
+      "decision": "D16",
+      "models": [
+        "hpo_perhorizon_FULL_V2",
+        "persistence"
+      ],
+      "horizons": [
+        "label_24h",
+        "label_48h",
+        "label_72h"
+      ],
+      "test_years": [
+        2023,
+        2024,
+        2025,
+        2026
+      ],
+      "cells": [
+        "test_2023",
+        "test_2024",
+        "test_2025",
+        "test_2026",
+        "test_trained",
+        "test_new_network",
+        "test_unseen"
+      ],
+      "seasons": [
+        "all",
+        "monsoon",
+        "non-monsoon"
+      ],
+      "test_rows_read": 1198056,
+      "test_rows_read_definition": "sum over (model x horizon x cell) of scored rows",
+      "distinct_test_rows": 101174,
+      "selected_model_rows": 599028,
+      "thresholds": "D7 = Phase-29 frozen; D16 = cost-optimal on val_2022 (best_exact, C_FN=10)",
+      "dataset_sha256": "a6748529083fcdceb8bb8a657b067bf12b5c861f3a7a6b09c8977ea63be73c8e",
+      "dataset_sha256_v2": "16287675df99eb5afb521c5c99252efd119c480fd1c7166435519fd43ff62a3c",
+      "model_frozen_at_utc": "2026-10-15T23:05:47.150985+00:00",
+      "d7_phase16_crosscheck_max_abs_delta_pr_auc": 5.551115123125783e-17,
+      "d7_phase16_crosscheck_max_abs_delta_brier": 9.8879238130678e-17,
+      "reason": "the single frozen-test read mandated by the MI-v2 programme (MI-6)"
+    }
+  ]
+}

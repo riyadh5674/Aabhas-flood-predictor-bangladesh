@@ -1,0 +1,46 @@
+{
+  "rules": {
+    "R2_label_24h_hyb_ge_d16": false,
+    "R2_label_24h_mean_delta": -0.0003031857648775179,
+    "R2_label_48h_hyb_ge_d16": true,
+    "R2_label_48h_mean_delta": 0.0,
+    "R2_label_72h_hyb_ge_d16": true,
+    "R2_label_72h_mean_delta": 0.0,
+    "R2_all_horizons": false,
+    "R3_hyb_beats_d7_count": 21,
+    "R3_pass": true,
+    "R4_test_2024_bootstrap": {
+      "label_24h": {
+        "mean": -0.0013320517303517696,
+        "lo": -0.0060508742415665085,
+        "hi": 0.0031234772217411644,
+        "p_gt_0": 0.2825,
+        "n": 400
+      },
+      "label_48h": {
+        "mean": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "p_gt_0": 0.0,
+        "n": 400
+      },
+      "label_72h": {
+        "mean": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "p_gt_0": 0.0,
+        "n": 400
+      }
+    },
+    "R4_pass": false,
+    "D17_reinstated": false
+  },
+  "sanity": {
+    "rows_compared": 63,
+    "max_abs_delta_pr_auc": 0.0,
+    "max_abs_delta_brier": 9.8879238130678e-17,
+    "max_abs_delta_n": 0,
+    "tolerance": 1e-09,
+    "passed": true
+  }
+}

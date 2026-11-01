@@ -1,0 +1,172 @@
+{
+  "seed": 20261008,
+  "arm": "full_v3",
+  "reps": 500,
+  "test_rows_read": 0,
+  "selection_cell": "val_2022",
+  "selection_season": "all",
+  "rule": "per-horizon argmax of val_2022 PR-AUC (pre-registered D16 rule)",
+  "winners": {
+    "label_24h": {
+      "family": "xgb",
+      "tag": "xgb23",
+      "cfg": {
+        "n_estimators": 800,
+        "learning_rate": 0.03,
+        "max_depth": 8,
+        "min_child_weight": 10,
+        "subsample": 1.0,
+        "colsample_bytree": 0.6,
+        "reg_lambda": 10.0,
+        "scale_pos_weight": 10.0
+      }
+    },
+    "label_48h": {
+      "family": "xgb",
+      "tag": "xgb6",
+      "cfg": {
+        "n_estimators": 300,
+        "learning_rate": 0.03,
+        "max_depth": 8,
+        "min_child_weight": 1,
+        "subsample": 0.7,
+        "colsample_bytree": 0.8,
+        "reg_lambda": 1.0,
+        "scale_pos_weight": 1.0
+      }
+    },
+    "label_72h": {
+      "family": "xgb",
+      "tag": "xgb17",
+      "cfg": {
+        "n_estimators": 300,
+        "learning_rate": 0.05,
+        "max_depth": 4,
+        "min_child_weight": 1,
+        "subsample": 0.85,
+        "colsample_bytree": 0.6,
+        "reg_lambda": 3.0,
+        "scale_pos_weight": 1.0
+      }
+    }
+  },
+  "control_full_v2": {
+    "label_24h": {
+      "family": "lgbm",
+      "tag": "lgbm6"
+    },
+    "label_48h": {
+      "family": "xgb",
+      "tag": "xgb26"
+    },
+    "label_72h": {
+      "family": "xgb",
+      "tag": "xgb3"
+    }
+  },
+  "per_horizon": {
+    "mi8": {
+      "label_24h": 0.9706620298924782,
+      "label_48h": 0.9567654075974653,
+      "label_72h": 0.9447372406964857
+    },
+    "d16": {
+      "label_24h": 0.9707888163782572,
+      "label_48h": 0.9564845353275487,
+      "label_72h": 0.9450067241240793
+    },
+    "full_v2": {
+      "label_24h": 0.9719828552399506,
+      "label_48h": 0.9563652368890264,
+      "label_72h": 0.9450067241240793
+    }
+  },
+  "horizon_mean": {
+    "mi8": 0.9573882260621431,
+    "d16": 0.957426691943295,
+    "full_v2": 0.9577849387510188,
+    "mi8_minus_d16": -3.8465881151861225e-05,
+    "full_v2_minus_d16": 0.00035824680772378326,
+    "mi8_minus_full_v2": -0.0003967126888756445
+  },
+  "paired_bootstrap": [
+    {
+      "d_new": 0.9677840930788218,
+      "d_ref": 0.968021870815842,
+      "delta": -0.00023777773702023474,
+      "sd": 0.0013000999997327864,
+      "lo": -0.0034035623542368605,
+      "hi": 0.0019914179486304473,
+      "pgt": 0.46,
+      "n_reps": 500,
+      "horizon": "label_24h",
+      "contrast": "mi8_full_v3 - d16_frozen"
+    },
+    {
+      "d_new": 0.9692413553220813,
+      "d_ref": 0.968021870815842,
+      "delta": 0.001219484506239161,
+      "sd": 0.0011190623128225618,
+      "lo": -0.0007230166996740754,
+      "hi": 0.004058520674343163,
+      "pgt": 0.892,
+      "n_reps": 500,
+      "horizon": "label_24h",
+      "contrast": "mi8_full_v2 - d16_frozen"
+    },
+    {
+      "d_new": 0.9527825544721669,
+      "d_ref": 0.9526001704187702,
+      "delta": 0.0001823840533967258,
+      "sd": 0.001137673904442853,
+      "lo": -0.002200623178161201,
+      "hi": 0.0021857366478033047,
+      "pgt": 0.618,
+      "n_reps": 500,
+      "horizon": "label_48h",
+      "contrast": "mi8_full_v3 - d16_frozen"
+    },
+    {
+      "d_new": 0.9524719387887384,
+      "d_ref": 0.9526001704187702,
+      "delta": -0.00012823163003174897,
+      "sd": 0.000865066500536771,
+      "lo": -0.001966431902402474,
+      "hi": 0.0014581463065290417,
+      "pgt": 0.466,
+      "n_reps": 500,
+      "horizon": "label_48h",
+      "contrast": "mi8_full_v2 - d16_frozen"
+    },
+    {
+      "d_new": 0.9401119163492805,
+      "d_ref": 0.940352996949185,
+      "delta": -0.00024108059990425934,
+      "sd": 0.002185997115587069,
+      "lo": -0.004615030025006658,
+      "hi": 0.0042500901179221085,
+      "pgt": 0.46,
+      "n_reps": 500,
+      "horizon": "label_72h",
+      "contrast": "mi8_full_v3 - d16_frozen"
+    },
+    {
+      "d_new": 0.940352996949185,
+      "d_ref": 0.940352996949185,
+      "delta": 0.0,
+      "sd": 0.0,
+      "lo": 0.0,
+      "hi": 0.0,
+      "pgt": 0.0,
+      "n_reps": 500,
+      "horizon": "label_72h",
+      "contrast": "mi8_full_v2 - d16_frozen"
+    }
+  ],
+  "d16_reproduction": {
+    "label_24h": 0.970789,
+    "label_48h": 0.956485,
+    "label_72h": 0.945007
+  },
+  "created": "2026-10-17T10:35:57"
+}

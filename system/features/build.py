@@ -59,8 +59,17 @@ def load_station_master() -> pd.DataFrame:
     return st, master_dl
 
 
-def build_feature_matrix(start: date, end: date) -> pd.DataFrame:
+def build_feature_matrix(start: date, end: date,
+                         output_dates: set[date] | None = None) -> pd.DataFrame:
     """Build the full FULL_V2 feature matrix for [start, end].
+
+    Features are computed over the *entire* available history, then squeezed to
+    the requested output dates. Lag/rolling/recursive features must see the days
+    before ``start``; computing them on a pre-filtered frame leaves recent
+    partitions with all-null lags (the daily pipeline hit exactly that).
+
+    ``output_dates`` optionally restricts the written rows further, which lets a
+    catch-up run recompute a few broken partitions without rewriting neighbours.
 
     Returns DataFrame with columns: station_id, date, + all 110 FULL_V2 features.
     """
@@ -76,9 +85,6 @@ def build_feature_matrix(start: date, end: date) -> pd.DataFrame:
     print("=" * 60)
     raw = load_and_qc_waterlevels()
     daily = build_daily(raw, master_dl)
-    # Filter to requested date range
-    daily = daily[(daily["date"] >= pd.Timestamp(start)) &
-                  (daily["date"] <= pd.Timestamp(end))].copy()
 
     print()
     print("=" * 60)
@@ -91,8 +97,6 @@ def build_feature_matrix(start: date, end: date) -> pd.DataFrame:
     print("STEP 4: Load rainfall + add rainfall features")
     print("=" * 60)
     weather = load_rainfall()
-    weather = weather[(weather["date"] >= pd.Timestamp(start)) &
-                      (weather["date"] <= pd.Timestamp(end))].copy()
     daily = add_rainfall_features(daily, weather)
     daily = add_temporal_features(daily)
 
@@ -120,9 +124,6 @@ def build_feature_matrix(start: date, end: date) -> pd.DataFrame:
     print("STEP 8: Join soil moisture features")
     print("=" * 60)
     sm = load_soil_moisture()
-    if not sm.empty:
-        sm = sm[(sm["date"] >= pd.Timestamp(start)) &
-                (sm["date"] <= pd.Timestamp(end))].copy()
     df = add_soil_moisture_features(df, sm)
 
     print()
@@ -131,9 +132,7 @@ def build_feature_matrix(start: date, end: date) -> pd.DataFrame:
     print("=" * 60)
     gf = load_glofas(df)
     if not gf.empty:
-        gf = gf[(gf["date"] >= pd.Timestamp(start)) &
-                (gf["date"] <= pd.Timestamp(end))].copy()
-    df = df.merge(gf, on=["station_id", "date"], how="left")
+        df = df.merge(gf, on=["station_id", "date"], how="left")
 
     print()
     print("=" * 60)
@@ -152,6 +151,13 @@ def build_feature_matrix(start: date, end: date) -> pd.DataFrame:
     print("STEP 11: Add interaction features (ix_*)")
     print("=" * 60)
     df = add_interactions(df)
+
+    # Keep the full history for feature computation, but only write the dates
+    # that were actually requested. ``output_dates`` is used by catch-up runs.
+    in_range = (df["date"] >= pd.Timestamp(start)) & (df["date"] <= pd.Timestamp(end))
+    if output_dates is not None:
+        in_range &= df["date"].dt.date.isin(output_dates)
+    df = df[in_range].copy()
 
     print()
     print("=" * 60)
@@ -214,11 +220,13 @@ def main() -> None:
     if args.dates:
         dates = [date.fromisoformat(d) for d in args.dates]
         start, end = min(dates), max(dates)
+        output_dates = set(dates)
     else:
         start = date.fromisoformat(args.start)
         end = date.fromisoformat(args.end)
+        output_dates = None
 
-    df = build_feature_matrix(start, end)
+    df = build_feature_matrix(start, end, output_dates=output_dates)
     write_model_ready(df, partition_by_date=not args.no_partition)
 
 

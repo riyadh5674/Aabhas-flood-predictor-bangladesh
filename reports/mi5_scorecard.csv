@@ -1,0 +1,8 @@
+model,notes,reference,p1_pr_auc_mean,beats_d7_everywhere,d7_margin_min,p2_worst_d7_margin,p3_mean_d7_margin,calibration_ok,worst_ece,missed_warn_total,fit_s,infer_ms_per_1k,p1_pr_auc_24h,p1_pr_auc_48h,p1_pr_auc_72h,eligible,rank
+persistence,"D7 bar (one feature, logistic link)",True,0.89465,False,0.0,0.0,0.0,True,0.018,307,0.9,15.162,0.92029,0.8954,0.86826,False,0
+climatology,no-skill bar (train base rate),True,0.05868,False,-0.8784,-0.8704,-0.8119,False,0.0494,0,0.0,0.0,0.05091,0.05936,0.06577,False,0
+hpo_perhorizon_FULL_V2,MI-3b per-horizon selection lgbm7/lgbm7/xgb3,False,0.95743,True,0.0225,0.0311,0.0754,True,0.0023,90,42.7,103.773,0.97079,0.95648,0.94501,True,1
+lgbm7_FULL_V2,MI-3b 24/48-h winner (lgbm7) as a uniform spec,False,0.95671,True,0.0225,0.0311,0.0789,True,0.0025,84,30.4,109.568,0.97079,0.95648,0.94287,True,2
+xgboost_FULL_V2,incumbent config on v2 features,False,0.95589,True,0.021,0.0291,0.0736,True,0.0027,100,35.7,102.988,0.96954,0.95492,0.94321,True,3
+xgb3_FULL_V2,MI-3b 72-h winner (xgb3) as a uniform spec,False,0.9554,True,0.0204,0.0286,0.0716,True,0.0019,104,64.0,88.682,0.96752,0.95368,0.94501,True,4
+xgboost_FULL,Phase-33 incumbent (v1 features),False,0.95463,True,0.02,0.0275,0.0695,True,0.0025,91,21.1,98.354,0.96812,0.95494,0.94084,True,5

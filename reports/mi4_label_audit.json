@@ -1,0 +1,164 @@
+{
+  "generated": "2026-10-16T04:54:29",
+  "seed": 20261008,
+  "note": "A/B read the immutable dataset (labels only). C is validation-only (val_2022, Phase-28 cached probabilities). Test base rate is a descriptive count; no test prediction is used.",
+  "station_spread": {
+    "label_24h": {
+      "stations_ge30": 133,
+      "min": 0.0,
+      "p25": 0.005509641873278237,
+      "median": 0.02089407191448008,
+      "p75": 0.07029662738724096,
+      "max": 0.73231031543052
+    },
+    "label_48h": {
+      "stations_ge30": 133,
+      "min": 0.0,
+      "p25": 0.0071790540540540545,
+      "median": 0.027404085700049825,
+      "p75": 0.07590759075907591,
+      "max": 0.7923076923076923
+    },
+    "label_72h": {
+      "stations_ge30": 133,
+      "min": 0.0,
+      "p25": 0.008609556607834697,
+      "median": 0.03242955874534822,
+      "p75": 0.08224163027656478,
+      "max": 0.8380462724935732
+    }
+  },
+  "nesting_identity": {
+    "rows_all3_defined": 195051,
+    "viol_24_implies_48": 0,
+    "viol_48_implies_72": 0,
+    "viol_24_implies_72": 0,
+    "identity_24h_nextday_comparable": 200426,
+    "identity_24h_nextday_match_rate": 0.9998054144671848
+  },
+  "fragility": {
+    "observed_day_boundary_share": {
+      "0.01": 0.001958488027309197,
+      "0.02": 0.003104676949144096,
+      "0.05": 0.007948571001420277,
+      "0.10": 0.015154610918695337
+    },
+    "observed_days": 200665,
+    "label_24h": {
+      "n_pos": 9982,
+      "pos_vs_window_mismatch": 39,
+      "pos_margin_le_0.01": 334,
+      "pos_share_le_0.01": 0.033460228411140054,
+      "pos_margin_le_0.02": 422,
+      "pos_share_le_0.02": 0.0422760969745542,
+      "pos_margin_le_0.05": 898,
+      "pos_share_le_0.05": 0.08996193147665799,
+      "pos_margin_le_0.10": 1549,
+      "pos_share_le_0.10": 0.15517932278100582
+    },
+    "label_48h": {
+      "n_pos": 11241,
+      "pos_vs_window_mismatch": 42,
+      "pos_margin_le_0.01": 644,
+      "pos_share_le_0.01": 0.057290276665777067,
+      "pos_margin_le_0.02": 812,
+      "pos_share_le_0.02": 0.07223556623076238,
+      "pos_margin_le_0.05": 1629,
+      "pos_share_le_0.05": 0.14491593274619696,
+      "pos_margin_le_0.10": 2641,
+      "pos_share_le_0.10": 0.23494351036384664
+    },
+    "label_72h": {
+      "n_pos": 12340,
+      "pos_vs_window_mismatch": 41,
+      "pos_margin_le_0.01": 945,
+      "pos_share_le_0.01": 0.07658022690437602,
+      "pos_margin_le_0.02": 1187,
+      "pos_share_le_0.02": 0.09619124797406807,
+      "pos_margin_le_0.05": 2320,
+      "pos_share_le_0.05": 0.1880064829821718,
+      "pos_margin_le_0.10": 3655,
+      "pos_share_le_0.10": 0.2961912479740681
+    }
+  },
+  "obs_density": {
+    "grid_rows": 200665,
+    "n_readings_lt3_share": 0.0,
+    "danger_missing_stations": 0,
+    "label_24h": {
+      "label_nan_rows": 106,
+      "label_nan_share": 0.0005282435900630404
+    },
+    "label_48h": {
+      "label_nan_rows": 2917,
+      "label_nan_share": 0.01453666558692348
+    },
+    "label_72h": {
+      "label_nan_rows": 5491,
+      "label_nan_share": 0.02736401465128448
+    }
+  },
+  "ceiling": {
+    "panel": [
+      "xgboost",
+      "lightgbm",
+      "xgboost_selected",
+      "random_forest",
+      "gradient_boosting",
+      "fusion_L3",
+      "transformer_bestL",
+      "lstm_L3",
+      "gcn",
+      "hybrid_L3",
+      "tcn_bestL",
+      "logreg_linear"
+    ],
+    "cells": {
+      "label_24h": {
+        "n": 17502,
+        "base_rate": 0.050908467603702434,
+        "n_pos": 891,
+        "n_neg": 16611,
+        "unanimous_miss_pos": 0,
+        "unanimous_miss_share_of_pos": 0.0,
+        "unanimous_false_alarm_neg": 0,
+        "unanimous_fa_share_of_neg": 0.0,
+        "all_panel_agree_rate": 0.9616615243972118,
+        "recall_ceiling_from_unanimous_miss": 1.0,
+        "pr_auc_median_panel": 0.9647754187764556,
+        "pr_auc_xgboost": 0.9681179850826792,
+        "lift_median_over_base": 18.951177754686334
+      },
+      "label_48h": {
+        "n": 17300,
+        "base_rate": 0.05936416184971098,
+        "n_pos": 1027,
+        "n_neg": 16273,
+        "unanimous_miss_pos": 0,
+        "unanimous_miss_share_of_pos": 0.0,
+        "unanimous_false_alarm_neg": 0,
+        "unanimous_fa_share_of_neg": 0.0,
+        "all_panel_agree_rate": 0.9492485549132949,
+        "recall_ceiling_from_unanimous_miss": 1.0,
+        "pr_auc_median_panel": 0.9540219077163518,
+        "pr_auc_xgboost": 0.9549448195255665,
+        "lift_median_over_base": 16.070670889477007
+      },
+      "label_72h": {
+        "n": 17089,
+        "base_rate": 0.06577330446486043,
+        "n_pos": 1124,
+        "n_neg": 15965,
+        "unanimous_miss_pos": 0,
+        "unanimous_miss_share_of_pos": 0.0,
+        "unanimous_false_alarm_neg": 0,
+        "unanimous_fa_share_of_neg": 0.0,
+        "all_panel_agree_rate": 0.9348703844578383,
+        "recall_ceiling_from_unanimous_miss": 1.0,
+        "pr_auc_median_panel": 0.9405974147908159,
+        "pr_auc_xgboost": 0.9408393758462384,
+        "lift_median_over_base": 14.300595392669265
+      }
+    }
+  }
+}

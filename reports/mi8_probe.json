@@ -1,0 +1,111 @@
+{
+  "n_new_cols": 55,
+  "new_cols": [
+    "m8_wl_slope_7",
+    "m8_wl_slope_14",
+    "m8_wl_slope_30",
+    "m8_wl_accel_3",
+    "m8_wl_std_7",
+    "m8_wl_std_14",
+    "m8_wl_min_7",
+    "m8_wl_range_7",
+    "m8_wl_range_30",
+    "m8_frac_rising_7",
+    "m8_wlmax_slope_3",
+    "m8_wlmax_min_7",
+    "m8_wlmax_range_7",
+    "m8_wlmax_std_14",
+    "m8_pct_lag1",
+    "m8_pct_lag3",
+    "m8_pct_slope3",
+    "m8_pct_max7",
+    "m8_pct_min7",
+    "m8_days_near090_7",
+    "m8_days_near090_14",
+    "m8_days_near095_7",
+    "m8_dist_min_7",
+    "m8_dist_lag1",
+    "m8_dist_slope3",
+    "m8_pct_z180",
+    "m8_rain7_lag1",
+    "m8_rain7_lag3",
+    "m8_rain14_prev",
+    "m8_rain30_prev",
+    "m8_rain7_frac30",
+    "m8_rain_int7",
+    "m8_rain3_lag3",
+    "m8_rain30_lag1",
+    "m8_api095",
+    "m8_api085",
+    "m8_ix_rain7_below",
+    "m8_ix_rain30_pct",
+    "m8_rain_per_rise",
+    "m8_ix_rain7_wet",
+    "m8_up_pct_lag3",
+    "m8_up_rise3",
+    "m8_up_accel",
+    "m8_up_minus_self",
+    "m8_up_max3",
+    "m8_up_rain7_lag3",
+    "m8_nb5_pct_lag1",
+    "m8_nb5_pct_lag3",
+    "m8_nb5_rise3",
+    "m8_nb5_minus_self",
+    "m8_nb3_minus_self",
+    "m8_nb5_n_danger_lag1",
+    "m8_gf_up_slope7",
+    "m8_gf_up_accel",
+    "m8_obs_gap_days"
+  ],
+  "val_2022_horizon_mean": {
+    "FULL": 0.95463,
+    "FULL_V2": 0.95589,
+    "FULL_V3": 0.95647,
+    "delta_v3_vs_v2": 0.00058
+  },
+  "all_dev_horizon_mean": {
+    "FULL": 0.98341,
+    "FULL_V2": 0.98685,
+    "FULL_V3": 0.9882,
+    "delta_v3_vs_v2": 0.00135
+  },
+  "by_horizon": {
+    "label_24h": {
+      "FULL": 0.98911,
+      "FULL_V2": 0.99118,
+      "FULL_V3": 0.99209,
+      "delta_v3_vs_v2": 0.00091
+    },
+    "label_48h": {
+      "FULL": 0.98392,
+      "FULL_V2": 0.98699,
+      "FULL_V3": 0.98853,
+      "delta_v3_vs_v2": 0.00154
+    },
+    "label_72h": {
+      "FULL": 0.97719,
+      "FULL_V2": 0.98237,
+      "FULL_V3": 0.98398,
+      "delta_v3_vs_v2": 0.00161
+    }
+  },
+  "reproducibility_vs_MI3a": {
+    "FULL": {
+      "published": 0.95463,
+      "reproduced": 0.95463,
+      "diff": 0.0
+    },
+    "FULL_V2": {
+      "published": 0.95589,
+      "reproduced": 0.95589,
+      "diff": 0.0
+    }
+  },
+  "cells_improved": {
+    "improved": 21,
+    "total": 21,
+    "fraction": 1.0
+  },
+  "test_rows_read": 0,
+  "wall_clock_s": 168.9
+}

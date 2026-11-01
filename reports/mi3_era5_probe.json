@@ -1,0 +1,63 @@
+{
+  "era5_new_cols": [
+    "e5_rain",
+    "e5_et0",
+    "e5_sm0_7",
+    "e5_sm7_28",
+    "e5_sm28_100",
+    "e5_temp",
+    "e5_rad",
+    "e5_rain_3d",
+    "e5_rain_7d",
+    "e5_rain_14d",
+    "e5_rain_30d",
+    "e5_rain_max7d",
+    "e5_et0_7d",
+    "e5_water_bal_7d",
+    "e5_sm0_7_lag1",
+    "e5_sm0_7_lag3",
+    "e5_sm7_28_lag1",
+    "e5_sm7_28_lag3",
+    "e5_sm28_100_lag1",
+    "e5_sm28_100_lag3",
+    "e5_sm0_7_chg1d",
+    "e5_sm0_7_chg3d",
+    "e5_sm0_7_clim",
+    "e5_sm0_7_anom",
+    "ix_rain7_x_sm0_7",
+    "ix_sm0_7_x_slope"
+  ],
+  "n_new_cols": 26,
+  "by_horizon": {
+    "label_24h": {
+      "FULL": 0.98911,
+      "FULL_V2_pre": 0.99118,
+      "FULL_V2_era5": 0.99142,
+      "delta_era5_vs_pre": 0.00024
+    },
+    "label_48h": {
+      "FULL": 0.98392,
+      "FULL_V2_pre": 0.98699,
+      "FULL_V2_era5": 0.98765,
+      "delta_era5_vs_pre": 0.00066
+    },
+    "label_72h": {
+      "FULL": 0.97719,
+      "FULL_V2_pre": 0.98237,
+      "FULL_V2_era5": 0.98374,
+      "delta_era5_vs_pre": 0.00137
+    }
+  },
+  "val_2022_horizon_mean": {
+    "FULL": 0.95463,
+    "FULL_V2_pre": 0.95589,
+    "FULL_V2_era5": 0.95564,
+    "delta_era5_vs_pre": -0.00025
+  },
+  "all_dev_horizon_mean": {
+    "FULL": 0.98341,
+    "FULL_V2_pre": 0.98685,
+    "FULL_V2_era5": 0.9876
+  },
+  "wall_clock_s": 169.4
+}

@@ -1,0 +1,21 @@
+{
+ "seed": 20261008,
+ "n_families": 1,
+ "families": [
+  "fusion_v2_L3"
+ ],
+ "best_mi7": {
+  "model": "MI7_fusion_v2_L3",
+  "mean_pr_auc": 0.9339914162624675
+ },
+ "best_ml": {
+  "model": "ML_xgboost",
+  "mean_pr_auc": 0.9546340601514948
+ },
+ "d16_frozen_mean": 0.9574266666666666,
+ "verdict": {
+  "mi7_minus_ml": -0.020642643889027257,
+  "mi7_beats_ml": false,
+  "mi7_minus_d16": -0.023435250404199137
+ }
+}
