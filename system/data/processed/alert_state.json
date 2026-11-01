@@ -1,0 +1,1872 @@
+{
+  "1": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "2": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "4": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "6": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "8": {
+    "24h": {
+      "band": "very_high",
+      "alert_level": "high",
+      "last_alert_at": "2026-10-29T05:51:48.432896+00:00"
+    },
+    "48h": {
+      "band": "high",
+      "alert_level": "warning",
+      "last_alert_at": "2026-10-29T05:52:15.120773+00:00"
+    },
+    "72h": {
+      "band": "high",
+      "alert_level": "warning",
+      "last_alert_at": "2026-10-29T05:52:15.243765+00:00"
+    }
+  },
+  "10": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "11": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "moderate",
+      "alert_level": "watch",
+      "last_alert_at": "2026-10-29T05:52:15.120773+00:00"
+    },
+    "72h": {
+      "band": "high",
+      "alert_level": "warning",
+      "last_alert_at": "2026-10-29T05:52:15.243765+00:00"
+    }
+  },
+  "12": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "13": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "14": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "15": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "17": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "18": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "19": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "20": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "21": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "22": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "moderate",
+      "alert_level": "watch",
+      "last_alert_at": "2026-10-29T05:52:15.243765+00:00"
+    }
+  },
+  "23": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "24": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "25": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "27": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "28": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "29": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "30": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "31": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "32": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "33": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "34": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "high",
+      "alert_level": "warning",
+      "last_alert_at": "2026-10-29T05:52:15.243765+00:00"
+    }
+  },
+  "35": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "36": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "37": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "38": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "39": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "40": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "41": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "42": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "43": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "44": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "45": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "46": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "47": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "48": {
+    "24h": {
+      "band": "high",
+      "alert_level": "warning",
+      "last_alert_at": "2026-10-29T05:51:48.432896+00:00"
+    },
+    "48h": {
+      "band": "high",
+      "alert_level": "warning",
+      "last_alert_at": "2026-10-29T05:52:15.120773+00:00"
+    },
+    "72h": {
+      "band": "high",
+      "alert_level": "warning",
+      "last_alert_at": "2026-10-29T05:52:15.243765+00:00"
+    }
+  },
+  "49": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "50": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "51": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "52": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "high",
+      "alert_level": "warning",
+      "last_alert_at": "2026-10-29T05:52:15.243765+00:00"
+    }
+  },
+  "53": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "54": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "55": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "56": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "57": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "58": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "59": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "60": {
+    "24h": {
+      "band": "high",
+      "alert_level": "warning",
+      "last_alert_at": "2026-10-29T05:51:48.432896+00:00"
+    },
+    "48h": {
+      "band": "high",
+      "alert_level": "warning",
+      "last_alert_at": "2026-10-29T05:52:15.120773+00:00"
+    },
+    "72h": {
+      "band": "high",
+      "alert_level": "warning",
+      "last_alert_at": "2026-10-29T05:52:15.243765+00:00"
+    }
+  },
+  "61": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "moderate",
+      "alert_level": "watch",
+      "last_alert_at": "2026-10-29T05:52:15.243765+00:00"
+    }
+  },
+  "62": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "63": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "64": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "high",
+      "alert_level": "warning",
+      "last_alert_at": "2026-10-29T05:52:15.243765+00:00"
+    }
+  },
+  "65": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "moderate",
+      "alert_level": "watch",
+      "last_alert_at": "2026-10-29T05:52:15.243765+00:00"
+    }
+  },
+  "66": {
+    "24h": {
+      "band": "moderate",
+      "alert_level": "watch",
+      "last_alert_at": "2026-10-29T05:51:48.432896+00:00"
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "high",
+      "alert_level": "warning",
+      "last_alert_at": "2026-10-29T05:52:15.243765+00:00"
+    }
+  },
+  "67": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "68": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "69": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "70": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "71": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "72": {
+    "24h": {
+      "band": "moderate",
+      "alert_level": "watch",
+      "last_alert_at": "2026-10-29T05:51:48.432896+00:00"
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "high",
+      "alert_level": "warning",
+      "last_alert_at": "2026-10-29T05:52:15.243765+00:00"
+    }
+  },
+  "73": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "74": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "75": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "76": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "77": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "78": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "moderate",
+      "alert_level": "watch",
+      "last_alert_at": "2026-10-29T05:52:15.243765+00:00"
+    }
+  },
+  "79": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "80": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "81": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "82": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "83": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "84": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "moderate",
+      "alert_level": "watch",
+      "last_alert_at": "2026-10-29T05:52:15.243765+00:00"
+    }
+  },
+  "86": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "87": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "moderate",
+      "alert_level": "watch",
+      "last_alert_at": "2026-10-29T05:52:15.243765+00:00"
+    }
+  },
+  "88": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "89": {
+    "24h": {
+      "band": "very_high",
+      "alert_level": "high",
+      "last_alert_at": "2026-10-29T05:51:48.432896+00:00"
+    },
+    "48h": {
+      "band": "high",
+      "alert_level": "warning",
+      "last_alert_at": "2026-10-29T05:52:15.120773+00:00"
+    },
+    "72h": {
+      "band": "high",
+      "alert_level": "warning",
+      "last_alert_at": "2026-10-29T05:52:15.243765+00:00"
+    }
+  },
+  "90": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "91": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "92": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "93": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "95": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "high",
+      "alert_level": "warning",
+      "last_alert_at": "2026-10-29T05:52:15.243765+00:00"
+    }
+  },
+  "96": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "moderate",
+      "alert_level": "watch",
+      "last_alert_at": "2026-10-29T05:52:15.120773+00:00"
+    },
+    "72h": {
+      "band": "high",
+      "alert_level": "warning",
+      "last_alert_at": "2026-10-29T05:52:15.243765+00:00"
+    }
+  },
+  "97": {
+    "24h": {
+      "band": "moderate",
+      "alert_level": "watch",
+      "last_alert_at": "2026-10-29T05:51:48.432896+00:00"
+    },
+    "48h": {
+      "band": "moderate",
+      "alert_level": "watch",
+      "last_alert_at": "2026-10-29T05:52:15.120773+00:00"
+    },
+    "72h": {
+      "band": "high",
+      "alert_level": "warning",
+      "last_alert_at": "2026-10-29T05:52:15.243765+00:00"
+    }
+  },
+  "98": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "99": {
+    "24h": {
+      "band": "very_high",
+      "alert_level": "high",
+      "last_alert_at": "2026-10-29T05:51:48.432896+00:00"
+    },
+    "48h": {
+      "band": "high",
+      "alert_level": "warning",
+      "last_alert_at": "2026-10-29T05:52:15.120773+00:00"
+    },
+    "72h": {
+      "band": "high",
+      "alert_level": "warning",
+      "last_alert_at": "2026-10-29T05:52:15.243765+00:00"
+    }
+  },
+  "100": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "moderate",
+      "alert_level": "watch",
+      "last_alert_at": "2026-10-29T05:52:15.243765+00:00"
+    }
+  },
+  "101": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "102": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "103": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "105": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "108": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "109": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "moderate",
+      "alert_level": "watch",
+      "last_alert_at": "2026-10-29T05:52:15.243765+00:00"
+    }
+  },
+  "110": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "moderate",
+      "alert_level": "watch",
+      "last_alert_at": "2026-10-29T05:52:15.243765+00:00"
+    }
+  },
+  "111": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "112": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "113": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "moderate",
+      "alert_level": "watch",
+      "last_alert_at": "2026-10-29T05:52:15.243765+00:00"
+    }
+  },
+  "114": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "117": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "118": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "moderate",
+      "alert_level": "watch",
+      "last_alert_at": "2026-10-29T05:52:15.243765+00:00"
+    }
+  },
+  "119": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "120": {
+    "24h": {
+      "band": "very_high",
+      "alert_level": "high",
+      "last_alert_at": "2026-10-29T05:51:48.432896+00:00"
+    },
+    "48h": {
+      "band": "high",
+      "alert_level": "warning",
+      "last_alert_at": "2026-10-29T05:52:15.120773+00:00"
+    },
+    "72h": {
+      "band": "high",
+      "alert_level": "warning",
+      "last_alert_at": "2026-10-29T05:52:15.243765+00:00"
+    }
+  },
+  "121": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "122": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "123": {
+    "24h": {
+      "band": "very_high",
+      "alert_level": "high",
+      "last_alert_at": "2026-10-29T05:51:48.432896+00:00"
+    },
+    "48h": {
+      "band": "high",
+      "alert_level": "warning",
+      "last_alert_at": "2026-10-29T05:52:15.120773+00:00"
+    },
+    "72h": {
+      "band": "high",
+      "alert_level": "warning",
+      "last_alert_at": "2026-10-29T05:52:15.243765+00:00"
+    }
+  }
+}

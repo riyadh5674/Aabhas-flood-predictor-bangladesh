@@ -1,0 +1,34 @@
+{
+  "version": "1.0.0",
+  "created": "2026-10-29",
+  "description": "Alert / early-warning engine configuration for Bangladesh Flood Predictor",
+  "alert_levels": {
+    "watch": {
+      "condition": "risk_band in (moderate, high, very_high)",
+      "action": "watch - heightened monitoring"
+    },
+    "warning": {
+      "condition": "risk_band in (high, very_high)",
+      "action": "warning - prepare response"
+    },
+    "high": {
+      "condition": "risk_band == very_high",
+      "action": "high-risk warning / activate"
+    }
+  },
+  "cooldown": {
+    "cooldown_hours": 24,
+    "escalation_bypass_cooldown": true
+  },
+  "state": {
+    "state_file": "system/data/processed/alert_state.json",
+    "alert_log": "system/logs/alerts.csv"
+  },
+  "horizons": ["24h", "48h", "72h"],
+  "monsoon_months": [6, 7, 8, 9],
+  "notification": {
+    "enabled": false,
+    "channels": ["email", "sms", "dashboard"],
+    "stub": true
+  }
+}

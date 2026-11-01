@@ -1,0 +1,118 @@
+{
+  "version": "1.0.0",
+  "created": "2026-10-28",
+  "description": "System inference configuration for Bangladesh Flood Predictor",
+  "model": {
+    "path": "models/final_v2/selected_model_v2.pkl",
+    "loader": "joblib",
+    "sha256": null,
+    "feature_set": "FULL_V2",
+    "n_features": 110,
+    "seed": 20261008,
+    "frozen_at_utc": "2026-10-15T23:05:47.150985+00:00",
+    "per_horizon_family": {
+      "label_24h": "lightgbm",
+      "label_48h": "lightgbm",
+      "label_72h": "xgboost"
+    },
+    "horizons": ["24h", "48h", "72h"],
+    "horizon_to_label": {
+      "24h": "label_24h",
+      "48h": "label_48h",
+      "72h": "label_72h"
+    }
+  },
+  "thresholds": {
+    "source": "reports/phase29_chosen_thresholds.csv",
+    "cost_ratio": "C_FN=10, C_FP=1",
+    "period": "val_2022 all-season",
+    "values": {
+      "24h": {
+        "model": "lightgbm",
+        "t_warn": 0.0605,
+        "recall": 0.980,
+        "precision": 0.746,
+        "f1": 0.847,
+        "far": 0.254,
+        "alarm_rate": 0.067,
+        "missed_rows": 18,
+        "cost_per_1k": 27.25
+      },
+      "48h": {
+        "model": "lightgbm",
+        "t_warn": 0.0868,
+        "recall": 0.967,
+        "precision": 0.727,
+        "f1": 0.830,
+        "far": 0.273,
+        "alarm_rate": 0.079,
+        "missed_rows": 34,
+        "cost_per_1k": 41.16
+      },
+      "72h": {
+        "model": "xgboost",
+        "t_warn": 0.0963,
+        "recall": 0.954,
+        "precision": 0.684,
+        "f1": 0.796,
+        "far": 0.316,
+        "alarm_rate": 0.092,
+        "missed_rows": 52,
+        "cost_per_1k": 59.45
+      }
+    }
+  },
+  "risk_bands": {
+    "scheme": "cost-derived",
+    "source": "reports/phase29_risk_bands.csv",
+    "values": {
+      "24h": {
+        "model": "lightgbm",
+        "bands": [
+          {"name": "low", "p_lo": null, "p_hi": 0.0303, "action": "routine monitoring"},
+          {"name": "moderate", "p_lo": 0.0303, "p_hi": 0.0605, "action": "watch"},
+          {"name": "high", "p_lo": 0.0605, "p_hi": 0.434, "action": "warning"},
+          {"name": "very_high", "p_lo": 0.434, "p_hi": null, "action": "high-risk warning / activate"}
+        ]
+      },
+      "48h": {
+        "model": "lightgbm",
+        "bands": [
+          {"name": "low", "p_lo": null, "p_hi": 0.0868, "action": "routine monitoring"},
+          {"name": "moderate", "p_lo": 0.0868, "p_hi": 0.1736, "action": "watch"},
+          {"name": "high", "p_lo": 0.1736, "p_hi": null, "action": "warning"}
+        ]
+      },
+      "72h": {
+        "model": "xgboost",
+        "bands": [
+          {"name": "low", "p_lo": null, "p_hi": 0.0963, "action": "routine monitoring"},
+          {"name": "moderate", "p_lo": 0.0963, "p_hi": 0.1926, "action": "watch"},
+          {"name": "high", "p_lo": 0.1926, "p_hi": null, "action": "warning"}
+        ]
+      }
+    }
+  },
+  "inference": {
+    "feature_store": "system/data/processed/model_ready",
+    "feature_store_format": "parquet_partitioned_by_date",
+    "single_file_fallback": "system/data/processed/features.parquet",
+    "hf_feature_dataset": null,
+    "hf_feature_revision": "main",
+    "latency_target_ms": 500,
+    "batch_latency_target_ms": 5000,
+    "max_batch_size": 133
+  },
+  "api": {
+    "host": "0.0.0.0",
+    "port": 8000,
+    "workers": 1,
+    "endpoints": [
+      "/health",
+      "/predict",
+      "/predict/batch",
+      "/model/info",
+      "/thresholds"
+    ]
+  }
+}

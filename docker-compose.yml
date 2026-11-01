@@ -1,0 +1,66 @@
+version: "3.8"
+
+services:
+  # FastAPI backend
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: aabhas-api
+    ports:
+      - "8000:7860"
+    environment:
+      - PORT=7860
+      - HF_FEATURE_DATASET=${HF_FEATURE_DATASET:-}
+      - HF_FEATURE_REVISION=${HF_FEATURE_REVISION:-main}
+      - HF_TOKEN=${HF_TOKEN:-}
+      - AABHAS_PREVIEW_MODE=false
+    volumes:
+      # Mount local model and feature store for development
+      - ./models:/app/models:ro
+      - ./system/data/processed:/app/system/data/processed:ro
+      - ./system/config:/app/system/config:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7860/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+  # Frontend (Vite dev server with API proxy)
+  web:
+    build:
+      context: ./system/web
+      dockerfile: Dockerfile.dev
+    container_name: aabhas-web
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_BASE=http://localhost:8000
+      - VITE_AABHAS_STATIC_SNAPSHOT=false
+    volumes:
+      - ./system/web:/app
+      - /app/node_modules
+    depends_on:
+      - api
+    command: npm run dev -- --host 0.0.0.0
+
+  # Optional: Run daily pipeline as a service (for local testing)
+  # pipeline:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   container_name: aabhas-pipeline
+  #   environment:
+  #     - HF_FEATURE_DATASET=${HF_FEATURE_DATASET:-}
+  #     - HF_TOKEN=${HF_TOKEN:-}
+  #   volumes:
+  #     - ./system/data:/app/system/data
+  #     - ./system/logs:/app/system/logs
+  #   command: python system/ops/daily_pipeline.py --catchup
+  #   profiles: ["pipeline"]
+
+networks:
+  default:
+    name: aabhas-network

@@ -1,0 +1,153 @@
+name: Aabhas build & deploy
+
+# The app is published as a *static* Hugging Face Space: the frontend ships a
+# precomputed forecast snapshot, so no API container runs in production.
+# CI therefore checks the code on every push, and rebuilds/redeploys the static
+# Space only when triggered manually (it needs the private feature-store
+# dataset and takes a while to score every date).
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+
+concurrency:
+  group: aabhas-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  # ============================================================
+  # 1. CHECKS — API imports + frontend typecheck/build
+  # ============================================================
+  test:
+    name: API and web checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+
+      - name: Install API dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-api.txt
+
+      - name: API import checks
+        run: |
+          python -c "from system.api.app import app; print('API imports OK')"
+          python -c "from system.api.inference import load_features_for_date; print('Inference imports OK')"
+          python -c "from system.config.model_config import HORIZONS; print('Config imports OK', HORIZONS)"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: system/web/package-lock.json
+
+      - name: Install web dependencies
+        working-directory: system/web
+        run: npm ci
+
+      # A fresh checkout has no snapshot data (it is generated, not committed),
+      # so this validates types and the production build, not forecast output.
+      - name: Typecheck and build
+        working-directory: system/web
+        env:
+          VITE_AABHAS_STATIC_SNAPSHOT: "true"
+        run: npm run build
+
+  # ============================================================
+  # 2. DEPLOY — rebuild snapshot from HF Datasets, publish static Space
+  # ============================================================
+  deploy-static:
+    name: Rebuild snapshot and publish static Space
+    if: github.event_name == 'workflow_dispatch'
+    needs: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+
+      - name: Install pipeline dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-api.txt
+
+      - name: Download feature store from HF Datasets
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_FEATURE_DATASET: ${{ secrets.HF_FEATURE_DATASET }}
+        run: |
+          set -euo pipefail
+          if [ -z "${HF_FEATURE_DATASET:-}" ]; then
+            echo "::error::HF_FEATURE_DATASET secret is not set"
+            exit 1
+          fi
+          huggingface-cli download "$HF_FEATURE_DATASET" \
+            --repo-type dataset \
+            --include "data/train/date=*/data.parquet" \
+            --local-dir hf-features \
+            --token "$HF_TOKEN"
+          mkdir -p system/data/processed/model_ready
+          cp -R hf-features/data/train/. system/data/processed/model_ready/
+          echo "Feature partitions: $(ls system/data/processed/model_ready | wc -l)"
+
+      # HF_FEATURE_DATASET is deliberately *not* exported here: the builder
+      # should score the locally downloaded store in one pass, not fetch
+      # 2,600 partitions over the network one date at a time.
+      - name: Build forecast snapshot
+        run: python system/deploy/build_static_snapshot.py
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: system/web/package-lock.json
+
+      - name: Install web dependencies
+        working-directory: system/web
+        run: npm ci
+
+      - name: Build frontend against the snapshot
+        working-directory: system/web
+        env:
+          VITE_AABHAS_STATIC_SNAPSHOT: "true"
+        run: npm run build
+
+      - name: Publish to Hugging Face Static Space
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_SPACE: ${{ secrets.HF_SPACE_ID }}
+        run: |
+          set -euo pipefail
+          if [ -z "${HF_SPACE:-}" ]; then
+            echo "::error::HF_SPACE_ID secret is not set"
+            exit 1
+          fi
+          python scripts/deploy_static_space.py \
+            --repo "$HF_SPACE" \
+            --readme system/deploy/static_space_README.md
+
+      - name: Report deployed snapshot
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          health = json.loads(Path("system/web/dist/data/snapshot/health.json").read_text())
+          print(json.dumps(health, indent=2))
+          print(f"\nSpace: https://huggingface.co/spaces/${{ secrets.HF_SPACE_ID }}")
+          PY

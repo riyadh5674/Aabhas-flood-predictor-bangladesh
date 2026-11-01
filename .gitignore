@@ -21,6 +21,19 @@ data/processed/split_assignments.csv
 data/processed/sequence_index.csv
 data/processed/*.npy
 
+# --- generated frontend artifacts (rebuild locally, deploy to HF static Space) ---
+system/web/node_modules/
+system/web/dist/
+system/web/public/data/snapshot/
+*.tsbuildinfo
+
+# --- runtime logs ---
+system/logs/
+
+# --- runtime feature store + raw caches (published to HF Datasets, not git) ---
+system/data/processed/model_ready/
+system/data/raw/
+
 # --- transient outputs ---
 scripts/*.err
 scripts/*.err.*

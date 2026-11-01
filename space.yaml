@@ -1,0 +1,23 @@
+title: aabhas-flood-api
+emoji: 🌊
+colorFrom: blue
+colorTo: indigo
+sdk: docker
+pinned: false
+license: mit
+
+# Hardware: free CPU tier (2 vCPU, 16GB RAM)
+# For GPU, change to: hardware: "t4-small" (requires approval)
+hardware: "cpu-basic"
+
+# Environment variables (secrets set in HF Spaces UI → Settings → Repository secrets)
+# Required:
+#   HF_FEATURE_DATASET - e.g. "your-username/aabhas-flood-features"
+#   HF_TOKEN - Hugging Face token with read access to the dataset repo
+# Optional:
+#   AABHAS_PREVIEW_MODE - set "true" to enable Basic Auth
+#   AABHAS_PREVIEW_USER - preview username
+#   AABHAS_PREVIEW_PASSWORD - preview password
+
+# Persistent storage: /data is mounted and persists across restarts
+# We'll use it for model cache and any temporary files

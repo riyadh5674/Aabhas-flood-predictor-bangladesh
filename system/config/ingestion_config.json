@@ -1,0 +1,76 @@
+{
+  "version": "1.0.0",
+  "created": "2026-10-28",
+  "description": "System ingestion configuration for Bangladesh Flood Predictor",
+  "ffwc": {
+    "api_base": "https://api.ffwc.gov.bd/data_load",
+    "endpoints": {
+      "stations": "stations",
+      "observed_waterlevel": "observed-waterlevel-by-station-and-date/{station_id}/{date}"
+    },
+    "headers": {
+      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36",
+      "x-ffwc-internal-key": "FFWC-Project-2026-Secure-V1",
+      "Referer": "https://ffwc.gov.bd/",
+      "Origin": "https://ffwc.gov.bd",
+      "Accept": "application/json"
+    },
+    "query_stride_days": 35,
+    "max_workers": 8,
+    "retries": 4,
+    "retry_backoff_base": 1.5,
+    "timeout_seconds": 30,
+    "output_dir": "system/data/raw/ffwc/waterlevel",
+    "stations_file": "system/data/raw/ffwc/ffwc_stations.csv",
+    "manifest_file": "system/data/raw/ffwc/harvest_manifest.csv"
+  },
+  "rainfall": {
+    "sources": ["nasa_power", "open_meteo_chirps"],
+    "primary": "nasa_power",
+    "nasa_power": {
+      "api": "https://power.larc.nasa.gov/api/temporal/daily/point",
+      "parameters": "PRECTOTCORR,T2M,T2M_MAX,T2M_MIN",
+      "community": "RE",
+      "sleep_seconds": 0.6,
+      "retries": 5,
+      "retry_delay_base": 3.0,
+      "timeout_seconds": 120,
+      "output_file": "system/data/raw/rainfall/weather_station_daily.csv",
+      "partial_file": "system/data/raw/rainfall/weather_station_daily.partial.csv"
+    },
+    "open_meteo": {
+      "api": "https://archive-api.open-meteo.com/v1/archive",
+      "daily_variables": ["precipitation_sum", "et0_fao_evapotranspiration",
+                          "soil_moisture_0_to_7cm_mean", "soil_moisture_7_to_28cm_mean",
+                          "soil_moisture_28_to_100cm_mean", "temperature_2m_mean",
+                          "shortwave_radiation_sum"],
+      "timezone": "Asia/Dhaka",
+      "batch_size": 20,
+      "retries": 6,
+      "retry_backoff_429": 45,
+      "timeout_seconds": 180,
+      "output_dir": "system/data/raw/openmeteo"
+    }
+  },
+  "qc": {
+    "missing_code_sentinel": -1000.0,
+    "impossible_wl_max": 100.0,
+    "spike_filter_threshold_m": 10.0,
+    "spike_window_readings": 4,
+    "spike_min_readings_in_window": 3,
+    "segment_gap_days": 7,
+    "min_readings_per_day": 3,
+    "na_policy": "median_imputation_train_derived",
+    "never_zero_fill_labels": true
+  },
+  "provenance": {
+    "manifest_columns": ["station_id", "query_date", "source", "rows_fetched", "fetched_at", "status"],
+    "sha256_verification": true
+  },
+  "system": {
+    "root": "D:\\Flood predictor",
+    "data_raw": "system/data/raw",
+    "data_processed": "system/data/processed",
+    "log_dir": "system/logs"
+  }
+}
