@@ -1,0 +1,25 @@
+# Render.com Blueprint for Aabhas Flood Predictor
+# Deploy: Connect this repo to Render → New → Blueprint
+# Required secrets (set in Render Dashboard): HF_FEATURE_DATASET, HF_TOKEN
+
+services:
+  # Main API + Frontend (single service, serves both)
+  - type: web
+    name: aabhas-flood-predictor
+    env: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: PORT
+        value: "7860"
+      - key: HF_FEATURE_DATASET
+        sync: false
+      - key: HF_TOKEN
+        sync: false
+      - key: HF_FEATURE_REVISION
+        value: main
+      - key: AABHAS_PREVIEW_MODE
+        value: "false"
+    autoDeploy: true
