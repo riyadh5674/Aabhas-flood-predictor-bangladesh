@@ -1,0 +1,107 @@
+{
+  "experiment": "Experiment 6b \u2014 targeted monotonic priors",
+  "created_utc": "2026-10-28T14:50:42+00:00",
+  "seed": 20261008,
+  "rule": "constrain feature at horizon h iff its unconstrained PDP response has the wrong sign with |delta P| >= 0.001 in BOTH the 2020 and 2021 out-of-sample audits (t2020, t2021); val_2022 is never consulted",
+  "material_threshold": 0.001,
+  "audit_rows": 2000,
+  "source_audits": {
+    "val_2020": "D:\\Flood predictor\\reports\\mi12_monotonic\\pdp_audit_2020.csv",
+    "val_2021": "D:\\Flood predictor\\reports\\mi12_monotonic\\pdp_audit_2021.csv"
+  },
+  "per_horizon": {
+    "label_24h": [],
+    "label_48h": [
+      "gf_up_ratio_lag10",
+      "gf_up_ratio_lag14"
+    ],
+    "label_72h": [
+      "gf_up_ratio_lag10",
+      "nb5_n_wl_danger",
+      "ps_wet_root_anom",
+      "rain_30d",
+      "wet_days_7",
+      "wl_last_lag4",
+      "wl_last_lag6"
+    ]
+  },
+  "n_per_horizon": {
+    "label_24h": 0,
+    "label_48h": 2,
+    "label_72h": 7
+  },
+  "empty_horizons": [
+    "label_24h"
+  ],
+  "provenance": {
+    "label_24h": {},
+    "label_48h": {
+      "gf_up_ratio_lag10": {
+        "sign": 1,
+        "tier": "broad",
+        "delta_2020": -0.002264,
+        "delta_2021": -0.001337
+      },
+      "gf_up_ratio_lag14": {
+        "sign": 1,
+        "tier": "broad",
+        "delta_2020": -0.002826,
+        "delta_2021": -0.001241
+      }
+    },
+    "label_72h": {
+      "gf_up_ratio_lag10": {
+        "sign": 1,
+        "tier": "broad",
+        "delta_2020": -0.002744,
+        "delta_2021": -0.003985
+      },
+      "nb5_n_wl_danger": {
+        "sign": 1,
+        "tier": "strict",
+        "delta_2020": -0.001183,
+        "delta_2021": -0.00173
+      },
+      "ps_wet_root_anom": {
+        "sign": 1,
+        "tier": "broad",
+        "delta_2020": -0.01579,
+        "delta_2021": -0.004338
+      },
+      "rain_30d": {
+        "sign": 1,
+        "tier": "strict",
+        "delta_2020": -0.00778,
+        "delta_2021": -0.00224
+      },
+      "wet_days_7": {
+        "sign": 1,
+        "tier": "strict",
+        "delta_2020": -0.003005,
+        "delta_2021": -0.003269
+      },
+      "wl_last_lag4": {
+        "sign": 1,
+        "tier": "strict",
+        "delta_2020": -0.002336,
+        "delta_2021": -0.002975
+      },
+      "wl_last_lag6": {
+        "sign": 1,
+        "tier": "strict",
+        "delta_2020": -0.001717,
+        "delta_2021": -0.001002
+      }
+    }
+  },
+  "primary_analysis": "per-horizon, because the target set is horizon-specific and may be empty. Each horizon is tested separately against a0 and the placebo arms with the same four criteria. A horizon with an empty target set is a no-op by construction and cannot test the hypothesis; it is reported but not counted as evidence for or against.",
+  "secondary_analysis": "pooled horizon mean and worst cell, reported descriptively only. The pooled test is not primary because an empty-horizon no-op makes criterion 4 mathematically impossible to pass.",
+  "pre_registered_criteria": {
+    "c1_val2022_ge_a0": "horizon val_2022 PR-AUC >= a0_unconstrained at the same horizon",
+    "c2_worst_gt_a0": "worst (cell) PR-AUC > a0_unconstrained at the same horizon",
+    "c3_no_cell_regression_gt_0.005": "no (cell) more than 0.005 below a0 at the same horizon",
+    "c4_beats_all_placebo_arms": "horizon val_2022 > a3_placebo, a4_random and b2_targeted_placebo at the same horizon",
+    "decision": "all four must hold; otherwise not supported and D16 stands"
+  },
+  "test_policy": "no test row is read; no test read is authorised by this experiment"
+}

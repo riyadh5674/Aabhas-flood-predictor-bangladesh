@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import { DEMO_ENABLED } from "@/lib/config";
 import { demoDates } from "@/lib/demo";
 import { useDates } from "@/lib/queries";
 import { HORIZONS, type DataMode, type Horizon } from "@/lib/types";
@@ -62,9 +63,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   });
 
   const [lang, setLangState] = useState<Lang>(() => readStored<Lang>(STORAGE.lang, "en"));
-  const [dataMode, setDataModeState] = useState<DataMode>(() =>
-    readStored<DataMode>(STORAGE.mode, "auto"),
-  );
+  const [dataMode, setDataModeState] = useState<DataMode>(() => {
+    const stored = readStored<DataMode>(STORAGE.mode, "auto");
+    // A browser that once enabled demo mode must not keep showing synthetic
+    // forecasts after a production build is deployed.
+    return stored === "demo" && !DEMO_ENABLED ? "auto" : stored;
+  });
 
   const [date, setDateState] = useState<string>(() => searchParams.get("d") ?? "");
   const [horizon, setHorizonState] = useState<Horizon>(() => {
@@ -76,16 +80,17 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
 
   const { data: datesPayload, isSuccess: datesReady } = useDates();
-  const dates = dataMode === "demo" ? demoDates(180) : (datesPayload?.dates ?? []);
+  const demoActive = dataMode === "demo" && DEMO_ENABLED;
+  const dates = demoActive ? demoDates(180) : (datesPayload?.dates ?? []);
   const latestDate = dates.at(-1) ?? "";
   const effectiveDate = date || latestDate;
 
   // Keep shared or remembered dates inside the real feature store. A stale
   // browser date must never silently produce a sample forecast.
   useEffect(() => {
-    if (dataMode === "demo" || !datesReady || !latestDate) return;
+    if (demoActive || !datesReady || !latestDate) return;
     if (!date || !dates.includes(date)) setDateState(latestDate);
-  }, [dataMode, datesReady, latestDate, date, dates]);
+  }, [demoActive, datesReady, latestDate, date, dates]);
 
   /* Theme + language side effects */
   useEffect(() => {
@@ -135,7 +140,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const setHorizon = useCallback((next: Horizon) => {
     if (HORIZONS.includes(next)) setHorizonState(next);
   }, []);
-  const setDataMode = useCallback((next: DataMode) => setDataModeState(next), []);
+  const setDataMode = useCallback((next: DataMode) => {
+    if (next === "demo" && !DEMO_ENABLED) return;
+    setDataModeState(next);
+  }, []);
 
   const value = useMemo<AppContextValue>(
     () => ({

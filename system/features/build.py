@@ -38,6 +38,7 @@ from system.features.hydrology import (
 )
 from system.features.rainfall import load_rainfall, add_rainfall_features, add_temporal_features
 from system.features.static import add_static_spatial, load_soil_moisture, add_soil_moisture_features, load_glofas
+from system.features.validate import validate_features
 from system.features.spatial import add_neighbourhood, add_upstream
 from system.features.derived import add_derived_features, add_interactions
 
@@ -60,7 +61,8 @@ def load_station_master() -> pd.DataFrame:
 
 
 def build_feature_matrix(start: date, end: date,
-                         output_dates: set[date] | None = None) -> pd.DataFrame:
+                         output_dates: set[date] | None = None,
+                         allow_degraded: bool = False) -> pd.DataFrame:
     """Build the full FULL_V2 feature matrix for [start, end].
 
     Features are computed over the *entire* available history, then squeezed to
@@ -183,6 +185,10 @@ def build_feature_matrix(start: date, end: date,
     for c, r in null_rates.head(10).items():
         print(f"  {c}: {r:.1%}")
 
+    # Quality gate: refuse to hand a degraded matrix to the model unless the
+    # caller explicitly accepts it. Writes a per-date report either way.
+    validate_features(df, allow_degraded=allow_degraded)
+
     return df
 
 
@@ -215,6 +221,8 @@ def main() -> None:
                     help="specific dates (YYYY-MM-DD) instead of range")
     ap.add_argument("--no-partition", action="store_true",
                     help="write single parquet instead of per-date partition")
+    ap.add_argument("--allow-degraded", action="store_true",
+                    help="write output even when the feature quality gate fails")
     args = ap.parse_args()
 
     if args.dates:
@@ -226,7 +234,9 @@ def main() -> None:
         end = date.fromisoformat(args.end)
         output_dates = None
 
-    df = build_feature_matrix(start, end, output_dates=output_dates)
+    df = build_feature_matrix(
+        start, end, output_dates=output_dates, allow_degraded=args.allow_degraded
+    )
     write_model_ready(df, partition_by_date=not args.no_partition)
 
 

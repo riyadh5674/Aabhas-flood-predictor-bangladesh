@@ -5,9 +5,10 @@ Paths and normalization for joining station risk bands to admin boundaries.
 """
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
-ROOT = Path(r"D:\Flood predictor")
+ROOT = Path(os.getenv("AABHAS_ROOT", Path(__file__).resolve().parents[2])).resolve()
 
 # Admin boundary GeoJSON (geoBoundaries)
 ADM1_GEOJSON = ROOT / "data" / "raw" / "geo" / "admin" / "BGD_ADM1" / "geoBoundaries-BGD-ADM1_simplified.geojson"

@@ -96,3 +96,6 @@ verify_*.py
 *.swp
 *.swo
 *~
+
+# --- deployment state (local upload hash manifest) ---
+system/deploy/.deploy_state.json

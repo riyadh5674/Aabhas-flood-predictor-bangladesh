@@ -39,6 +39,14 @@ class ProvenanceManifest:
             return
         try:
             df = pd.read_csv(self.path, dtype={"query_date": str})
+            if "source" not in df.columns:
+                df["source"] = "ffwc_waterlevel"
+            if "rows_fetched" not in df.columns:
+                df["rows_fetched"] = 0
+            if "fetched_at" not in df.columns:
+                df["fetched_at"] = ""
+            if "status" not in df.columns:
+                df["status"] = "ok"
             for _, row in df.iterrows():
                 key = (
                     int(row["station_id"]),

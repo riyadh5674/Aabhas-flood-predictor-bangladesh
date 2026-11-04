@@ -27,7 +27,7 @@ export function TrendChart({
   const plotW = w - margin.left - margin.right;
   const plotH = height - margin.top - margin.bottom;
 
-  const { maxY, xs, ys, linePath, areaPath, ticks } = useMemo(() => {
+  const { maxY, xs, ys, linePaths, areaPaths, ticks, lastValid } = useMemo(() => {
     const probs = points.map((p) => p.probability).filter((p): p is number => p != null);
     const peak = probs.length ? Math.max(...probs) : 0;
     const rawMax = Math.max(peak * 1.35, (threshold ?? 0) * 2.2, 0.05);
@@ -36,7 +36,6 @@ export function TrendChart({
     const xScale = (i: number) => margin.left + (i / Math.max(1, points.length - 1)) * plotW;
     const yScale = (v: number) => margin.top + (1 - v / yMax) * plotH;
 
-    const coords: [number, number][] = points.map((p, i) => [xScale(i), yScale(p.probability ?? 0)]);
     const lineGen = line<[number, number]>()
       .x((d) => d[0])
       .y((d) => d[1])
@@ -47,16 +46,32 @@ export function TrendChart({
       .y1((d) => d[1])
       .curve(curveMonotoneX);
 
+    // A missing forecast is not a 0% forecast. Break the line into contiguous
+    // runs instead of drawing it through the baseline, which would imply calm
+    // conditions where the model simply has no value.
+    const runs: [number, number][][] = [];
+    let run: [number, number][] = [];
+    points.forEach((p, i) => {
+      if (p.probability == null) {
+        if (run.length) runs.push(run);
+        run = [];
+      } else {
+        run.push([xScale(i), yScale(p.probability)]);
+      }
+    });
+    if (run.length) runs.push(run);
+
     const tickValues: number[] = [];
     for (let v = 0; v <= yMax + 1e-9; v += step) tickValues.push(Number(v.toFixed(4)));
 
     return {
       maxY: yMax,
-      xs: coords.map((c) => c[0]),
-      ys: coords.map((c) => c[1]),
-      linePath: lineGen(coords) ?? "",
-      areaPath: areaGen(coords) ?? "",
+      xs: points.map((_, i) => xScale(i)),
+      ys: points.map((p) => (p.probability == null ? Number.NaN : yScale(p.probability))),
+      linePaths: runs.filter((r) => r.length > 1).map((r) => lineGen(r) ?? ""),
+      areaPaths: runs.filter((r) => r.length > 1).map((r) => areaGen(r) ?? ""),
       ticks: tickValues,
+      lastValid: points.reduce((last, p, i) => (p.probability == null ? last : i), -1),
     };
   }, [points, plotW, plotH, margin.left, margin.top, threshold]);
 
@@ -74,6 +89,7 @@ export function TrendChart({
 
   const hovered = hover != null ? points[hover] : null;
   const hoveredBand = (hovered?.band ?? "unknown") as Band;
+  const hoverY = hover != null && Number.isFinite(ys[hover]) ? ys[hover] : margin.top + plotH;
 
   return (
     <div ref={ref} className="relative w-full select-none" style={{ height }}>
@@ -85,7 +101,11 @@ export function TrendChart({
           onPointerLeave={() => setHover(null)}
           style={{ touchAction: "pan-y" }}
           role="img"
-          aria-label="Flood probability trend"
+          aria-label={
+            points.length
+              ? `Flood probability trend from ${dayMonth(points[0].date)} to ${dayMonth(points[points.length - 1].date)}; ${points.filter((p) => p.probability != null).length} of ${points.length} days have a forecast.`
+              : "Flood probability trend (no data)"
+          }
         >
           <defs>
             <linearGradient id="trend-fill" x1="0" y1="0" x2="0" y2="1">
@@ -142,19 +162,25 @@ export function TrendChart({
             </g>
           ) : null}
 
-          <path d={areaPath} fill="url(#trend-fill)" />
-          <motion.path
-            d={linePath}
-            fill="none"
-            stroke={color}
-            strokeWidth={2}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            pathLength={1}
-            initial={reduce ? undefined : { pathLength: 0 }}
-            animate={reduce ? undefined : { pathLength: 1 }}
-            transition={{ duration: 1.3, ease: [0.16, 1, 0.3, 1] }}
-          />
+          <path d={areaPaths[0] ?? ""} fill="url(#trend-fill)" />
+          {areaPaths.slice(1).map((d, i) => (
+            <path key={`area-${i}`} d={d} fill="url(#trend-fill)" />
+          ))}
+          {linePaths.map((d, i) => (
+            <motion.path
+              key={`line-${i}`}
+              d={d}
+              fill="none"
+              stroke={color}
+              strokeWidth={2}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              pathLength={1}
+              initial={reduce ? undefined : { pathLength: 0 }}
+              animate={reduce ? undefined : { pathLength: 1 }}
+              transition={{ duration: 1.3, ease: [0.16, 1, 0.3, 1] }}
+            />
+          ))}
 
           {hover != null && hovered ? (
             <g>
@@ -173,24 +199,21 @@ export function TrendChart({
                 fill={BAND_META[hoveredBand].color}
                 stroke="var(--surface)"
                 strokeWidth={2}
+                style={{ display: hovered.probability == null ? "none" : undefined }}
               />
             </g>
           ) : null}
 
-          {points.map((p, i) => {
-            if (i !== points.length - 1) return null;
-            return (
-              <circle
-                key={p.date}
-                cx={xs[i]}
-                cy={ys[i]}
-                r={4}
-                fill={BAND_META[p.band].color}
-                stroke="var(--surface)"
-                strokeWidth={2}
-              />
-            );
-          })}
+          {lastValid >= 0 ? (
+            <circle
+              cx={xs[lastValid]}
+              cy={ys[lastValid]}
+              r={4}
+              fill={BAND_META[points[lastValid].band].color}
+              stroke="var(--surface)"
+              strokeWidth={2}
+            />
+          ) : null}
 
           {[0, Math.floor((points.length - 1) / 2), points.length - 1]
             .filter((v, i, arr) => arr.indexOf(v) === i && v >= 0)
@@ -216,7 +239,7 @@ export function TrendChart({
           style={{
             position: "absolute",
             left: Math.min(Math.max(xs[hover!] - 60, 0), w - 150),
-            top: Math.max(ys[hover!] - 58, 0),
+            top: Math.max(hoverY - 58, 0),
             width: 140,
           }}
         >
@@ -224,9 +247,13 @@ export function TrendChart({
             {dayMonth(hovered.date)}
           </div>
           <div className="num text-[15px] font-semibold" style={{ color: BAND_META[hoveredBand].color }}>
-            {hovered.probability == null ? "—" : `${(hovered.probability * 100).toFixed(2)}%`}
+            {hovered.probability == null ? "No data" : `${(hovered.probability * 100).toFixed(2)}%`}
           </div>
-          <div className="mt-0.5 text-[10.5px] muted">{BAND_META[hoveredBand].label}</div>
+          {hovered.probability != null ? (
+            <div className="mt-0.5 text-[10.5px] muted">{BAND_META[hoveredBand].label}</div>
+          ) : (
+            <div className="mt-0.5 text-[10.5px] muted">No forecast for this day</div>
+          )}
         </div>
       ) : null}
     </div>

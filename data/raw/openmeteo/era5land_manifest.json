@@ -1,0 +1,13 @@
+{
+  "source": "Open-Meteo archive / ERA5-Land",
+  "url": "https://archive-api.open-meteo.com/v1/archive",
+  "start": "2013-01-01",
+  "end": "2026-11-03",
+  "valid_end": "2026-11-03",
+  "requested_end": "2026-11-03",
+  "updated_at": "2026-11-04T11:18:48.956321+00:00",
+  "stations": 153,
+  "rows": 101233,
+  "output": "D:\\Flood predictor\\data\\raw\\openmeteo\\era5land_station_daily.csv",
+  "sha256": "ddf4ee344893c81a6700136c6fd2a333f750a8c35891479a70a40a663cd78e54"
+}

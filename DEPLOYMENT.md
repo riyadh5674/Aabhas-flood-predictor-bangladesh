@@ -1,339 +1,402 @@
 # Aabhas Flood Predictor — Deployment Guide
 
-## 🎯 Deployed Architecture (free tier, current)
+**Updated:** 2026-11-02
 
-As of **2026-11-01** the app is deployed entirely on free Hugging Face
-resources:
+## 🎯 Deployed architecture
+
+The production app is a single FastAPI container that serves both the JSON API
+and the compiled React SPA. It runs on Render's free tier and reads feature
+partitions from a private Hugging Face Dataset on demand.
 
 | Component | Host | URL |
 |-----------|------|-----|
-| Web app | HF **Static** Space | <https://riyadhuggy-aabhas-flood-outlook.static.hf.space/> |
-| Feature store | HF Dataset (private) | <https://huggingface.co/datasets/riyadhuggy/aabhas-flood-features> |
-| Model + API code | GitHub (private) | `riyadh5674/flood-predictor` |
-| CI/CD | GitHub Actions | `.github/workflows/deploy.yml` |
-
-**Verified 2026-11-01 (after a full `workflow_dispatch` deploy):** the run
-downloaded all 2,611 partitions, rebuilt the snapshot, built the frontend, and
-published it in 3m8s. Live checks: Space stage `RUNNING` (public); `/`,
-`/index.html`, hashed JS/CSS assets, `/data/snapshot/health.json`, one date's
-predictions, and a station trend all return HTTP 200. `health.json` reports
-`model_version: D16`, `feature_store_dates: 2611`, `latest_feature_date:
-2026-10-30`, `station_count: 141`.
+| Web app + API | Render (Docker, free) | <https://aabhas-flood-predictor.onrender.com> |
+| Feature store | HF Dataset (private) | `HF_FEATURE_DATASET` (e.g. `riyadhuggy/aabhas-flood-features`) |
+| Raw/reference inputs | HF Dataset (private, optional) | `HF_RAW_DATASET` (used by scheduled refresh) |
+| Static snapshot (demo) | HF Static Space | <https://riyadhuggy-aabhas-flood-outlook.static.hf.space/> |
+| Model + API code | GitHub | `riyadh5674/flood-predictor` |
 
 ```
-┌──────────────────────────────┐
-│  HF Static Space             │
-│  React build + precomputed   │
-│  forecasts (2,611 dates)     │
-└──────────────┬───────────────┘
-               │ build-time
-               ▼
-┌──────────────────────────────┐     ┌──────────────────────────┐
-│  HF Dataset                  │     │  Frozen D16 model        │
-│  data/train/date=*/data.parquet│────▶│  24h/48h/72h prediction  │
-└──────────────────────────────┘     └──────────────────────────┘
+                    ┌───────────────────────────────┐
+   browser ───────▶ │ Render: FastAPI + React SPA   │
+                    │  /health /dates /predict/*    │
+                    └──────────────┬────────────────┘
+                                   │ per-date download
+                                   ▼
+                    ┌───────────────────────────────┐
+                    │ HF Dataset                    │
+                    │ data/train/date=*/data.parquet│
+                    └──────────────┬────────────────┘
+                                   ▲ upload
+                    ┌──────────────┴────────────────┐
+                    │ daily_pipeline.py              │
+                    │ ingestion → features → HF      │
+                    └───────────────────────────────┘
 ```
 
-**Why static instead of a live API?** Hugging Face now returns
-`402 Payment Required` when creating Docker or Gradio Spaces on the free
-`cpu-basic` hardware: *"hosting Gradio and Docker Spaces on free cpu-basic
-requires a PRO subscription."* Static Spaces remain free, so the web app
-ships a precomputed, all-real forecast snapshot instead of calling an API at
-runtime.
+**Important safety semantics**
 
-**Live API remains optional.** FastAPI still runs locally or in a container
-(`Dockerfile` / `docker-compose.yml`), and will work on any host with Docker
-support. Set `VITE_API_BASE` and build **without**
-`VITE_AABHAS_STATIC_SNAPSHOT` to use it.
+- A date is an **issue date**. `label_24h/48h/72h` means "any FFWC reading in
+  `(t, t+h]` is at or above that station's danger level".
+- The app is **not an official warning service**. FFWC advisories always take
+  precedence. The disclaimer is rendered in the UI and documented here.
+- The service worker never caches `/api` responses. Data freshness is shown by
+  the in-app banner and `/health` (`latest_feature_date`,
+  `latest_feature_age_days`).
 
-**Free-tier notes:**
-- ✅ HF Static Space: free, public, ~1 GB repo guidance
-- ✅ HF Dataset (private): free up to 100 GB
-- ✅ GitHub: private repository, Actions available
-- ❌ HF Docker/Gradio Space on `cpu-basic`: now requires PRO
+**Free-tier notes**
+
+- Render free web services sleep after inactivity; the first request can take
+  30–60 s. `HEALTHCHECK` and `/health` are excluded from rate limiting.
+- HF Datasets: free storage is sufficient for the partitioned feature store and
+  the raw-input mirror.
+- HF Docker/Gradio Spaces on `cpu-basic` require PRO, which is why the dynamic
+  deployment lives on Render and the HF Space is static-only.
 
 ---
 
-## 🚀 Rebuild & Redeploy (static Space)
+## 🚀 Local development
 
-Run these from the repository root (`D:\Flood predictor`) after the feature
-store or model changes.
+### Option A: Docker Compose
 
 ```powershell
-# 1. Rebuild the forecast snapshot used by the static app
-.\.venv\Scripts\python.exe system\deploy\build_static_snapshot.py
+Copy-Item .env.example .env
+# Fill HF_FEATURE_DATASET / HF_TOKEN (optional for local feature store)
+docker compose up --build
+# API:      http://localhost:8000
+# Frontend: http://localhost:5173
+```
 
-# 2. Build the frontend against the snapshot
+### Option B: Manual
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements-api.txt
+
+# Optional: use the remote feature store; otherwise local partitions are used.
+$env:HF_FEATURE_DATASET="username/aabhas-flood-features"
+$env:HF_TOKEN="hf_xxx"
+
+.\.venv\Scripts\python.exe -m system.api.run_api --port 8000
+
+# Frontend (second terminal)
+cd system\web
+npm ci
+$env:VITE_API_BASE="http://127.0.0.1:8000"
+npm run dev
+```
+
+Checks:
+
+```powershell
+cd system\web
+npm run typecheck
+npm run test
+npm run build
+```
+
+---
+
+## 🔄 Data refresh
+
+Two layers must stay current:
+
+1. **Raw inputs** — FFWC water levels, rainfall, Open-Meteo/ERA5, GloFAS, NASA
+   POWER soil, station spatial features.
+2. **Model-ready features** — one parquet partition per date under
+   `system/data/processed/model_ready/date=YYYY-MM-DD/data.parquet`.
+
+`system/ops/refresh_and_publish.py` orchestrates the daily update:
+
+1. ingestion → features (local partitioned parquet store);
+2. **incremental** snapshot build — only dates missing from the published
+   snapshot are scored; trend files are trimmed to a 90-day window;
+3. mirror the changed snapshot files into `system/web/dist`;
+4. upload **only changed files** to the Hugging Face Static Space.
+
+The website is therefore dynamic without a server: each run appends the new
+date and republishes a few hundred small JSON files. Feature-dataset and
+raw-input uploads are opt-in (`--push-features`, `--push-raw`).
+
+### Manual run
+
+```powershell
+# Backfill gaps in the last 30 days and publish (what the scheduled task runs)
+.\.venv\Scripts\python.exe system\ops\refresh_and_publish.py --catchup
+
+# Yesterday only
+.\.venv\Scripts\python.exe system\ops\refresh_and_publish.py
+
+# Publish only, no pipeline
+.\.venv\Scripts\python.exe system\ops\refresh_and_publish.py --skip-pipeline
+
+# Rebuild every date and upload every file (bootstrap / code changes)
+.\.venv\Scripts\python.exe system\ops\refresh_and_publish.py --static-full
+
+# Verify the plan without writing anything
+.\.venv\Scripts\python.exe system\ops\refresh_and_publish.py --dry-run
+```
+
+Publishing uses the token stored by `hf auth login` (or `HF_TOKEN` if set).
+Without a token the local pipeline still runs and publishing is skipped with a
+clear log line.
+
+### Windows Task Scheduler (single-machine deployment)
+
+```powershell
+# Per-user task, no admin required; runs daily at 06:00 local time
+powershell -ExecutionPolicy Bypass -File system\ops\register_daily_task.ps1
+
+# Optional: different time
+powershell -ExecutionPolicy Bypass -File system\ops\register_daily_task.ps1 -Time 07:30
+
+# Run and inspect
+Start-ScheduledTask -TaskName "Aabhas Daily Data Pipeline"
+Get-ScheduledTaskInfo -TaskName "Aabhas Daily Data Pipeline"
+Get-Content system\logs\daily_pipeline.log -Tail 100
+```
+
+The task calls `system\ops\run_daily.bat`, which runs
+`refresh_and_publish.py --catchup` and publishes to the static Space. It uses
+the Hugging Face token saved by `hf auth login`; set `HF_SPACE` only when
+targeting a different Space.
+
+`--catchup` backfills days missed while the machine was off, so a missed 06:00
+run recovers on the next boot. Keep only one scheduled task: legacy duplicates
+must be removed from an elevated shell, e.g.
+`schtasks /delete /tn "FloodGuard Daily Pipeline" /f`.
+
+### GitHub Actions (optional; not enabled)
+
+> The active automation is the Windows Task Scheduler task above. This workflow
+> is kept for a future always-on runner; it is not configured on the current
+> repository (missing secrets and the local-only raw/files layout).
+
+`.github/workflows/refresh.yml` runs daily at **04:30 UTC (10:30 Asia/Dhaka)**
+and on manual dispatch.
+
+One-time setup:
+
+1. Create a **private** HF Dataset for raw inputs, e.g.
+   `username/aabhas-flood-raw`.
+2. Bootstrap it once from a machine that has the raw files:
+
+   ```powershell
+   $env:HF_TOKEN="hf_xxx"
+   $env:HF_RAW_DATASET="username/aabhas-flood-raw"
+   .\.venv\Scripts\python.exe system\ops\refresh_and_publish.py `
+       --skip-pipeline --skip-features-upload --push-raw
+   ```
+
+3. Add repository secrets (Settings → Secrets and variables → Actions):
+
+   | Secret | Purpose |
+   |--------|---------|
+   | `HF_TOKEN` | Read/write the private feature and raw datasets |
+   | `HF_FEATURE_DATASET` | Feature-store dataset (e.g. `username/aabhas-flood-features`) |
+   | `HF_RAW_DATASET` | Raw-input mirror (e.g. `username/aabhas-flood-raw`) |
+   | `RENDER_DEPLOY_HOOK` | Optional Render deploy hook URL |
+
+4. Add repository variable `AABHAS_REFRESH_ENABLED=true`. Scheduled runs are
+   skipped until this is set, so a fork without secrets stays green.
+5. Optionally set variable `AABHAS_HEALTH_URL` (default:
+   `https://aabhas-flood-predictor.onrender.com/health`).
+
+What the workflow does:
+
+- downloads the raw bundle to the repo-relative paths;
+- runs `daily_pipeline.py --catchup` (or a single `date` from manual dispatch);
+- uploads new feature partitions to `HF_FEATURE_DATASET`;
+- mirrors changed raw files back to `HF_RAW_DATASET`;
+- POSTs the Render deploy hook (if configured) and polls `/health`;
+- opens or comments on a `Daily data refresh failed` issue on failure.
+
+The Render API discovers new dates from the HF repo listing with a 15-minute
+cache TTL, so a new partition becomes visible without a container rebuild.
+
+### Static HF Space (public site)
+
+The public site is a Static Space serving a precomputed snapshot. The daily
+Task Scheduler run keeps it current automatically: the snapshot builder scores
+only new dates, and `deploy_static_space.py --changed-only` uploads only the
+files whose SHA-256 changed (tracked in `system/deploy/.deploy_state.json`).
+
+First-time publish on a new Space:
+
+```powershell
+.\.venv\Scripts\python.exe system\deploy\build_static_snapshot.py
 cd system\web
 $env:VITE_AABHAS_STATIC_SNAPSHOT="true"
 npm run build
 cd ..\..
-
-# 3. Publish the build (chunked upload, README last) — dry run first
 .\.venv\Scripts\python.exe scripts\deploy_static_space.py --dry-run
 .\.venv\Scripts\python.exe scripts\deploy_static_space.py
 ```
 
-`scripts\deploy_static_space.py` uploads `system\web\dist` in a fixed sequence
-of commits. A single commit carrying ~3,000 build files is slow and flaky, so
-predictions are split into parts and `index.html` is published only after the
-data is complete — the Space keeps serving the previous build until then. It
-reads `HF_TOKEN` and accepts `--repo`, `--parts`, and `--skip-readme`.
-
-The Space README (YAML `sdk: static` header) is versioned at
-`system\deploy\static_space_README.md`, so its metadata travels with the code
-instead of living in a temp file.
-
-The static build uses **hash routing** (`.../#/stations/1`) because HF static
-Spaces return 404 for arbitrary deep-link paths. The API-served build keeps
-clean browser URLs.
-
-### One-time setup (already done)
-
-```bash
-# Feature store layout: data/train/date=YYYY-MM-DD/data.parquet
-python scripts/upload_features_to_hf.py --dataset riyadhuggy/aabhas-flood-features
-
-# Static Space (free)
-hf repos create riyadhuggy/aabhas-flood-outlook --type space --sdk static --public
-```
-
-### Optional: Cloudflare Pages + live API
-
-If Cloudflare credentials or a Docker-capable host become available:
-
-1. Create a Cloudflare Pages project (build `npm run build`, output `dist`,
-   env `VITE_AABHAS_STATIC_SNAPSHOT=true`), **or** deploy `dist` with
-   `npx wrangler pages deploy dist`.
-2. Run the API with Docker (`docker-compose up --build`) and set
-   `VITE_API_BASE` to its public URL (build without the snapshot flag).
-
----
-
-## 📦 Feature Store Upload (Run Once, Then After Each Pipeline)
-
-```bash
-# Set environment variables
-export HF_TOKEN="hf_xxxxxxxxxxxxx"
-export HF_FEATURE_DATASET="username/aabhas-flood-features"
-
-# Upload local feature store partitions to HF Datasets
-python scripts/upload_features_to_hf.py
-
-# Verify partition count and date range
-python -c "
-from huggingface_hub import HfApi
-files = HfApi().list_repo_files('username/aabhas-flood-features', repo_type='dataset')
-parts = [f for f in files if f.endswith('/data.parquet')]
-print(len(parts), 'partitions')
-"
-```
-
-**Feature-store upload is local only.** CI cannot do it: the partitions are
-generated on the machine that runs the pipeline, and the job would have no
-source data to upload. Run `scripts/upload_features_to_hf.py` after each
-successful local pipeline run.
-
----
-
-## 🏃 Local Development
-
-### Option A: Docker Compose (Recommended)
-
-```bash
-# Copy env example and fill values
-cp .env.example .env
-# Edit .env with your HF credentials
-
-# Start everything
-docker-compose up --build
-
-# API: http://localhost:8000
-# Frontend: http://localhost:5173
-# Health: http://localhost:8000/health
-```
-
-### Option B: Manual (No Docker)
-
-```bash
-# Backend
-cd "D:\Flood predictor"
-python -m venv .venv
-.venv\Scripts\python.exe -m pip install -r requirements-api.txt
-.venv\Scripts\python.exe -m pip install datasets huggingface_hub
-
-# Set HF feature store (optional - leave empty for local)
-$env:HF_FEATURE_DATASET="username/aabhas-flood-features"
-$env:HF_TOKEN="hf_xxx"
-
-# Start API
-.venv\Scripts\uvicorn system.api.app:app --reload --port 8000
-
-# Frontend (separate terminal)
-cd system/web
-npm install
-$env:VITE_API_BASE="http://localhost:8000"
-npm run dev
-```
-
----
-
-## 🔄 CI/CD Pipeline (GitHub Actions)
-
-`.github/workflows/deploy.yml` runs two jobs:
-
-1. **API and web checks** — on every push/PR to `main` or `master`: API import
-   smoke tests, `npm ci`, TypeScript typecheck and a production build.
-2. **Rebuild snapshot and publish static Space** — manual only
-   (Actions → "Aabhas build & deploy" → Run workflow).
-
-The deploy job is manual because it needs the private feature-store dataset
-and has to score every date. Repository secrets:
-
-| Secret | Purpose |
-|--------|---------|
-| `HF_TOKEN` | read the private feature dataset, write the Space |
-| `HF_FEATURE_DATASET` | e.g. `riyadhuggy/aabhas-flood-features` |
-| `HF_SPACE_ID` | e.g. `riyadhuggy/aabhas-flood-outlook` |
-
-The job downloads the partitioned feature store from HF Datasets (never from
-git), builds the snapshot locally in one pass, builds the frontend, and calls
-`scripts/deploy_static_space.py`, which publishes `index.html` last so the
-Space keeps serving the previous build until the new snapshot is complete.
-
-Secrets are already configured on `riyadh5674/flood-predictor`, and the default
-branch is `master`. Dispatch and watch from the repository root:
+If the Space already matches an existing build but the local state file is
+missing, seed it once instead of re-uploading 200+ MB:
 
 ```powershell
-gh workflow run deploy.yml --ref master
-gh run list --workflow deploy.yml --limit 1
-gh run watch --exit-status
+.\.venv\Scripts\python.exe scripts\deploy_static_space.py --seed-state
 ```
 
-End-to-end (download 262 MB of partitions, score 2,611 dates, build, publish
-~227 MB) takes about 3 minutes on the free runner.
+Daily incremental publish (wired into `run_daily.bat`):
 
-**Deliberately not automated:** the FastAPI service. Docker Spaces on free
-`cpu-basic` return `402 Payment Required`, so `Dockerfile` and
-`docker-compose.yml` are for local or paid hosts only. The previous Cloudflare
-Pages job is also gone — the app is served from the HF static Space.
+```powershell
+.\.venv\Scripts\python.exe system\ops\refresh_and_publish.py --catchup
+```
 
-Run it locally with the same commands in "Rebuild & Redeploy" above.
+Notes:
+
+- Delete `system/deploy/.deploy_state.json` to force a full re-upload.
+- `--static-full` rebuilds every date and uploads every file; use it after
+  frontend code or asset changes.
+- `index.html` is uploaded last, so the Space keeps serving the previous build
+  until the new data is in place.
+- Trend files keep the last 90 dates (`--trend-days`), enough for the UI's
+  30-day chart and cheap to republish daily.
 
 ---
 
-## 🔧 Configuration Details
+## ☁️ Render deployment
 
-### Model Configuration (`system/config/model_config.json`)
+`render.yaml` defines the service:
 
-Key production settings:
-```json
-{
-  "inference": {
-    "hf_feature_dataset": null,      // Set via HF_FEATURE_DATASET env var
-    "hf_feature_revision": "main",   // Dataset revision/branch
-    "feature_store": "system/data/processed/model_ready"  // Local fallback
-  },
-  "api": {
-    "port": 8000                     // Overridden by PORT env var (HF Spaces uses 7860)
-  }
-}
+- Docker build from `Dockerfile` (multi-stage: Node builds the SPA, Python
+  serves API + static files);
+- `healthCheckPath: /health`;
+- `autoDeploy: true` on pushes to the connected branch;
+- no pinned `PORT` (the container reads Render's `$PORT`).
+
+Required Render environment variables:
+
+| Variable | Value |
+|----------|-------|
+| `HF_FEATURE_DATASET` | private feature-store dataset ID |
+| `HF_TOKEN` | read token for that dataset |
+| `HF_FEATURE_REVISION` | `main` |
+| `AABHAS_PREVIEW_MODE` | `false` |
+| `AABHAS_ENABLE_DOCS` | `false` |
+| `AABHAS_RATE_LIMIT_PER_MINUTE` | `180` |
+| `AABHAS_RATE_LIMIT_PREDICT_PER_MINUTE` | `60` |
+| `AABHAS_ALLOWED_ORIGINS` | only if the SPA is hosted separately |
+
+First deploy: Render Dashboard → New → Blueprint → select this repo.
+Verify:
+
+```powershell
+curl https://aabhas-flood-predictor.onrender.com/health
+curl https://aabhas-flood-predictor.onrender.com/dates
+curl "https://aabhas-flood-predictor.onrender.com/predict/trend?station_id=1&dates=2026-10-30,2026-10-31"
 ```
 
-### Feature Store Format
+Health should report `model_loaded: true`, `model_version: "D16"`, and a recent
+`latest_feature_date`.
 
-The HF Dataset expects partitioned parquet files with schema:
-- Layout: `data/train/date=YYYY-MM-DD/data.parquet`
-- Columns: `station_id`, `date`, + 110 feature columns
-- The API downloads only the partition for the requested date
-  (`hf_hub_download`) and lists dates from the repo file tree, so a request
-  never scans the full multi-year store.
+---
 
-### API Endpoints
+## 🔌 API endpoints
 
 | Endpoint | Method | Description |
 |----------|--------|-------------|
-| `/health` | GET | Service health + model status |
-| `/model/info` | GET | D16 model metadata |
-| `/thresholds` | GET | Phase-29 thresholds & risk bands |
+| `/health` | GET | Status, model version, latest feature date/age, cache stats |
+| `/model/info` | GET | Frozen D16 metadata |
+| `/thresholds` | GET | Published thresholds and risk bands |
 | `/dates` | GET | Available feature dates |
 | `/predict` | GET | Single station prediction |
-| `/predict/batch` | POST | Multiple stations |
-| `/predict/all` | GET | All stations for date/horizon |
+| `/predict/batch` | POST | Multiple stations (bounded) |
+| `/predict/all` | GET | All stations for a date/horizon |
+| `/predict/trend` | GET | One station across up to 60 dates |
+| `/docs` | GET | Only when `AABHAS_ENABLE_DOCS=true` |
+
+All JSON endpoints are also reachable under `/api/...`; the middleware strips
+the prefix before routing.
+
+---
+
+## 🔐 Security and operations
+
+- **Rate limiting** — in-process sliding window. General API: 180/min/IP;
+  `/predict/*`: 60/min/IP; `/health` is exempt. 429 responses include
+  `Retry-After`. Disable only for local tests with
+  `AABHAS_RATE_LIMIT_DISABLED=true`.
+- **Security headers** — CSP (non-docs), `X-Content-Type-Options`,
+  `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy`,
+  `Cross-Origin-Opener-Policy`, HSTS when `X-Forwarded-Proto=https`.
+- **CORS** — closed by default. Set `AABHAS_ALLOWED_ORIGINS` (comma-separated)
+  only when the SPA is on a different origin.
+- **Preview/staging auth** — `AABHAS_PREVIEW_MODE=true` requires
+  `AABHAS_PREVIEW_USER` and `AABHAS_PREVIEW_PASSWORD` and enables HTTP Basic
+  auth on every request.
+- **Docs** — disabled in production via `AABHAS_ENABLE_DOCS=false`.
+- **Caching** — predictions are cached in-process (64 entries) and HTTP
+  responses use `Cache-Control` + `ETag`/`stale-while-revalidate`. The HF date
+  list is cached for 15 minutes.
+- **Never commit** `.env`, `HF_TOKEN`, or deploy hooks. Use repository/Render
+  secrets.
+
+For horizontal scaling, move rate limiting and prediction caching to a shared
+store (Redis). The current implementation is intentionally single-instance.
 
 ---
 
 ## 🐛 Troubleshooting
 
-### Optional API container won't start
-```bash
-# The live API is not deployed: free HF cpu-basic returns 402 for Docker Spaces.
-# If you host it yourself, common issues:
-# 1. Model file not found → models/final_v2/selected_model_v2.pkl must be present
-# 2. HF_TOKEN missing → read secret for the private feature dataset
-# 3. HF_FEATURE_DATASET not set → e.g. riyadhuggy/aabhas-flood-features
-# 4. Memory limit → 16GB on free CPU; model + features must fit
+### Live app says "Live API unavailable" / no forecasts
+- Check `https://aabhas-flood-predictor.onrender.com/health`.
+- If `model_loaded=false`, inspect Render logs for a missing model file or
+  Python dependency.
+- If `latest_feature_age_days` is large, run the refresh workflow/task.
+- The frontend never substitutes demo data in production; it shows an explicit
+  error instead.
+
+### Render cold start
+Free services sleep. The first request may take 30–60 s; subsequent requests
+are normal. `/health` is exempt from rate limiting so Render probes do not
+consume the budget.
+
+### Feature upload fails
+- Confirm `HF_TOKEN` has write access and `HF_FEATURE_DATASET` exists.
+- Run `scripts/upload_features_to_hf.py --dry-run` to verify the partition
+  scan.
+- The HF date list is cached for 15 minutes; wait or restart the service if a
+  new date does not appear immediately.
+
+### Scheduled refresh fails
+- Open the workflow run log or the auto-created issue.
+- Common causes: FFWC/Open-Meteo outage, expired HF token, missing
+  `HF_RAW_DATASET`, or a gap older than the 30-day catch-up window.
+- For older gaps, run `daily_pipeline.py --date YYYY-MM-DD` for each missing
+  date (or extend the catch-up window) and re-upload.
+
+### Static Space 404 on deep links
+The static build uses hash routing (`/#/stations/1`). The API-served build uses
+clean browser URLs and its SPA fallback.
+
+---
+
+## 📊 Monitoring and maintenance
+
+```powershell
+# Freshness and model status
+curl https://aabhas-flood-predictor.onrender.com/health
+
+# Deployment history
+# Render Dashboard → Logs / Events
+# HF Space → Files → Commits
+
+# Local pipeline log
+Get-Content system\logs\daily_pipeline.log -Tail 200
 ```
 
-### Frontend shows "Unavailable" / no data
-- The static build reads `data/snapshot/*` from the Space, not an API. Confirm
-  `system/web/dist/data/snapshot/dates.json` exists before deploying.
-- Check `.../data/snapshot/health.json` on the live Space for the snapshot date.
-- If you built **without** `VITE_AABHAS_STATIC_SNAPSHOT=true`, the app expects a
-  live API at `VITE_API_BASE` instead.
+Daily expectations:
 
-### Feature store not found
-- Run `scripts/upload_features_to_hf.py` to upload local features
-- Verify dataset name matches `HF_FEATURE_DATASET`
-- Check dataset has `date` column for partitioning
+- `latest_feature_age_days` ≤ 2 during normal FFWC publication;
+- `/dates` ends at the most recent successful pipeline date;
+- the UI freshness banner is green (no warning) only when the feature date is
+  current.
 
-### GitHub Actions fails
-- Check secrets are correctly named (case-sensitive): `HF_TOKEN`,
-  `HF_FEATURE_DATASET`, `HF_SPACE_ID`
-- Verify `HF_TOKEN` can read the private feature dataset and write the Space
-- The deploy job only runs from `workflow_dispatch`, never on push
-
----
-
-## 📊 Monitoring & Maintenance
-
-### Health Checks
-- Snapshot status: `GET https://riyadhuggy-aabhas-flood-outlook.static.hf.space/data/snapshot/health.json`
-- Deployment history: Space → Files → Commits
-
-### Feature Store Updates
-Run after each daily pipeline completion (local only):
-```bash
-python scripts/upload_features_to_hf.py
-```
-
-### Model Updates
-1. Retrain locally → new `selected_model_v2.pkl`
-2. Update `model_config.json` (feature set, horizons, frozen timestamp)
-3. Rebuild the snapshot, rebuild the frontend, then run
-   `scripts/deploy_static_space.py` (or dispatch the deploy workflow)
-
-### Cost Monitoring
-All services used are **free tier**. Monitor:
-- HF Spaces: storage/analytics for the static Space
-- HF Datasets: storage for the private feature store
-- GitHub Actions: minutes in Settings → Billing (the deploy job is manual)
-
----
-
-## 🔐 Security Notes
-
-- **Never commit `.env` or tokens** - Use GitHub Secrets and HF Space secrets
-- **Preview mode** - Enable `AABHAS_PREVIEW_MODE=true` with strong credentials for staging
-- **CORS** - API allows all origins; restrict in production if needed
-- **Rate limiting** - Not implemented; add if exposing publicly
-- **HTTPS** - Automatic on HF Spaces (and Cloudflare Pages, if used)
-
----
-
-## 📞 Support
-
-- **HF Spaces issues**: Space → Files/Logs, then HF Community forums
-- **Static Space**: `https://huggingface.co/spaces/riyadhuggy/aabhas-flood-outlook`
-- **GitHub Actions**: Actions tab → Failed workflow → Logs
-- **Model/API bugs**: Check `system/logs/daily_pipeline.log` and API `/health`
+**Model updates** remain deliberate: retrain locally, update
+`models/final_v2/` and `system/config/model_config.json`, rebuild/verify the
+snapshot, then deploy. Never let a scheduled data refresh overwrite the frozen
+model.

@@ -1,0 +1,290 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{url}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+
+\graphicspath{{../figures/}}
+\newcommand{\TODO}[1]{\textcolor{red}{[TODO: #1]}}
+\newcommand{\dA}{\Delta}
+\newcommand{\best}[1]{\textbf{#1}}
+
+\setlength{\textfloatsep}{4pt plus 1pt minus 1pt}
+\setlength{\floatsep}{4pt plus 1pt minus 1pt}
+\setlength{\intextsep}{4pt plus 1pt minus 1pt}
+
+\begin{document}
+
+\title{Leakage-Aware Probabilistic Flood Forecasting for Bangladesh: A Spatiotemporal Evaluation of Machine Learning and Deep Learning Models}
+
+\author{\IEEEauthorblockN{Author Name(s) Omitted for Blind Review}
+\IEEEauthorblockA{Affiliation Omitted for Blind Review\\
+Email: omitted@example.org}}
+
+\maketitle
+
+\begin{abstract}
+Flood models can report optimistic performance when temporal dependence, station overlap, or forward-looking features leak information. This study presents a leakage-aware framework for probabilistic flood forecasting in Bangladesh that estimates whether a Flood Forecasting and Warning Centre (FFWC) station will cross its danger level within 24, 48, or 72~h. The dataset contains 200{,}665 station-day records from 133 stations, integrating river water levels with meteorological, geospatial, upstream-discharge, soil-wetness, and neighbouring-station information. Predictors are restricted to information available at forecast issue time, and evaluation uses chronological validation, rolling-origin refits, station-disjoint spatial folds, and a frozen post-2022 test period. Classical gradient boosting is compared with recurrent, temporal-convolutional, graph, and attention-based deep models through one scoring pathway. The best classical model (XGBoost, 0.9546 PR-AUC) outperforms the best deep model (fusion, 0.9356) on the primary validation cell, and paired station-bootstrap intervals exclude zero at all three horizons. The selected per-horizon model reaches 0.836/0.769/0.707 PR-AUC on the frozen test (mean 0.771) against 0.668 for a strong persistence benchmark, beating it on all 21 test points and on 21/21 development points. Probabilities are calibrated (test ECE 0.003--0.009), frozen-test event recall is 93--97\% under a permissive window definition, and SHAP attributes 64\% of 24-h attribution to hydrological features. A protocol audit also shows how an intermediate experiment scored six of seven development cells in-sample, inflating PR-AUC to $\approx$0.99; a pre-registered per-cell re-scoring corrects this. We report both the correction and the programme-level test-read history, because credible flood-AI evidence requires auditing the evaluation as carefully as the features.
+\end{abstract}
+
+\begin{IEEEkeywords}
+flood forecasting, Bangladesh, probabilistic prediction, leakage, spatiotemporal validation, gradient boosting, deep learning, calibration, SHAP
+\end{IEEEkeywords}
+
+\section{Introduction}
+
+Bangladesh is among the most flood-exposed countries in the world. The Flood Forecasting and Warning Centre (FFWC) of the Bangladesh Water Development Board issues warnings relative to station-specific danger levels, the operational threshold at which river stage begins to threaten settlements and infrastructure. A useful data-driven system should therefore answer a decision-oriented question: \emph{what is the probability that a monitored station will reach or exceed its danger level in the next 24, 48, or 72 hours?}
+
+Machine learning (ML) and deep learning (DL) have been applied widely to river-stage, discharge, and flood forecasting \cite{asif2025review,kuhaneswaran2025evolution,akinsoji2024integrating}. Random forests, gradient boosting, recurrent networks, temporal convolutions, attention models, and graph networks can all represent nonlinear hydrological relationships. Bangladeshi studies have reported strong results for water-level and discharge prediction \cite{noor2022water,islam2026climate,islam2025comparative}. Most of this work, however, is formulated as continuous regression at selected stations, and comparisons are often made across different partitions, feature sets, tuning budgets, or metric implementations. It is therefore difficult to tell whether a reported gain reflects a better model or a weaker evaluation.
+
+Hydrological observations are strongly dependent in time and space. Random train--test splitting can place adjacent days from the same station, or correlated stations from the same river network, on both sides of the evaluation boundary. Feature engineering can leak future information through rolling statistics, forward-filled meteorology, target-derived aggregates, or windows that cross the forecast issue time. A model can also appear skilful simply because river stage is persistent: today's water level is already a strong predictor of tomorrow's. Finally, danger-level exceedance is rare and its prevalence changes markedly across years and seasons, so accuracy and even ROC-AUC can be misleading; precision--recall, calibration, missed events, and operational thresholds matter more \cite{saito2015precision}.
+
+This paper addresses these issues with a leakage-aware evaluation framework, and it also audits the evaluation itself. Our contributions are:
+
+\begin{enumerate}
+\item \textbf{Leakage-controlled probabilistic formulation.} We formulate station-day danger-level exceedance at 24/48/72~h, enforce an issue-time information boundary on every feature, and evaluate with per-cell rolling-origin and station-disjoint refits. We additionally report a pre-registered protocol audit that detected and corrected an in-sample scoring defect in an intermediate experiment.
+\item \textbf{Fair ML--DL comparison.} Under identical partitions, features, seeds, metric code, and tuning budgets, we compare 24 configurations (seven baselines, five classical models, twelve DL models). Engineered gradient boosting outperforms every tested DL architecture, and the gap is largest where it matters operationally: on unseen-station folds.
+\item \textbf{Robust, calibrated, interpretable evaluation.} We evaluate against a strong persistence benchmark (D7) on temporal and spatial cells, including unseen stations; report calibration, cost-sensitive thresholds, and event-level detection; and use TreeSHAP to test whether the learned signal is hydrologically plausible.
+\end{enumerate}
+
+The remainder of the paper reviews related work (Section~II), describes the data and forecast formulation (Section~III), presents the methodology (Section~IV), reports results including the protocol correction (Section~V), and discusses limitations and conclusions (Sections~VI--VII).
+
+\section{Related Work and Research Gap}
+
+Data-driven flood forecasting has grown rapidly, but comparative reviews consistently find that no single model family dominates across catchments, lead times, and data regimes \cite{asif2025review,kuhaneswaran2025evolution,akinsoji2024integrating}. LSTM-based models are prominent because they represent temporal dependence directly \cite{hochreiter1997long,noor2022water}; tree ensembles are competitive because they exploit nonlinear interactions among engineered hydrological and meteorological predictors \cite{chen2016xgboost,ke2017lightgbm}. The practical question is not whether a deep architecture \emph{can} fit a river, but whether it generalises better than a well-engineered tabular model under the same evidence.
+
+Bangladeshi studies have demonstrated ML and DL skill for water level and discharge \cite{noor2022water,islam2026climate,islam2025comparative}. Yet most formulate the target as a continuous water level or discharge, not as the probability of crossing an operational danger level within a fixed warning window. A regression improvement does not automatically translate into better warning decisions, and a single-station study does not establish transfer to unseen monitoring locations.
+
+Three gaps follow: validation is often random or single-split despite strong dependence \cite{roberts2017cross}; persistence is sometimes omitted despite being a demanding short-lead benchmark; and calibration, missed events, and interpretability are rarely reported together with discrimination. There is limited evidence from one leakage-controlled framework that compares classical ML and modern DL for probabilistic multi-horizon danger-level exceedance in Bangladesh, tests transfer to unseen stations, and checks whether probabilities and explanations are credible. This study fills that gap; it does not propose another architecture, but asks whether complexity buys reproducible, transferable, calibrated skill once leakage is controlled.
+
+\section{Dataset and Forecast Formulation}
+
+\subsection{Data Sources and Coverage}
+
+The primary hydrological data come from the FFWC station master and approximately 1.05 million 3-hourly water-level observations. Of 153 stations in the master, 141 have observations and 133 have a numeric danger level and at least one valid forecast label; these 133 stations form the modelling network. The usable record spans January 2017 to October 2026, with 2018 absent from the FFWC archive; the gap is preserved as missing rather than interpolated. Meteorological variables (precipitation and temperature) come from NASA POWER/MERRA-2. Static geography is derived from SRTM elevation, OpenStreetMap river networks, and geoBoundaries administrative layers. The extended feature set adds GloFAS upstream discharge and NASA POWER soil wetness. ERA5-Land variables were tested but did not improve validation performance and were not retained.
+
+The 3-hourly observations are aggregated to daily station records (maximum, mean, minimum, last observed water level, and observation count) on a complete station-by-calendar-day matrix. After quality control, the model-ready table contains 200{,}665 station-day records from 133 stations.
+
+\subsection{Forecast Formulation and Labels}
+
+Each sample is a station $s$ and issue day $t$. Using information available through the end of day $t$, the model estimates
+\begin{equation}
+p^{(h)}_{s,t} = \Pr\!\left(\exists\, \tau \in (t, t+h]:\; \mathrm{WL}_{s,\tau} \geq D_s \mid \mathcal{I}_{\leq t}\right),
+\end{equation}
+where $D_s$ is the station-specific FFWC danger level, $h\in\{24,48,72\}$~h, and $\mathcal{I}_{\leq t}$ is the information set at issue time. The label is
+\begin{equation}
+y^{(h)}_{s,t}=
+\begin{cases}
+1, & \text{if any observed WL in }(t,t+h] \geq D_s,\\
+0, & \text{if observed and no WL} \geq D_s,\\
+\text{NaN}, & \text{otherwise.}
+\end{cases}
+\end{equation}
+A negative label requires at least three observations on every day of the window and a known danger level. Missing future observations are never treated as evidence of no flooding. Positive labels are retained even if other observations in the window are missing, and the monotonicity $y^{24}\!\leq\! y^{48}\!\leq\! y^{72}$ is checked at build time.
+
+After applying this contract, 200{,}559, 197{,}748, and 195{,}174 records are labelled at 24, 48, and 72~h, with 9{,}982, 11{,}241, and 12{,}340 positives (4.98\%, 5.68\%, 6.32\%). Prevalence varies strongly: the 72-h positive rate falls from 16.81\% in 2017 to 1.19\% in 2023, and the monsoon rate is about 5.4 times the non-monsoon rate. This motivates cell-specific and season-specific reporting rather than one pooled score.
+
+\subsection{Spatiotemporal Partitions}
+
+Random partitioning is avoided. The primary chronology is training through 2021, validation in 2022, and a frozen test from 2023 onward. The primary selection cell, \texttt{val\_2022}, contains 17{,}538 non-holdout records; the frozen test contains 101{,}174 records. Temporal boundaries fall inside natural dry-season gaps of 88--131 days with no model-ready observations, and a seven-day embargo is retained as a safeguard against label windows crossing a split boundary.
+
+Spatial generalisation uses five station-disjoint folds balanced by label count and network age. Fold~0 (26 stations, 19{,}763 test-period records) is the frozen unseen-station holdout. Folds~1--4 are development folds: the model is refit on the other four folds and scored on the held-out fold. The post-2022 test is further split into trained stations, new-network stations, and unseen holdout stations, so stations that entered the FFWC record after training are not mistaken for previously observed locations. Five protocols follow: P1 (train $\leq$2021, evaluate \texttt{val\_2022}), P2 (rolling origin: train $\leq$2019/2020, evaluate 2020/2021), P3 (spatial folds 1--4), P4 (frozen post-2022 test), and P5 (monsoon/non-monsoon stratification). P2 and P3 refit the model separately for every cell.
+
+\section{Methodology}
+
+\subsection{Features and Leakage Control}
+
+The base representation, FULL, contains 62 predictors in five groups: weather (5), rainfall history (7), static geography (14), local hydrology (24), and station network (12). The governed representation, FULL\_V2, adds soil wetness (19), GloFAS discharge (18), water-level memory/API (6), and interactions (5), for 110 predictors. Hydrological features include current and lagged water level, backward-looking trends and rolling statistics, the current percentage of danger level, and distance to the danger threshold. Rainfall-history features summarise antecedent precipitation; geography describes terrain and river proximity; network features summarise neighbouring and upstream stations.
+
+Every predictor for issue day $t$ may depend only on information available at or before $t$. Station identifiers, dates, source descriptors, target labels, and future-observation counts are excluded. Lags and rolling statistics are strictly backward-looking. Median imputation, frequency encoding, and standardisation are fitted only on the training partition of the cell being evaluated. Target encoding is not used. For sequence models, windows are constrained to one station and to the corresponding split/fold, so a sequence cannot cross a temporal, spatial, holdout, or seasonal boundary. A feature-level audit verified these properties before model comparison.
+
+\subsection{Models and Tuning}
+
+The comparison contains 24 configurations. The seven baselines are climatology, a static-geography-only model, three logistic-regression variants, a depth-4 decision tree, and D7 persistence. D7 is the mandatory reference: it uses the station's current water level relative to its danger level, exploiting the strong autocorrelation of river stage. The five classical models are LightGBM \cite{ke2017lightgbm}, XGBoost \cite{chen2016xgboost}, an XGBoost variant on a compact selected feature set, Random Forest, and Gradient Boosting. The twelve DL configurations include LSTM models at sequence lengths 3, 7, 14, and 30 days with missingness masks; a GRU; a temporal convolutional network (TCN); a fusion model that concatenates a learned sequence representation with the tabular vector; a hybrid model; graph-convolutional and graph-attention networks; a gated GNN--LSTM; and a gated Transformer.
+
+All models are trained separately for 24, 48, and 72~h. Classical models use a fixed, pre-registered tuning budget; DL models use the same partitions, seeds, and metric code. The final governed model, D16, is selected on \texttt{val\_2022} by horizon-mean PR-AUC, subject to beating D7 on every development cell and horizon and to a calibration gate (raw ECE $\leq$0.02). D16 uses LightGBM at 24 and 48~h and XGBoost at 72~h on FULL\_V2.
+
+\subsection{Metrics and Decision Rules}
+
+The primary metric is precision--recall area under the curve (PR-AUC), computed separately per horizon, cell, and season, because exceedance is imbalanced and spatially concentrated \cite{saito2015precision}. ROC-AUC is complementary. Operational metrics are recall, precision, false negatives (missed exceedances), and false alarms at a cost-sensitive threshold. Calibration is measured by the Brier score and expected calibration error (ECE) with ten equal-width bins; ECE $\leq$0.02 is the tolerance. Post-hoc isotonic and Platt recalibration are fitted out-of-fold and used only when raw calibration fails.
+
+The operating threshold minimises $J(\tau)=10\,\mathrm{FN}(\tau)+\mathrm{FP}(\tau)$, reflecting a provisional 10:1 cost of a missed exceedance; 5:1 and 20:1 are sensitivity checks. Thresholds are estimated on training/validation data and frozen before test application. Predicted probabilities are also mapped to low, moderate, high, and very high risk bands. These are research decision-support categories, not official FFWC warnings.
+
+Event-level evaluation asks whether a distinct exceedance event is detected and how much lead time is available. An event is a maximal run of positive days per station, bridging one-day gaps. Detection requires a warning in the lead window before onset, and false-alarm episodes are counted outside event and lead windows. Finally, TreeSHAP \cite{lundberg2017unified} attributes the frozen tree models, aggregated into the feature groups.
+
+\subsection{Reproducibility and Test Discipline}
+
+All experiments use seed 20261008. Station-level bootstrap intervals use 100 resamples and a shared resample index for paired comparisons. Scripts, configuration files, and a SHA-256 manifest freeze the paper's evidence (Section~VI). The post-2022 test is closed to new analysis for this paper. Its history is reported explicitly in Section~VI: six opens, of which five were predictive reads (one invalidated and retracted) and one read label statistics only. The D16 test numbers quoted here are the valid MI-6 read, reproduced bit-for-bit by a pre-registered correction read (MI-9).
+
+\section{Results}
+
+\subsection{Classical ML versus Deep Learning}
+
+Table~\ref{tab:mldl} reports P1 \texttt{val\_2022} PR-AUC for representative models. The best classical model is XGBoost with a horizon mean of 0.9546 (0.9681/0.9549/0.9408). The best deep model is the fusion network at 0.9356 (0.9444/0.9385/0.9238), a gap of 0.0190. The top four classical models lie within 0.0023 of each other, well inside sampling noise, so their ordering is not meaningful; what is meaningful is that every classical leader clears every DL leader at every horizon.
+
+\begin{table}[t]
+\centering
+\caption{P1 \texttt{val\_2022} PR-AUC by horizon (all season). Mean is the unweighted horizon mean. D7 is the persistence reference.}
+\label{tab:mldl}
+\scriptsize
+\setlength{\tabcolsep}{3.2pt}
+\begin{tabular}{l l c c c c}
+\toprule
+Model & Family & 24 h & 48 h & 72 h & Mean \\
+\midrule
+Climatology & L1 & 0.0509 & 0.0594 & 0.0658 & 0.0587 \\
+D7 persistence & L1 & 0.9203 & 0.8954 & 0.8683 & 0.8947 \\
+Logistic regression & L1 & 0.9401 & 0.9241 & 0.9053 & 0.9232 \\
+\midrule
+LightGBM & L2 & \best{0.9682} & 0.9538 & 0.9384 & 0.9534 \\
+XGBoost & L2 & 0.9681 & \best{0.9549} & 0.9408 & \best{0.9546} \\
+Random forest & L2 & 0.9665 & 0.9516 & 0.9388 & 0.9523 \\
+XGBoost-selected & L2 & 0.9663 & 0.9533 & \best{0.9422} & 0.9539 \\
+Gradient boosting & L2 & 0.9618 & 0.9457 & 0.9338 & 0.9471 \\
+\midrule
+LSTM & L3 & 0.9421 & 0.9253 & 0.9129 & 0.9268 \\
+GRU & L3 & 0.9359 & 0.9263 & 0.9086 & 0.9236 \\
+TCN & L3 & 0.9405 & 0.9224 & 0.9008 & 0.9212 \\
+Fusion & L3 & \best{0.9444} & \best{0.9385} & \best{0.9238} & \best{0.9356} \\
+GCN & L4 & 0.9421 & 0.9353 & 0.9141 & 0.9305 \\
+GAT & L4 & 0.9408 & 0.9315 & 0.9136 & 0.9286 \\
+GNN--LSTM & L4 & 0.9424 & 0.9264 & 0.9153 & 0.9280 \\
+Transformer & L4 & 0.9437 & 0.9330 & 0.9183 & 0.9317 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+At the cell level, 95\% station-bootstrap intervals overlap heavily (e.g., XGBoost 24~h 0.932--0.987, fusion 0.872--0.978), which is expected with 84 stations and a single year. The sharper test is paired: the fair DL rematch (MI-7) gives a fusion-minus-XGBoost difference of $-0.0228$ [$-0.0534$, $-0.0069$] at 24~h, $-0.0190$ [$-0.0446$, $-0.0051$] at 48~h, and $-0.0165$ [$-0.0434$, $-0.0021$] at 72~h. All three intervals exclude zero. Adding parameters does not buy accuracy: the fusion model has 58{,}817 weights and takes 170~s to train for three horizons, versus 11.7~s for XGBoost-selected; inference is comparable (0.051 versus 0.019~ms per 1{,}000 rows).
+
+The spatial folds sharpen the conclusion. On fold~1 at 24~h, the fusion model falls to 0.7657, while the weakest classical leader on any fold is 0.9147. The DL models are not merely slightly behind on average; they lose much more when stations are unseen. This is the pattern an operational warning system cannot tolerate.
+
+\subsection{Selected Model and Frozen-Test Performance}
+
+D16 is the per-horizon LightGBM/LightGBM/XGBoost configuration on FULL\_V2. On \texttt{val\_2022} it reaches 0.9708/0.9565/0.9450 (mean 0.9574), marginally above the best single classical model. On the frozen test (Table~\ref{tab:test}), D16 reaches 0.8362/0.7690/0.7071 (mean 0.7708), versus 0.7340/0.6625/0.6062 for D7 (mean 0.6676). The margin is +0.102/+0.106/+0.101 at 24/48/72~h, and D16 beats D7 on all 21 cell--horizon points. The minimum test margin is +0.0424.
+
+\begin{table*}[t]
+\centering
+\caption{Frozen post-2022 test PR-AUC (all season). D16 is the selected per-horizon model; D7 is persistence. The seven cells are two overlapping partitions of the same 101{,}174-row test: four calendar years and three station groups. $\Delta$ is the unweighted horizon-mean difference. D16 wins all 21 cell--horizon points.}
+\label{tab:test}
+\scriptsize
+\setlength{\tabcolsep}{3.5pt}
+\begin{tabular}{l r ccc ccc c}
+\toprule
+& & \multicolumn{3}{c}{D16} & \multicolumn{3}{c}{D7 persistence} & \\
+\cmidrule(lr){3-5}\cmidrule(lr){6-8}
+Cell & $n$ & 24 h & 48 h & 72 h & 24 h & 48 h & 72 h & $\Delta$ mean \\
+\midrule
+\multicolumn{9}{l}{\emph{Temporal partition}}\\
+\texttt{test\_2023} & 23{,}858 & 0.7956 & 0.6814 & 0.6257 & 0.6276 & 0.5523 & 0.5108 & +0.1373 \\
+\texttt{test\_2024} & 24{,}339 & 0.9177 & 0.8573 & 0.8043 & 0.8022 & 0.7302 & 0.6727 & +0.1247 \\
+\texttt{test\_2025} & 28{,}250 & 0.8048 & 0.7598 & 0.7019 & 0.7328 & 0.6670 & 0.6041 & +0.0875 \\
+\texttt{test\_2026} & 24{,}689 & 0.7935 & 0.7467 & 0.7023 & 0.7233 & 0.6495 & 0.5929 & +0.0923 \\
+\midrule
+\multicolumn{9}{l}{\emph{Spatial partition}}\\
+\texttt{test\_trained} & 76{,}570 & 0.8686 & 0.8091 & 0.7614 & 0.7468 & 0.6762 & 0.6183 & +0.1326 \\
+\texttt{test\_new\_network} & 4{,}805 & 0.8434 & 0.7868 & 0.7129 & 0.7356 & 0.6930 & 0.6457 & +0.0896 \\
+\texttt{test\_unseen} & 19{,}761 & 0.8299 & 0.7416 & 0.6410 & 0.7696 & 0.6694 & 0.5986 & +0.0583 \\
+\midrule
+Mean of 7 cells & --- & \best{0.8362} & \best{0.7690} & \best{0.7071} & 0.7340 & 0.6625 & 0.6062 & \best{+0.1032} \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+Three features matter. First, absolute scores are much lower than validation ($\approx$0.96): the 24-h test base rate is 1.4\% versus 5.4\% on \texttt{val\_2022} (per-year 0.7--2.5\%), and near-threshold label noise is larger; a validation 0.96 does not imply a test 0.96. Second, 72~h is the weakest horizon for every model. Third, the unseen-station cell remains above D7 (+0.059), so the model is not relying only on station identity. The one weakness is \texttt{test\_2025}, where D16's 24-h score (0.805) is close to D7 (0.733); 2025 was a low-prevalence, near-threshold year. We do not smooth this away.
+
+\subsection{Protocol Audit and P2/P3 Correction}
+
+An intermediate feature experiment (MI-8) reported seven-cell means of 0.983--0.988 and a 21/21 win. The audit found that the script fitted one model on \texttt{split=="train"} ($\leq$2021) and then scored all seven development cells; six are subsets of that fit (val\_2020, val\_2021, folds 1--4), and only val\_2022 is genuinely out of sample. The six cells at 0.9999 were therefore memorised rows, not a feature-leakage signature or a base-rate ceiling.
+
+The correction was pre-registered before re-running. Each cell is refit under its correct mask (val\_2020 $\leq$2019; val\_2021 $\leq$2020; val\_2022 P1; fold $k$ on the other four). The val\_2022 gate requires agreement to $10^{-6}$ for the probes and $10^{-5}$ for D16; otherwise the run refuses to report. The frozen champion is unchanged because its selection cell was never affected.
+
+Table~\ref{tab:correction} summarises. Absolute means fall by 0.019--0.021, and the saturation disappears. The \texttt{V3}$-$\texttt{V2} effect survives re-scoring: +0.00187 versus +0.00136, positive in 20/21 points (the loss is \texttt{val\_2021} 24~h, $-0.0007$), so the level was wrong but the sign was not. The MI-8 HPO arm remains 0.00004 below D16 on \texttt{val\_2022} (0.957388 vs 0.957427); on the corrected seven-cell mean it is +0.00203 above. The pre-registered rule selects on \texttt{val\_2022}, so D16 stands and we report the disagreement rather than re-select. D16's corrected D7 floor is +0.0156 on 21/21, not the archived +0.0225; archived magnitudes are withdrawn.
+
+\begin{table}[t]
+\centering
+\caption{P2/P3 correction: archived seven-cell mean versus per-cell refit. The archived column scored six cells in-sample. $\Delta$ is corrected minus archived.}
+\label{tab:correction}
+\scriptsize
+\setlength{\tabcolsep}{3.2pt}
+\begin{tabular}{l c c c}
+\toprule
+Comparison & Archived & Corrected & $\Delta$ \\
+\midrule
+\texttt{FULL} probe & 0.9834 & 0.9641 & $-$0.0194 \\
+\texttt{FULL\_V2} probe & 0.9868 & 0.9659 & $-$0.0209 \\
+\texttt{FULL\_V3} probe & 0.9882 & 0.9678 & $-$0.0204 \\
+\texttt{V3}$-$\texttt{V2} & +0.00136 & +0.00187 & +0.00051 \\
+D16 arm & 0.9885 & 0.9665 & $-$0.0220 \\
+D16 $-$ D7 (min) & +0.0225$^{*}$ & +0.0156 & $-$0.0069 \\
+\bottomrule
+\end{tabular}
+
+\vspace{2pt}
+{\scriptsize $^{*}$Archived floor from the MI-5 scorecard (in-sample); corrected floor from per-cell refits.\par}
+\end{table}
+
+The lesson is simple: a feature-level audit can pass while the evaluation path leaks. Assert per-cell mask disjointness at runtime and refit per cell; treat near-perfect scores as a warning.
+
+\subsection{Robustness and Ablation}
+
+Across the seven development cells and three horizons (21 cell--horizon points), the three classical leaders beat D7 in all 63 leader--cell--horizon comparisons, with a minimum margin of +0.0143. This is the strongest evidence that the learned signal is not an artefact of one year: it survives rolling-origin refits and station-disjoint folds. The DL contrast is much weaker: the fusion model's worst fold (fold~1, 24~h) is 0.7657, below several D7 cells.
+
+The advantage is not unconditional. In extreme-rain windows (above the 90th percentile), the leaders beat D7 in only 28/63 points, with losses up to $-$0.035. When rainfall is already extreme, yesterday's water level is an unusually strong carry-forward predictor, and the learned models' edge narrows. Under a stricter issue-time convention (all features shifted to $t-1$), the leaders slip below D7 in 19/63 points, worst $-$0.0152. These are honest boundary conditions: the model is robust across ordinary temporal and spatial splits, but not uniformly superior in the most extreme and most information-poor conditions.
+
+The feature-group ablation explains why. Adding local hydrology to weather, rainfall history, and geography raises mean PR-AUC by +0.4702 (95\% CI +0.389 to +0.539), significant in 9/9 learner--horizon comparisons. Adding the station-network block on top of hydrology buys only +0.0009 ($-$0.0002 to +0.0037), significant in 2/9. The model is, in essence, a hydrological state model with meteorological context; the network and upstream blocks are not the source of skill. This also explains why the DL architectures, which can in principle learn spatial dependence, do not beat the tabular model: the useful spatial signal is already weak relative to local stage.
+
+\subsection{Calibration, Thresholds, and Risk Bands}
+
+On the test, D16's ECE is 0.0028/0.0042/0.0085 and the Brier score is 0.0056/0.0090/0.0131 at 24/48/72~h, all well inside the 0.02 tolerance. Across the 24-model comparison, 17 clear the tolerance at every horizon; the competitive exceptions (GRU, TCN, LSTM-3/7, Random Forest) are correctable by out-of-fold isotonic regression (TCN 72~h ECE 0.0574 $\rightarrow$ 0.0026).
+
+At the 10:1 cost threshold, the test operating point is high-recall: 0.918/0.903/0.856 recall at 24/48/72~h, with precision 0.549/0.388/0.351. The high false-alarm rate is the intended consequence of a 10:1 miss-to-false-alarm cost; a 20:1 stance would raise recall further. The corresponding risk bands are informative: the very-high band has an observed flood rate of about 90\% with 13--18$\times$ lift over the base rate. These bands are a communication device, not a replacement for FFWC warnings.
+
+\subsection{Event-Level Evaluation}
+
+Station-day PR-AUC can hide whether a model warns before a distinct flood event. On the frozen test, using the MI-6 event definition (a warning anywhere in the lead window or event span counts as detection), D16 detects 93.0\%, 96.5\%, and 96.9\% of events at 24/48/72~h, versus 86.4\%, 92.7\%, and 91.2\% for D7. Under the stricter development definition---a warning \emph{before} onset, with false-alarm episodes counted outside event and lead windows---mean recall is lower: D16 50.9\%, 72.4\%, and 88.1\% versus D7 45.2\%, 64.9\%, and 76.7\%. At 24~h the advantage is only +5.6 points, and D16 loses to D7 on two cells: persistence is hard to beat for same-day event detection. The advantage grows with lead time (+7.5 at 48~h, +11.4 at 72~h), and D16 produces fewer false-alarm episodes per station-year on average at every horizon (0.58/0.98/2.30 versus 1.56/1.97/2.44). The event results therefore show a lead-time and false-alarm advantage, not uniform superiority. Detection is not the same as early warning: many events are detected only once the level is already rising, and the false-alarm burden is substantial at the 10:1 point. For a warning service, the relevant trade-off is between lead time and false alarms, not a single recall number.
+
+\subsection{Explainability}
+
+TreeSHAP on the frozen 24-h model attributes 64.0\% of total mean absolute attribution to the hydrology group, followed by geography (8.4\%), station network (6.1\%), weather (4.7\%), GloFAS discharge (4.6\%), interactions (4.1\%), soil wetness (4.1\%), water-level memory (2.4\%), and rainfall history (1.5\%). The top individual features are \texttt{wl\_dist\_to\_danger}, \texttt{wl\_pct\_danger}, and \texttt{wl\_exceed\_days\_30}. This is the expected signature: the river is the state variable, and the model's decisions are anchored in the current stage relative to the danger level. The cross-model rank correlation with the Phase-33 XGBoost model is 0.755/0.860/0.878 at 24/48/72~h, so two models trained on different feature sets explain the task through the same ordering. No banned or label-window feature appears in the top-20, which is a second, model-side leakage check.
+
+\section{Discussion and Limitations}
+
+\subsection{What the Comparison Shows}
+
+The central empirical result is that a carefully engineered gradient-boosting model beats twelve tested DL architectures for probabilistic danger-level exceedance, under identical partitions and scoring. This is not an argument against DL in hydrology, but for a station-day tabular problem with strong local persistence and few stations, the useful signal is concentrated in a small set of hydrological state variables. A sequence model must learn that state from raw windows; the tabular model is given it directly. The ablation is concrete: hydrology contributes +0.4702 PR-AUC, the station network +0.0009. Architectures that specialise in spatial or temporal representation cannot create signal the data do not contain.
+
+The result is also an evaluation result: the same 24 models, scored through one pathway, produce a coherent ordering, whereas earlier heterogeneous comparisons did not. Cell-level CIs overlap, so the 24-h table alone would call the ML--DL difference inconclusive; the paired design shows it is not.
+
+\subsection{The Evaluation-Leakage Lesson}
+
+The P2/P3 audit found that six of seven development cells had been scored in-sample. The tell was a saturation pattern---0.9999 on six cells and 0.97 on one---that looked like a feature-leakage triumph. The feature audit passed because the features were causal; the evaluation was not. This distinction is important: leakage can enter through the split, the fit, or the scoring path, not only through a column. The correction changed the absolute level and reduced the 21/21 win to 20/21, but it did not change the sign of the feature effect, the champion, or the test result. We report it because a paper about leakage-aware evaluation must show its own audit, including a failure.
+
+\subsection{Operational Interpretation}
+
+The test scores (0.836/0.769/0.707) are well below validation ($\approx$0.96). The gap is driven by lower base rates and near-threshold label noise in 2023--2026, not by a bug. A system tuned on 2022 should expect a material drop in a low-prevalence year. The 24-h horizon is the most reliable; 72~h is the weakest and should carry wider uncertainty. The model beats D7 on every station-day test point, including unseen stations, but the margin is modest in the hardest year and under extreme rainfall. The 10:1 threshold yields high recall and many false alarms; operators should choose the cost ratio explicitly rather than inherit ours.
+
+\subsection{Limitations}
+
+\textbf{Test-read history.} The frozen test was opened six times: Phase~16 baseline (before model development), Phase~33 selection, MI-6 D16 evaluation, MI-4 label statistics (no predictions), MI-4/D17 comparison (invalid, retracted), and MI-9 correction. The D16 numbers reported here are the MI-6 read, reproduced bit-for-bit by MI-9. No test data entered feature selection, hyperparameter tuning, calibration, or threshold fitting for D16. However, the programme had seen a Phase-33 test result before the v2 model was built, so the test is frozen for D16 but not pristine for the programme.
+
+\textbf{No future weather.} The predictors use observed meteorology up to the issue day, not numerical weather prediction for the target window. The model is therefore conditional on recent conditions, not a full rainfall--runoff forecast. Coupling to NWP ensembles is the obvious next step.
+
+\textbf{Scope and data.} The study covers one country, 133 stations, and a record with a missing year (2018) and a partial 2026. Danger levels are administrative thresholds, not hydraulic simulations. Label noise near the threshold is unavoidable. The cost ratios are research assumptions, not stakeholder-validated preferences.
+
+\textbf{Statistics.} Cell-level bootstrap intervals are wide; the paired comparisons are stronger, but they still depend on 100 resamples and 84 stations. The event-level analysis is development-only for the strict pre-onset definition; the test event numbers use the more permissive MI-6 definition.
+
+\subsection{Conclusion}
+
+We presented a leakage-aware, probabilistic, multi-horizon flood-forecasting framework for Bangladesh and used it to compare classical ML with modern DL under a common evaluation. Engineered gradient boosting beats every tested DL architecture, and the selected per-horizon model beats a strong persistence benchmark on all development and test points, remains calibrated, and is hydrologically interpretable. The study also documents an evaluation-level leakage defect and its pre-registered correction. The broader lesson is that credible flood-AI evidence depends as much on evaluation integrity as on model sophistication.
+
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+
+\end{document}

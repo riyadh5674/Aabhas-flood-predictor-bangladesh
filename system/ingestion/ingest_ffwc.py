@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 import threading
 import time
@@ -35,7 +36,7 @@ from system.ingestion.provenance import ProvenanceManifest
 
 sys.stdout.reconfigure(encoding="utf-8")
 
-ROOT = Path(r"D:\Flood predictor")
+ROOT = Path(os.getenv("AABHAS_ROOT", Path(__file__).resolve().parents[2])).resolve()
 CONFIG = json.loads((ROOT / "system" / "config" / "ingestion_config.json").read_text(encoding="utf-8"))
 FFWC_CFG = CONFIG["ffwc"]
 
@@ -47,10 +48,10 @@ RETRIES = FFWC_CFG["retries"]
 BACKOFF_BASE = FFWC_CFG["retry_backoff_base"]
 TIMEOUT = FFWC_CFG["timeout_seconds"]
 
-RAW_DIR = ROOT / FFWC_CFG["output_dir"].replace("system/data/raw", str(ROOT / "system" / "data" / "raw"))
+RAW_DIR = ROOT / FFWC_CFG["output_dir"]
 WL_DIR = RAW_DIR  # system/data/raw/ffwc/waterlevel
-STATIONS_FILE = ROOT / FFWC_CFG["stations_file"].replace("system/data/raw", str(ROOT / "system" / "data" / "raw"))
-MANIFEST_FILE = ROOT / FFWC_CFG["manifest_file"].replace("system/data/raw", str(ROOT / "system" / "data" / "raw"))
+STATIONS_FILE = ROOT / FFWC_CFG["stations_file"]
+MANIFEST_FILE = ROOT / FFWC_CFG["manifest_file"]
 
 MANIFEST = ProvenanceManifest(MANIFEST_FILE)
 

@@ -53,8 +53,12 @@ function StationDetailView({
   const [stationRetry, setStationRetry] = useState(0);
 
   const trendDates = useMemo(() => {
-    const available = dates.filter((day) => day <= date).slice(-30);
-    return available.includes(date) ? available : [...available, date].slice(-30);
+    const selected = /^\d{4}-\d{2}-\d{2}$/.test(date) ? date : "";
+    const available = dates
+      .filter((day) => /^\d{4}-\d{2}-\d{2}$/.test(day) && (!selected || day <= selected))
+      .slice(-30);
+    if (selected && !available.includes(selected)) return [...available, selected].slice(-30);
+    return available;
   }, [dates, date]);
   const trend = useStationTrend(station ?? undefined, trendDates, horizon, dataMode);
 
@@ -78,24 +82,12 @@ function StationDetailView({
   }, [stationId, stationRetry]);
 
   const trendPoints = useMemo(() => trend.data?.points ?? [], [trend.data]);
-  const rows = useMemo(
-    () =>
-      trendPoints.map((p) => ({
-        stationId,
-        date: p.date,
-        horizon,
-        probability: p.probability,
-        band: p.band,
-        action: p.action ?? "",
-        threshold: p.threshold ?? null,
-        modelVersion: "D16",
-        computedAt: new Date().toISOString(),
-        station: station!,
-      })),
-    [trendPoints, stationId, horizon, station],
+  // Missing days are explicit `unknown` points. The headline must show the most
+  // recent real forecast, never turn "no data" into a reassuring 0%.
+  const latest = useMemo(
+    () => trendPoints.filter((point) => point.probability != null).at(-1) ?? null,
+    [trendPoints],
   );
-
-  const latest = rows[rows.length - 1] ?? null;
   const meta = BAND_META[latest?.band ?? "unknown"];
 
   if (!station) {
@@ -178,6 +170,12 @@ function StationDetailView({
                 </div>
                 <BandChip band={latest.band} />
               </div>
+              {date && latest.date !== date ? (
+                <p className="text-[11.5px] muted" role="status">
+                  No {horizon.toUpperCase()} forecast for {longDate(date)}. Showing the most recent available forecast from{" "}
+                  {longDate(latest.date)}.
+                </p>
+              ) : null}
               <p className="text-[13px] leading-relaxed text-2" style={{ borderLeft: `3px solid ${meta.color}`, paddingLeft: "12px", margin: 0 }}>
                 {meta.guidance}
               </p>

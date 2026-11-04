@@ -1,14 +1,26 @@
-"""Build an all-real, precomputed forecast snapshot for Aabhas static hosting.
+"""Build or incrementally update a precomputed forecast snapshot for static hosting.
 
-Run from the repository root with the project's Python environment. This stores
-derived station forecasts only; it never copies the feature store or model.
+The snapshot stores derived station forecasts only; it never copies the feature
+store or the model. Dates are processed in chunks so each horizon's model runs
+on a concatenated frame instead of once per date.
 
-Dates are processed in chunks so each horizon's model runs on a concatenated
-frame instead of once per date. Trend points are accumulated as compact tuples
-and only expanded to dicts when written.
+Two modes:
+
+* full (default)      - wipe the snapshot and rebuild every available date.
+* incremental          - only score dates that are not already in
+                         ``dates.json``; everything else is left untouched.
+
+Trend files are rebuilt from the prediction files on disk for a bounded window
+(``--trend-days``), which keeps daily runs cheap. The UI only plots the last 30
+days, so a 90-day window leaves comfortable headroom.
+
+Run from the repository root with the project's Python environment::
+
+    python system/deploy/build_static_snapshot.py --incremental --trend-days 90
 """
 from __future__ import annotations
 
+import argparse
 import json
 import shutil
 import sys
@@ -20,10 +32,17 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
-from system.api.inference import list_available_dates, load_features_for_date, get_model, thresholds_info
-from system.config.model_config import HORIZONS
+from system.api.inference import get_model, thresholds_info
+from system.config.model_config import FEATURE_STORE, HORIZONS
 
+DEFAULT_OUT = ROOT / "system" / "web" / "public" / "data" / "snapshot"
+STATIONS_FILE = ROOT / "system" / "web" / "public" / "data" / "stations.json"
 CHUNK_SIZE = 128
+
+NOTICE = (
+    "Precomputed model guidance, refreshed daily. "
+    "Not real-time and not an official flood warning."
+)
 
 
 def dump(path: Path, value: object) -> None:
@@ -31,32 +50,38 @@ def dump(path: Path, value: object) -> None:
     path.write_text(json.dumps(value, separators=(",", ":"), allow_nan=False), encoding="utf-8")
 
 
-def main() -> None:
-    out = ROOT / "system" / "web" / "public" / "data" / "snapshot"
-    if out.exists():
-        shutil.rmtree(out)
-    out.mkdir(parents=True)
+def local_dates() -> list[str]:
+    """Sorted dates present in the local partitioned feature store.
 
-    dates = list_available_dates()
-    if not dates:
-        raise SystemExit("No feature store dates found; refusing to publish an empty snapshot.")
-    model = get_model()
-    generated_at = datetime.now(timezone.utc).isoformat()
-    station_ids: set[int] = set()
+    The snapshot build intentionally reads the local store even when
+    ``HF_FEATURE_DATASET`` is configured, so a daily local run never depends on
+    a remote download.
+    """
+    if not FEATURE_STORE.is_dir():
+        return []
+    return sorted(
+        entry.name.split("=", 1)[1]
+        for entry in FEATURE_STORE.iterdir()
+        if entry.is_dir() and entry.name.startswith("date=")
+    )
 
-    # horizon -> station_id -> list[(date, probability, band, action, threshold)]
-    trends: dict[str, dict[int, list[tuple]]] = {h: {} for h in HORIZONS}
 
+def load_local(date: str) -> pd.DataFrame:
+    path = FEATURE_STORE / f"date={date}" / "data.parquet"
+    if not path.exists():
+        raise FileNotFoundError(path)
+    return pd.read_parquet(path)
+
+
+def build_predictions(out: Path, dates: list[str], model, generated_at: str) -> None:
     for start in range(0, len(dates), CHUNK_SIZE):
         chunk = dates[start : start + CHUNK_SIZE]
         frames = []
         for date in chunk:
-            frame = load_features_for_date(date)
-            frame = frame.copy()
+            frame = load_local(date).copy()
             frame["_snapshot_date"] = date
             frames.append(frame)
         combined = pd.concat(frames, ignore_index=True)
-        station_ids.update(int(sid) for sid in combined["station_id"].dropna().unique())
 
         by_date: dict[str, dict[str, list[dict]]] = {date: {} for date in chunk}
         for horizon in HORIZONS:
@@ -68,10 +93,37 @@ def main() -> None:
             for record in predicted.to_dict("records"):
                 date = str(record.pop("_snapshot_date"))
                 record["date"] = date
-                bucket = by_date.setdefault(date, {})
-                bucket.setdefault(horizon, []).append(record)
+                by_date.setdefault(date, {}).setdefault(horizon, []).append(record)
+
+        for date in chunk:
+            dump(out / "predictions" / f"{date}.json", by_date.get(date, {}))
+
+        done = min(start + CHUNK_SIZE, len(dates))
+        if done % 100 < CHUNK_SIZE or done == len(dates):
+            print(f"Generated {done:,}/{len(dates):,} dates", flush=True)
+
+
+def write_trends(out: Path, dates: list[str], stations: list[dict]) -> set[int]:
+    """Rebuild per-station trend files from prediction files on disk.
+
+    Returns the set of station ids that had at least one prediction in the
+    window, which is used for the health summary.
+    """
+    buckets: dict[str, dict[int, list[tuple]]] = {
+        horizon: {int(station["id"]): [] for station in stations} for horizon in HORIZONS
+    }
+    active: set[int] = set()
+    missing = 0
+    for date in dates:
+        path = out / "predictions" / f"{date}.json"
+        if not path.exists():
+            missing += 1
+            continue
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        for horizon in HORIZONS:
+            for record in payload.get(horizon, []):
                 sid = int(record["station_id"])
-                trends[horizon].setdefault(sid, []).append(
+                buckets[horizon].setdefault(sid, []).append(
                     (
                         date,
                         record["probability"],
@@ -80,20 +132,11 @@ def main() -> None:
                         record["threshold"],
                     )
                 )
+                active.add(sid)
 
-        for date in chunk:
-            dump(out / "predictions" / f"{date}.json", by_date[date])
-
-        done = min(start + CHUNK_SIZE, len(dates))
-        if done % 100 < CHUNK_SIZE or done == len(dates):
-            print(f"Generated {done:,}/{len(dates):,} dates", flush=True)
-
-    for horizon, stations in trends.items():
-        station_file = ROOT / "system" / "web" / "public" / "data" / "stations.json"
-        master = json.loads(station_file.read_text(encoding="utf-8"))
-        for station in master:
-            stations.setdefault(int(station["id"]), [])
-        for station_id, points in stations.items():
+    for horizon, per_station in buckets.items():
+        for station_id, points in per_station.items():
+            points.sort(key=lambda point: point[0])
             dump(
                 out / "trends" / horizon / f"{station_id}.json",
                 {
@@ -109,8 +152,13 @@ def main() -> None:
                     ]
                 },
             )
+    if missing:
+        print(f"Trend rebuild skipped {missing} date(s) with no prediction file")
+    return active
 
-    model_meta = {
+
+def model_meta(model) -> dict:
+    return {
         "version": model.version,
         "decision": "D16",
         "seed": model.seed,
@@ -122,17 +170,113 @@ def main() -> None:
         "horizons": list(HORIZONS),
         "loaded_at": model._loaded_at.isoformat() if model._loaded_at else None,
     }
-    dump(out / "health.json", {
-        "status": "snapshot", "model_loaded": True, "model_version": model.version,
-        "feature_store_dates": len(dates), "latest_feature_date": dates[-1], "timestamp": generated_at,
-        "generated_at": generated_at, "station_count": len(station_ids),
-        "notice": "Precomputed model guidance, refreshed manually. Not real-time and not an official flood warning.",
-    })
+
+
+def write_metadata(
+    out: Path,
+    dates: list[str],
+    model,
+    generated_at: str,
+    station_count: int,
+) -> None:
+    dump(
+        out / "health.json",
+        {
+            "status": "snapshot",
+            "model_loaded": True,
+            "model_version": model.version,
+            "feature_store_dates": len(dates),
+            "latest_feature_date": dates[-1] if dates else None,
+            "timestamp": generated_at,
+            "generated_at": generated_at,
+            "station_count": station_count,
+            "notice": NOTICE,
+        },
+    )
     dump(out / "dates.json", {"dates": dates})
     dump(out / "thresholds.json", thresholds_info())
-    dump(out / "model.json", model_meta)
-    print(f"Snapshot complete: {len(dates):,} dates, {len(station_ids):,} stations, D16 through {dates[-1]}.")
+    dump(out / "model.json", model_meta(model))
+
+
+def existing_dates(out: Path) -> set[str]:
+    path = out / "dates.json"
+    if not path.exists():
+        return set()
+    try:
+        return set(json.loads(path.read_text(encoding="utf-8")).get("dates", []))
+    except Exception:
+        return set()
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description="Build or incrementally update the static snapshot")
+    parser.add_argument("--incremental", action="store_true", help="Only score dates missing from dates.json.")
+    parser.add_argument(
+        "--trend-days",
+        type=int,
+        default=0,
+        help="Keep only the last N dates in trend files (0 = full history).",
+    )
+    parser.add_argument(
+        "--rebuild-trends",
+        action="store_true",
+        help="Rewrite trend files even when no new dates were scored.",
+    )
+    parser.add_argument(
+        "--rebuild-from",
+        help="Re-score every date on/after this date (YYYY-MM-DD), even if already published.",
+    )
+    parser.add_argument("--out", default=str(DEFAULT_OUT), help="Snapshot output directory.")
+    args = parser.parse_args(argv)
+
+    out = Path(args.out).resolve()
+    dates = local_dates()
+    if not dates:
+        print("No local feature partitions found; refusing to publish an empty snapshot.")
+        return 1
+
+    stations = json.loads(STATIONS_FILE.read_text(encoding="utf-8"))
+    generated_at = datetime.now(timezone.utc).isoformat()
+
+    if args.incremental:
+        known = existing_dates(out)
+        new_dates = [date for date in dates if date not in known]
+        out.mkdir(parents=True, exist_ok=True)
+    else:
+        if out.exists():
+            shutil.rmtree(out)
+        out.mkdir(parents=True, exist_ok=True)
+        new_dates = list(dates)
+
+    if args.rebuild_from:
+        forced = [date for date in dates if date >= args.rebuild_from]
+        new_dates = sorted(set(new_dates) | set(forced))
+
+    if new_dates:
+        model = get_model()
+        build_predictions(out, new_dates, model, generated_at)
+    elif not args.rebuild_trends:
+        print("No new dates; snapshot is already current.")
+        return 0
+    else:
+        model = get_model()
+
+    if args.trend_days > 0:
+        trend_dates = dates[-args.trend_days :]
+    else:
+        trend_dates = dates
+    active = write_trends(out, trend_dates, stations)
+    write_metadata(out, dates, model, generated_at, station_count=len(active))
+
+    print(
+        f"Snapshot {'updated' if args.incremental else 'complete'}: "
+        f"{len(dates):,} dates, {len(active):,} active stations, D16 through {dates[-1]}."
+    )
+    if new_dates:
+        print(f"  scored {len(new_dates):,} new date(s): {new_dates[0]} .. {new_dates[-1]}")
+    print(f"  trends cover {len(trend_dates):,} date(s)")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

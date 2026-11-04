@@ -69,9 +69,9 @@
   },
   "8": {
     "24h": {
-      "band": "very_high",
-      "alert_level": "high",
-      "last_alert_at": "2026-10-29T05:51:48.432896+00:00"
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
     },
     "48h": {
       "band": "high",
@@ -698,9 +698,9 @@
   },
   "48": {
     "24h": {
-      "band": "high",
-      "alert_level": "warning",
-      "last_alert_at": "2026-10-29T05:51:48.432896+00:00"
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
     },
     "48h": {
       "band": "high",
@@ -902,9 +902,9 @@
   },
   "60": {
     "24h": {
-      "band": "high",
-      "alert_level": "warning",
-      "last_alert_at": "2026-10-29T05:51:48.432896+00:00"
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
     },
     "48h": {
       "band": "high",
@@ -1004,9 +1004,9 @@
   },
   "66": {
     "24h": {
-      "band": "moderate",
-      "alert_level": "watch",
-      "last_alert_at": "2026-10-29T05:51:48.432896+00:00"
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
     },
     "48h": {
       "band": "low",
@@ -1106,9 +1106,9 @@
   },
   "72": {
     "24h": {
-      "band": "moderate",
-      "alert_level": "watch",
-      "last_alert_at": "2026-10-29T05:51:48.432896+00:00"
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
     },
     "48h": {
       "band": "low",
@@ -1378,9 +1378,9 @@
   },
   "89": {
     "24h": {
-      "band": "very_high",
-      "alert_level": "high",
-      "last_alert_at": "2026-10-29T05:51:48.432896+00:00"
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
     },
     "48h": {
       "band": "high",
@@ -1497,9 +1497,9 @@
   },
   "97": {
     "24h": {
-      "band": "moderate",
-      "alert_level": "watch",
-      "last_alert_at": "2026-10-29T05:51:48.432896+00:00"
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
     },
     "48h": {
       "band": "moderate",
@@ -1531,9 +1531,9 @@
   },
   "99": {
     "24h": {
-      "band": "very_high",
-      "alert_level": "high",
-      "last_alert_at": "2026-10-29T05:51:48.432896+00:00"
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
     },
     "48h": {
       "band": "high",
@@ -1803,9 +1803,9 @@
   },
   "120": {
     "24h": {
-      "band": "very_high",
-      "alert_level": "high",
-      "last_alert_at": "2026-10-29T05:51:48.432896+00:00"
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
     },
     "48h": {
       "band": "high",
@@ -1854,9 +1854,9 @@
   },
   "123": {
     "24h": {
-      "band": "very_high",
-      "alert_level": "high",
-      "last_alert_at": "2026-10-29T05:51:48.432896+00:00"
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
     },
     "48h": {
       "band": "high",
@@ -1867,6 +1867,125 @@
       "band": "high",
       "alert_level": "warning",
       "last_alert_at": "2026-10-29T05:52:15.243765+00:00"
+    }
+  },
+  "124": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "125": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "126": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "127": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "134": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "135": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "136": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "137": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "138": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "139": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "140": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "141": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "142": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "143": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "144": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "145": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    }
+  },
+  "146": {
+    "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
     }
   }
 }

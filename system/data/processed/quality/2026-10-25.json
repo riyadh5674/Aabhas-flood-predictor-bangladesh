@@ -1,0 +1,19 @@
+{
+  "date": "2026-10-25",
+  "rows": 127,
+  "stations": 127,
+  "critical_null_share": {
+    "glofas": 0.0,
+    "soil": 0.0,
+    "interactions": 0.0,
+    "temperature": 0.0
+  },
+  "watch_null_share": {
+    "hydrology": 0.0030284675953967293,
+    "rainfall": 0.0,
+    "upstream": 0.6023622047244095
+  },
+  "all_null_columns": [],
+  "passed": true,
+  "failures": []
+}

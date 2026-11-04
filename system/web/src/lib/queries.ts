@@ -5,9 +5,11 @@ import {
   fetchModelInfo,
   fetchPredictions,
   fetchStationTrend,
+  fetchStationTrendLive,
   STATIC_SNAPSHOT,
   fetchThresholds,
 } from "./api";
+import { DEMO_ENABLED } from "./config";
 import { demoPredictions, demoSeries } from "./demo";
 import { bandFor, FALLBACK_RISK } from "./risk";
 import { loadStations } from "./stations";
@@ -41,13 +43,21 @@ export function useStations() {
   });
 }
 
+/** Health is shared by the status pill, freshness banner and pages. */
 export function useHealth() {
   return useQuery<Health>({
     queryKey: queryKeys.health,
-    queryFn: () => fetchHealth(),
-    refetchInterval: 45_000,
-    retry: false,
-    staleTime: 20_000,
+    queryFn: async () => {
+      const started = performance.now();
+      const health = await fetchHealth();
+      return { ...health, latencyMs: Math.round(performance.now() - started) };
+    },
+    // The feature store changes at most once a day; 5 minutes is plenty and
+    // avoids thousands of health requests from a single open tab.
+    refetchInterval: 5 * 60_000,
+    retry: 2,
+    retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 10_000),
+    staleTime: 60_000,
   });
 }
 
@@ -55,9 +65,10 @@ export function useDates() {
   return useQuery<{ dates: string[] }>({
     queryKey: queryKeys.dates,
     queryFn: () => fetchDates(),
-    retry: 1,
-    refetchInterval: 60_000,
-    staleTime: 5 * 60_000,
+    retry: 2,
+    retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 10_000),
+    refetchInterval: 15 * 60_000,
+    staleTime: 10 * 60_000,
   });
 }
 
@@ -123,14 +134,16 @@ function demoResult(stations: Station[], date: string, horizon: Horizon): Predic
 }
 
 export function usePredictions(date: string, horizon: Horizon, mode: DataMode = "auto") {
+  const effectiveMode = mode === "demo" && DEMO_ENABLED ? "demo" : "auto";
   return useQuery<PredictionResult>({
-    queryKey: [...queryKeys.predictions(date, horizon), mode],
+    queryKey: [...queryKeys.predictions(date, horizon), effectiveMode],
     enabled: Boolean(date),
-    staleTime: 60_000,
-    retry: false,
+    staleTime: 5 * 60_000,
+    retry: 2,
+    retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 8000),
     queryFn: async () => {
       const stations = await loadStations();
-      if (mode === "demo") return demoResult(stations, date, horizon);
+      if (effectiveMode === "demo") return demoResult(stations, date, horizon);
 
       const raw = await fetchPredictions(date, horizon);
       const rows = join(raw.map(toPrediction), stations);
@@ -143,15 +156,17 @@ export function usePredictions(date: string, horizon: Horizon, mode: DataMode = 
 /** Runs the same date across all three horizons in parallel. */
 export function useHorizonSet(date: string, mode: DataMode = "auto") {
   const horizons: Horizon[] = ["24h", "48h", "72h"];
+  const effectiveMode = mode === "demo" && DEMO_ENABLED ? "demo" : "auto";
   const results = useQueries({
     queries: horizons.map((horizon) => ({
-      queryKey: [...queryKeys.predictions(date, horizon), mode],
+      queryKey: [...queryKeys.predictions(date, horizon), effectiveMode],
       enabled: Boolean(date),
-      staleTime: 60_000,
-      retry: false,
+      staleTime: 5 * 60_000,
+      retry: 2,
+      retryDelay: (attempt: number) => Math.min(1000 * 2 ** attempt, 8000),
       queryFn: async (): Promise<PredictionResult> => {
         const stations = await loadStations();
-        if (mode === "demo") return demoResult(stations, date, horizon);
+        if (effectiveMode === "demo") return demoResult(stations, date, horizon);
         const raw = await fetchPredictions(date, horizon);
         const rows = join(raw.map(toPrediction), stations);
         if (!rows.length) throw new Error("The API returned no predictions for this date and horizon.");
@@ -184,11 +199,12 @@ export function useStationTrend(
   return useQuery<{ points: TrendPoint[]; source: "live" | "demo" | "snapshot" }>({
     queryKey: [...queryKeys.trend(station?.id ?? -1, horizon), dates[0], dates.at(-1), mode],
     enabled: Boolean(station && dates.length),
-    staleTime: 5 * 60_000,
-    retry: false,
+    staleTime: 10 * 60_000,
+    retry: 1,
+    retryDelay: (attempt) => Math.min(1000 * attempt, 3000),
     queryFn: async () => {
       if (!station) return { points: [], source: "demo" as const };
-      if (mode === "demo") {
+      if (mode === "demo" && DEMO_ENABLED) {
         return { points: demoSeries(station, dates, horizon), source: "demo" as const };
       }
       if (STATIC_SNAPSHOT) {
@@ -196,6 +212,26 @@ export function useStationTrend(
         const wanted = new Set(dates);
         return { points: trend.points.filter((point) => wanted.has(point.date)), source: "snapshot" as const };
       }
+
+      // Prefer a single batched endpoint on the API. Fall back to the
+      // legacy per-date fan-out if the deployment hasn't been updated yet.
+      try {
+        const trend = await fetchStationTrendLive(station.id, dates, horizon);
+        const wanted = new Set(dates);
+        const points = trend.points
+          .filter((point) => wanted.has(point.date))
+          .map((point) => ({
+            date: point.date,
+            probability: point.probability,
+            band: point.band,
+            action: point.action ?? "",
+            threshold: point.threshold ?? null,
+          }));
+        if (points.length) return { points, source: "live" as const };
+      } catch {
+        /* fall through to legacy path */
+      }
+
       const settled = await Promise.allSettled(dates.map((d) => fetchPredictions(d, horizon)));
       const points: TrendPoint[] = [];
       let failures = 0;

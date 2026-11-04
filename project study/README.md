@@ -36,6 +36,8 @@ honest limitations are stated (not hidden). Numbers come from the frozen artefac
 | 17 | `Phase_30_Error_Analysis.md` | Phase 30 | Where we still miss, and why (response lag). |
 | 18 | `Phase_31_32_Robustness_and_Ablation.md` | Phases 31–32 | Stress tests + which features carry the skill. |
 | 19 | `Phase_33_Selection_and_Frozen_Test.md` | Phase 33 | Pick the champion, open the test **once**. |
+| 20 | `Phase_34_Explainable_AI.md` | Phase 34 | Why does it predict what it predicts? (SHAP). |
+| 21 | `MI7_Fair_DL_Rematch.md` | MI-7 (post-Phase-34 sprint) | Giving deep learning a fair shot — it still loses. |
 
 ---
 
@@ -66,7 +68,16 @@ honest limitations are stated (not hidden). Numbers come from the frozen artefac
 
 ## What comes next (outside this study series)
 
-- **Phase 34 — Explainable AI** (needs `pip install shap`).
+- **Phase 35+ — the system layer**: location-based prediction, risk maps and the live pipeline.
 - **MI-v2 improvement sprint** — a separate, post-freeze effort (ERA5-Land soil moisture, GloFAS
   discharge, NASA POWER soil wetness, hyper-parameter search, probability ensembling) that
   produces `models/final_v2/` without ever re-reading the frozen test.
+- **The MI sprint is now complete (MI-1 → MI-8) and the champion did not change.** MI-7 gave the
+  deep-learning models the *same* engineered features and an equal tuning budget, and they still
+  lost (best fair DL 0.93399 vs `xgboost` 0.95463), so the **deep-learning queue was closed**
+  (`MI7_Fair_DL_Rematch.md`). MI-8 then added 55 engineered columns and a larger search: it
+  improved the *average across all seven development cells* (+0.0016) but **did not beat the
+  champion on the pre-registered decision cell** — no paired confidence interval excluded zero
+  (`reports/mi8_selection.md`). **The champion remains D16, `hpo_perhorizon_FULL_V2`** —
+  0.95743 on development cells, 0.77076 on the frozen test — and that test was **never re-read**
+  by either sprint.

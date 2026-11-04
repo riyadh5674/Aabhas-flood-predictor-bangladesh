@@ -1,6 +1,6 @@
 {
-  "version": "1.0.0",
-  "created": "2026-10-29",
+  "version": "1.1.0",
+  "created": "2026-11-04",
   "description": "Alert / early-warning engine configuration for Bangladesh Flood Predictor",
   "alert_levels": {
     "watch": {
@@ -22,13 +22,38 @@
   },
   "state": {
     "state_file": "system/data/processed/alert_state.json",
-    "alert_log": "system/logs/alerts.csv"
+    "alert_log": "system/logs/alerts.csv",
+    "audit_log": "system/logs/alert_audit.jsonl"
   },
   "horizons": ["24h", "48h", "72h"],
   "monsoon_months": [6, 7, 8, 9],
   "notification": {
     "enabled": false,
-    "channels": ["email", "sms", "dashboard"],
-    "stub": true
+    "channels": ["email", "webhook", "dashboard"],
+    "stub": true,
+    "email": {
+      "smtp_host": "",
+      "smtp_port": 587,
+      "username": "",
+      "password_secret": "smtp-password",
+      "from_address": "",
+      "to_addresses": [],
+      "use_tls": true
+    },
+    "webhook": {
+      "url": "",
+      "secret": "webhook-secret",
+      "timeout_seconds": 10
+    },
+    "dashboard": {
+      "enabled": true
+    }
+  },
+  "approval": {
+    "required": true,
+    "auto_approve_watch": false,
+    "approver_role": "duty_officer",
+    "escalation_timeout_minutes": 30,
+    "escalation_contact": ""
   }
 }

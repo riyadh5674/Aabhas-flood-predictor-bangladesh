@@ -11,9 +11,9 @@ services:
     dockerContext: .
     plan: free
     healthCheckPath: /health
+    # Render injects PORT itself. Do not pin it here: the Dockerfile reads
+    # $PORT, so the platform can choose the port without a rebuild.
     envVars:
-      - key: PORT
-        value: "7860"
       - key: HF_FEATURE_DATASET
         sync: false
       - key: HF_TOKEN
@@ -22,4 +22,16 @@ services:
         value: main
       - key: AABHAS_PREVIEW_MODE
         value: "false"
+      # Public JSON docs are useful for local work but unnecessary in
+      # production; flip to true temporarily when debugging the API.
+      - key: AABHAS_ENABLE_DOCS
+        value: "false"
+      - key: AABHAS_RATE_LIMIT_PER_MINUTE
+        value: "180"
+      - key: AABHAS_RATE_LIMIT_PREDICT_PER_MINUTE
+        value: "60"
+      # Comma-separated browser origins if the SPA is hosted separately.
+      # Same-origin deployments need no value.
+      - key: AABHAS_ALLOWED_ORIGINS
+        sync: false
     autoDeploy: true

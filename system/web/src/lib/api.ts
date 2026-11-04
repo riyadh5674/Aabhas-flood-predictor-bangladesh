@@ -79,10 +79,40 @@ export function fetchModelInfo(opts?: RequestOptions) {
   return getJson<ModelInfo>("/model/info", { timeoutMs: 5000, ...opts });
 }
 
+export interface TrendPayload {
+  points: Array<{
+    date: string;
+    probability: number | null;
+    band: "low" | "moderate" | "high" | "very_high" | "unknown";
+    action?: string;
+    threshold?: number | null;
+  }>;
+}
+
 export function fetchStationTrend(stationId: number, horizon: Horizon, opts?: RequestOptions) {
-  return getStatic<{ points: Array<{ date: string; probability: number | null; band: "low" | "moderate" | "high" | "very_high" | "unknown"; action?: string; threshold?: number | null }> }>(
-    `trends/${horizon}/${stationId}.json`, opts,
-  );
+  return getStatic<TrendPayload>(`trends/${horizon}/${stationId}.json`, opts);
+}
+
+/**
+ * Server-side station history. One request replaces the previous 30-request
+ * fan-out over /predict/all and lets the API reuse its per-date prediction
+ * cache. Older deployments return 404, so callers can fall back safely.
+ */
+export function fetchStationTrendLive(
+  stationId: number,
+  dates: string[],
+  horizon: Horizon,
+  opts?: RequestOptions,
+) {
+  const query = new URLSearchParams({
+    station_id: String(stationId),
+    horizon,
+    dates: dates.join(","),
+  });
+  return getJson<TrendPayload>(`/predict/trend?${query.toString()}`, {
+    timeoutMs: 25_000,
+    ...opts,
+  });
 }
 
 async function getStatic<T>(path: string, opts: RequestOptions = {}): Promise<T> {

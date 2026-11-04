@@ -1,0 +1,91 @@
+# Aabhas Flood Predictor — Flaw Tracker (Updated)
+
+**Generated:** 2026-11-01  
+**Updated:** 2026-11-02  
+**Status:** Production-hardened (API + frontend in this checkout). Static HF Space remains the published demo; the FastAPI deployment path is ready for a Docker-capable host.  
+**Total open items:** 16 (tracked below)
+
+> This tracker reflects the current repo state. Items marked **Resolved** were fixed in this working tree (API middleware, security headers, rate limiting, freshness banner, ErrorBoundary, PWA/offline shell, trend endpoint, demo gating, tests, path portability).
+
+---
+
+## Legend
+| Priority | Meaning | SLA |
+|----------|---------|-----|
+| **P0** | Blocks production / security / data integrity | Fix immediately |
+| **P1** | Major UX/ops gap, degrades reliability | Fix this sprint |
+| **P2** | Technical debt, maintainability, performance | Fix next sprint |
+| **P3** | Polish, nice-to-have, future-proofing | Fix when capacity |
+
+---
+
+## Resolved (in this checkout)
+| ID | Area | Resolution |
+|---|------|------------|
+| R-01 | API hardening | Security headers on all responses (incl. 401/429), CSP (non-docs), HSTS behind `X-Forwarded-Proto=https`, request IDs, Server-Timing, gzip, CORS allow-list via `AABHAS_ALLOWED_ORIGINS`. |
+| R-02 | Rate limiting / DoS | Sliding-window limiter (general + `/predict`), `/health` excluded, `X-RateLimit-*`, `Retry-After` on 429, bounded buckets, toggle via `AABHAS_RATE_LIMIT_DISABLED`. |
+| R-03 | Path normalization | `/api/*` stripped before routing (same-origin proxy/ingress friendly). |
+| R-04 | Crash safety | `ErrorBoundary` wrapping app, chunk-load auto-reload, safe DatePicker, safe date parsing/formatting. |
+| R-05 | Freshness visibility | `DataFreshnessBanner`, `freshness.ts` policy (current/aging/stale/expired/unknown), health polling centralized via `useHealth()`, production/demo config. |
+| R-06 | Demo leakage prevention | `DEMO_ENABLED` build-time flag (dev or `VITE_AABHAS_ALLOW_DEMO=true`), stale localStorage `demo` mode reset to `auto` in prod, demo banner unmissable. |
+| R-07 | Trend performance | Batched `/predict/trend` (dates list, max 60), legacy per-date fallback, caching in inference. |
+| R-08 | PWA/offline | Service worker (offline shell, cache-first assets, network-first data/shell), manifest, PWA registration (prod only). |
+| R-09 | Portability | Hardcoded `D:\Flood predictor` roots replaced with `AABHAS_ROOT`/file-relative paths across ingestion/features/ops/alerts/map/ui/backtest; `sys.executable` used in pipeline. |
+| R-10 | Tests | `vitest` + 21 tests (`freshness`, `risk`, `format`, `aggregate`). `npm run typecheck` and `npm run build` pass. |
+| R-11 | Stations resilience | Safe loading, error states in StationDetail; snapshot/static builds use precomputed data. |
+| R-12 | Query tuning | Backoff on retries, reasonable intervals, cache keys include horizon/date/mode. |
+
+---
+
+## Open Items
+
+### P0 — Still requires external action/config
+| ID | Area | Issue | Fix |
+|---|------|-------|-----|
+| O-01 | Data freshness (live) | Live Render currently behind (`2026-10-30`); local has `2026-11-01`. Snapshot Space also lags until rebuilt. | Run daily pipeline (`system/ops/daily_pipeline.py`) → upload features to HF → rebuild snapshot → redeploy (GitHub Actions workflow_dispatch or local). Needs HF secrets and external data sources. |
+| O-02 | Automated refresh | No scheduled ingestion→HF→deploy pipeline in repo. | Add scheduled GitHub Action (cron) with secrets, runbook, failure alerts. Document in DEPLOYMENT.md/README. |
+| O-03 | AuthZ (optional) | Public API has no auth; mitigated by rate limiting + single-instance deployment. | If exposed publicly beyond same-origin, add API key/JWT and admin auth. Not required for same-origin static+API behind proxy. |
+
+### P1
+| ID | Area | Issue | Fix |
+|---|------|-------|-----|
+| P1-01 | Map performance | Large SVG, re-renders on interaction. | Memoize `MapRegion`/`MapStation`, throttle pan/zoom, consider virtualization for station list. |
+| P1-02 | Bundle size | ~180 KB gz (motion/d3). | Lazy-load map, trim deps or replace heavy utilities where possible. Target < 100 KB gz on 3G. |
+| P1-03 | Accessibility | Map roles/aria, chart summaries, focus management. | Add ARIA labels/pressed states, keyboard nav improvements, pattern/icon for colorblind users. |
+| P1-04 | StationDetail UX | Some empty states could be clearer; trend gaps now handled. | Polish copy and ensure all error paths show retry actions. |
+
+### P2
+| ID | Area | Issue | Fix |
+|---|------|-------|-----|
+| P2-01 | State complexity | `AppProvider` is large. | Split contexts (Theme/I18n/DateHorizon/DataMode). |
+| P2-02 | Component decomposition | `BangladeshMap`, `StationDetail`, `AppShell` do too much. | Extract hooks/components, add `React.memo`. |
+| P2-03 | List virtualization | 141 stations rendered. | Virtualize sidebar/list on low-end devices. |
+| P2-04 | Design tokens | Incomplete CSS variables. | Complete token system and dark mode map tokens. |
+| P2-05 | Component docs | UI primitives undocumented. | Add Storybook or inline docs. |
+
+### P3
+| ID | Area | Issue | Fix |
+|---|------|-------|-----|
+| P3-01 | i18n polish | Bengali typography/line height. | Tune font stack and line-height for `lang="bn"`. |
+| P3-02 | Keyboard discoverability | Shortcuts exist but undiscoverable. | Add shortcut hint/tooltip. |
+| P3-03 | Analytics/telemetry | None. | Privacy-friendly opt-in telemetry if needed. |
+| P3-04 | Visual regression | No screenshot tests. | Add Playwright snapshots for key pages. |
+| P3-05 | PWA icons | Basic icons only. | Generate maskable icons and complete manifest. |
+
+---
+
+## Quick Verification
+```powershell
+# API
+curl http://127.0.0.1:8765/health
+curl "http://127.0.0.1:8765/predict/trend?station_id=1&dates=2026-10-25,2026-11-01"
+curl -i -X GET "http://127.0.0.1:8765/predict/all?date=2026-11-01"  # check 429 after burst
+
+# Frontend
+cd system/web
+npm run typecheck
+npm run test
+npm run build
+```
+
+**Note:** The app is explicitly labeled as research/prototype and not an official warning service. Disclaimers are preserved in UI and docs.

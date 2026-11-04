@@ -8,9 +8,12 @@ All feature names must match models/final_v2/final_config_v2.json exactly.
 """
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
-ROOT = Path(r"D:\Flood predictor")
+# Keep this module portable: the same code runs in the Windows development
+# checkout, GitHub Actions, and the Render container.
+ROOT = Path(os.getenv("AABHAS_ROOT", Path(__file__).resolve().parents[2])).resolve()
 SYSTEM = ROOT / "system"
 
 # ---- Input paths (raw data ingested by Step 2) ----

@@ -33,6 +33,18 @@ from huggingface_hub import HfApi, create_repo
 DEFAULT_PREFIX = "data/train"
 
 
+def resolve_token(value: str | None) -> str | None:
+    """Return an explicit token, else the cached Hugging Face login token."""
+    if value:
+        return value
+    try:
+        from huggingface_hub import get_token
+
+        return get_token()
+    except Exception:
+        return None
+
+
 def find_feature_partitions(feature_store: Path) -> list[Path]:
     """Find all date=YYYY-MM-DD/data.parquet files."""
     return sorted(feature_store.glob("date=*/data.parquet"))
@@ -139,8 +151,9 @@ def main() -> int:
         print("❌ Dataset ID required. Set --dataset or HF_FEATURE_DATASET env var.")
         return 1
 
+    args.token = resolve_token(args.token)
     if not args.token:
-        print("❌ HF token required. Set --token or HF_TOKEN env var.")
+        print("❌ HF token required. Set --token, HF_TOKEN, or run `hf auth login`.")
         return 1
 
     # Find partitions

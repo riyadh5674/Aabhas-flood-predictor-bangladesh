@@ -7,6 +7,7 @@ import { cn } from "@/lib/cn";
 import { useApp } from "@/state/AppProvider";
 import { BackgroundFX } from "./BackgroundFX";
 import { ContextBar } from "./ContextBar";
+import { DataFreshnessBanner } from "./DataFreshnessBanner";
 import { Footer } from "./Footer";
 import { MobileNav } from "./MobileNav";
 import { Sidebar } from "./Sidebar";
@@ -116,6 +117,7 @@ export function AppShell() {
         ) : null}
         <TopBar />
         <ContextBar />
+        <DataFreshnessBanner />
         <main className="mx-auto w-full max-w-[1500px] px-4 pb-8 pt-6 sm:px-6">
           <AnimatePresence mode="wait" initial={false}>
             <motion.div

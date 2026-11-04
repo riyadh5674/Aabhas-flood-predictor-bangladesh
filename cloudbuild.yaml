@@ -1,0 +1,52 @@
+# Cloud Run Job deployment for Aabhas Daily Pipeline
+# Usage: gcloud builds submit --config cloudbuild.yaml --project=YOUR_PROJECT_ID
+
+steps:
+  # Build the pipeline image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/aabhas-pipeline', '-f', 'Dockerfile.pipeline', '.']
+    id: 'build-pipeline'
+
+  # Push the image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/aabhas-pipeline']
+    id: 'push-pipeline'
+
+  # Create or update the Cloud Run Job
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
+    entrypoint: 'gcloud'
+    args:
+      - 'run'
+      - 'jobs'
+      - 'deploy'
+      - 'aabhas-daily-pipeline'
+      - '--image=gcr.io/$PROJECT_ID/aabhas-pipeline'
+      - '--region=asia-south1'
+      - '--service-account=aabhas-pipeline@$PROJECT_ID.iam.gserviceaccount.com'
+      - '--memory=2Gi'
+      - '--cpu=2'
+      - '--max-retries=3'
+      - '--task-timeout=3600'
+      - '--set-env-vars=HF_FEATURE_DATASET=YOUR_HF_DATASET,HF_TOKEN=YOUR_HF_TOKEN,AABHAS_ROOT=/app,AABHAS_PYTHON=python'
+      - '--set-secrets=HF_TOKEN=hf-token:latest'
+    id: 'deploy-job'
+
+  # Create or update the Cloud Scheduler job (runs daily at 04:30 UTC = 10:30 Asia/Dhaka)
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
+    entrypoint: 'gcloud'
+    args:
+      - 'scheduler'
+      - 'jobs'
+      - 'create'
+      - 'http'
+      - 'aabhas-daily-pipeline-trigger'
+      - '--schedule=30 4 * * *'
+      - '--time-zone=UTC'
+      - '--uri=https://${REGION}-run.googleapis.com/apis/run.googleapis.com/v1/namespaces/${PROJECT_ID}/jobs/aabhas-daily-pipeline:run'
+      - '--http-method=POST'
+      - '--oauth-service-account-email=aabhas-scheduler@$PROJECT_ID.iam.gserviceaccount.com'
+      - '--location=asia-south1'
+    id: 'create-scheduler'
+
+options:
+  logging: CLOUD_LOGGING_ONLY

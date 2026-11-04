@@ -44,12 +44,18 @@ COPY . .
 # Copy built frontend from builder stage
 COPY --from=frontend-builder /app/web/dist ./system/web/dist
 
-# Render.com expects the app on port 7860 (or PORT env var)
+# Render.com injects $PORT; 7860 is the local/HF Spaces default.
 ENV PORT=7860
 ENV HF_HOME=/app/.cache/huggingface
+ENV PYTHONUNBUFFERED=1
+ENV HF_HUB_DISABLE_TELEMETRY=1
 
-# Expose port
+# Expose the default port (the actual port comes from $PORT at runtime).
 EXPOSE 7860
 
-# Start the FastAPI app with uvicorn
-CMD ["uvicorn", "system.api.app:app", "--host", "0.0.0.0", "--port", "7860"]
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+    CMD curl -fsS "http://localhost:${PORT:-7860}/health" || exit 1
+
+# The shell is required so ${PORT} is expanded at container start. `exec`
+# keeps uvicorn as PID 1 so it receives Render's SIGTERM for graceful shutdown.
+CMD ["sh", "-c", "exec uvicorn system.api.app:app --host 0.0.0.0 --port ${PORT:-7860} --proxy-headers --forwarded-allow-ips='*'"]

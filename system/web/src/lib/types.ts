@@ -61,6 +61,8 @@ export interface Health {
   feature_store_dates: number;
   latest_feature_date: string | null;
   timestamp: string;
+  /** Round-trip time measured by the client, if it performed the request. */
+  latencyMs?: number;
 }
 
 export interface ThresholdRow {

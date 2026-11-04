@@ -1,0 +1,15 @@
+{
+  "source": "NASA POWER / MERRA-2",
+  "url": "https://power.larc.nasa.gov/api/temporal/daily/point",
+  "params": "GWETTOP,GWETROOT,GWETPROF",
+  "start": "2013-01-01",
+  "end": "2026-11-01",
+  "valid_end": "2026-11-01",
+  "requested_end": "20261103",
+  "updated_at": "2026-11-04T11:17:26.890587+00:00",
+  "stations": 153,
+  "rows": 773109,
+  "null_top": 0,
+  "output": "D:\\Flood predictor\\data\\raw\\power_soil\\power_soil_daily.csv",
+  "sha256": "073b247becca033a1893d5f2caaeec19579ac423f8afe45bed8f0ca1f4d2e49a"
+}

@@ -1,0 +1,123 @@
+{
+  "patna_ganges": {
+    "lat": 25.59,
+    "lon": 85.34,
+    "max_scan_discharge": 41685.93,
+    "role": "upstream",
+    "basin": "Ganges",
+    "nominal": [
+      25.59,
+      85.14
+    ]
+  },
+  "farakka_ganges": {
+    "lat": 24.6,
+    "lon": 88.13,
+    "max_scan_discharge": 50233.29,
+    "role": "upstream",
+    "basin": "Ganges",
+    "nominal": [
+      24.8,
+      87.93
+    ]
+  },
+  "chisapani_karnali": {
+    "lat": 28.85,
+    "lon": 81.15,
+    "max_scan_discharge": 4942.11,
+    "role": "upstream",
+    "basin": "Ganges",
+    "nominal": [
+      28.65,
+      81.25
+    ]
+  },
+  "bhimnagar_kosi": {
+    "lat": 26.28,
+    "lon": 87.47,
+    "max_scan_discharge": 183.93,
+    "role": "upstream",
+    "basin": "Ganges",
+    "nominal": [
+      26.48,
+      87.27
+    ]
+  },
+  "dibrugarh_brah": {
+    "lat": 27.58,
+    "lon": 94.8,
+    "max_scan_discharge": 31549.05,
+    "role": "upstream",
+    "basin": "Brahmaputra",
+    "nominal": [
+      27.48,
+      94.9
+    ]
+  },
+  "tezpur_brah": {
+    "lat": 26.63,
+    "lon": 92.7,
+    "max_scan_discharge": 52118.48,
+    "role": "upstream",
+    "basin": "Brahmaputra",
+    "nominal": [
+      26.63,
+      92.8
+    ]
+  },
+  "silchar_barak": {
+    "lat": 24.82,
+    "lon": 92.59,
+    "max_scan_discharge": 3403.08,
+    "role": "upstream",
+    "basin": "Meghna",
+    "nominal": [
+      24.82,
+      92.79
+    ]
+  },
+  "teesta_in": {
+    "lat": 26.3,
+    "lon": 88.9,
+    "max_scan_discharge": 4612.18,
+    "role": "upstream",
+    "basin": "Brahmaputra",
+    "nominal": [
+      26.3,
+      88.7
+    ]
+  },
+  "bahadurabad_brah": {
+    "lat": 24.98,
+    "lon": 89.57,
+    "max_scan_discharge": 90363.91,
+    "role": "in_country",
+    "basin": "Brahmaputra",
+    "nominal": [
+      25.18,
+      89.67
+    ]
+  },
+  "hardinge_ganges": {
+    "lat": 23.97,
+    "lon": 89.03,
+    "max_scan_discharge": 50932.06,
+    "role": "in_country",
+    "basin": "Ganges",
+    "nominal": [
+      24.07,
+      89.03
+    ]
+  },
+  "bhairab_meghna": {
+    "lat": 23.95,
+    "lon": 90.88,
+    "max_scan_discharge": 12132.89,
+    "role": "in_country",
+    "basin": "Meghna",
+    "nominal": [
+      24.05,
+      90.98
+    ]
+  }
+}

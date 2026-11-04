@@ -4,14 +4,15 @@
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Research](https://img.shields.io/badge/status-research--complete-brightgreen.svg)](reports/phase43_final_evaluation.md)
 [![Model](https://img.shields.io/badge/model-D16%20frozen-orange.svg)](models/final_v2/)
-[![Deploy](https://img.shields.io/badge/deploy-HF%20Static%20Space-purple.svg)](https://riyadhuggy-aabhas-flood-outlook.static.hf.space)
+[![Deploy](https://img.shields.io/badge/deploy-Render-purple.svg)](https://aabhas-flood-predictor.onrender.com)
 
 **Station-level 24/48/72-hour probabilistic flood outlook for Bangladesh**, built on a leakage-aware ML pipeline with rigorous temporal/spatial validation and a frozen production model (D16).
 
-**Live app (static snapshot):** https://riyadhuggy-aabhas-flood-outlook.static.hf.space  
-**Live API (optional):** Deployable via FastAPI — see [DEPLOYMENT.md](DEPLOYMENT.md)
+**Live app + API:** https://aabhas-flood-predictor.onrender.com  
+**Static snapshot (demo):** https://riyadhuggy-aabhas-flood-outlook.static.hf.space  
+**Deployment runbook:** [DEPLOYMENT.md](DEPLOYMENT.md)
 
-> ⚠️ The public site is a **static snapshot**: precomputed forecasts for 2,611 dates through 2026-10-30, frozen D16 model, 141 stations. It is **not real-time** and **not an official flood warning** — always follow FFWC advisories.
+> ⚠️ Aabhas is a research prototype, **not an official flood warning service**. The live app serves model output from the latest published feature date; the in-app freshness banner and `/health` show exactly how old that is. Always follow FFWC advisories.
 
 ---
 
@@ -20,7 +21,8 @@
 | Document | Description |
 |---|---|
 | [README.md](README.md) | This file — project overview & quick start |
-| [DEPLOYMENT.md](DEPLOYMENT.md) | Architecture, runbook, CI/CD, troubleshooting |
+| [DEPLOYMENT.md](DEPLOYMENT.md) | Architecture, runbook, CI/CD, daily refresh, troubleshooting |
+| [FLAWS.md](FLAWS.md) | Current hardening status, resolved issues, remaining risks |
 | [REPRODUCE.md](REPRODUCE.md) | Paper reproduction levels A–E, freeze verification |
 | [final workflow.md](final workflow.md) | Complete 45-phase research workflow (APPROVED) |
 | [Phase 43 — Final Evaluation](reports/phase43_final_evaluation.md) | Scientific validity assessment (data, model, prediction, explainability, system) |
@@ -44,6 +46,7 @@ flood-predictor/
 │   ├── web/                  # React + Vite frontend
 │   ├── config/               # model_config.json, alert_config.json, ingestion_config.json
 │   ├── deploy/               # Static snapshot builder + HF Space publisher
+│   ├── ops/                  # Daily pipeline, refresh/publish, scheduler
 │   ├── ingestion/            # FFWC, Open-Meteo, GloFAS, ERA5, ESA WorldCover ingest
 │   ├── features/             # Feature engineering pipeline
 │   ├── map/                  # Choropleth risk map generator
@@ -61,22 +64,23 @@ flood-predictor/
 
 ## 🚀 Quick Start
 
+### Web app (live API mode — production behaviour)
+```powershell
+# Terminal 1: Start API (reads local feature partitions or HF_FEATURE_DATASET)
+.\.venv\Scripts\python.exe -m system.api.run_api --port 8000
+
+# Terminal 2: Start frontend
+cd system\web
+npm ci
+$env:VITE_API_BASE="http://127.0.0.1:8000"
+npm run dev
+```
+
 ### Web app (static snapshot — no API needed)
 ```powershell
 cd system\web
 npm ci
 $env:VITE_AABHAS_STATIC_SNAPSHOT="true"
-npm run dev
-```
-
-### Web app (live API mode)
-```powershell
-# Terminal 1: Start API
-.venv\Scripts\python.exe -m system.api.run_api
-
-# Terminal 2: Start frontend
-cd system\web
-$env:VITE_API_BASE="http://127.0.0.1:8000"
 npm run dev
 ```
 
@@ -103,22 +107,36 @@ py -3.13 -m venv .venv
 
 ## 🏭 Deploying
 
-### Production (Static HF Space — free)
+### Production (Render — single container, live API)
+`render.yaml` + `Dockerfile` deploy the FastAPI service and compiled SPA
+together. See [DEPLOYMENT.md](DEPLOYMENT.md#-render-deployment) for the
+blueprint, environment variables, and verification commands.
+
+### Data refresh (automatic)
 ```powershell
-.venv\Scripts\python.exe system\deploy\build_static_snapshot.py
+# Local/manual: ingestion → features → HF feature-store upload
+.\.venv\Scripts\python.exe system\ops\refresh_and_publish.py --catchup --push-raw
+
+# Windows Task Scheduler (daily 06:00)
+powershell -ExecutionPolicy Bypass -File system\ops\register_daily_task.ps1
+```
+`.github/workflows/refresh.yml` provides the same flow on a daily GitHub
+Actions schedule; see the runbook for required secrets.
+
+### Static snapshot (optional public demo)
+```powershell
+.\.venv\Scripts\python.exe system\deploy\build_static_snapshot.py
 cd system\web
 $env:VITE_AABHAS_STATIC_SNAPSHOT="true"
 npm run build
 cd ..\..
-.venv\Scripts\python.exe scripts\deploy_static_space.py
+.\.venv\Scripts\python.exe scripts\deploy_static_space.py
 ```
 
-### Dynamic API (your own host)
-See [DEPLOYMENT.md](DEPLOYMENT.md) for:
-- Docker Compose (local)
-- PythonAnywhere (free tier, no credit card)
-- Render / Fly.io / Cloud Run
-- CI/CD via GitHub Actions (`.github/workflows/deploy.yml`)
+### Dynamic API on another host
+See [DEPLOYMENT.md](DEPLOYMENT.md) for Docker Compose, Render, and other
+Docker-capable hosts. Set `VITE_API_BASE` and build **without**
+`VITE_AABHAS_STATIC_SNAPSHOT`.
 
 ---
 

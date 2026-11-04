@@ -11,6 +11,7 @@ Usage:
 from __future__ import annotations
 
 import json
+import os
 import sys
 from datetime import date
 from pathlib import Path
@@ -21,8 +22,8 @@ import pandas as pd
 import requests
 import urllib.request
 
-API_BASE = "http://localhost:8000"
-ROOT = Path(r"D:\Flood predictor")
+API_BASE = os.getenv("AABHAS_API_BASE", "http://localhost:8000")
+ROOT = Path(os.getenv("AABHAS_ROOT", Path(__file__).resolve().parents[1])).resolve()
 
 
 def api_get(path, params=None, timeout=30):

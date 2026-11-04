@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import html as ihtml
 import json
+import os
 import sys
 from datetime import date, timedelta
 from pathlib import Path
@@ -22,8 +23,8 @@ import plotly.graph_objects as go
 import streamlit as st
 import requests
 
-API_BASE = "http://localhost:8000"
-ROOT = Path(r"D:\Flood predictor")
+API_BASE = os.getenv("AABHAS_API_BASE", "http://localhost:8000")
+ROOT = Path(os.getenv("AABHAS_ROOT", Path(__file__).resolve().parents[2])).resolve()
 
 APP_NAME = "FloodGuard Bangladesh"
 APP_TAGLINE = "Flood risk forecasting for Bangladesh — powered by D16"

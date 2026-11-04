@@ -1,0 +1,137 @@
+name: Daily data refresh
+
+# Pulls the raw-input bundle from HF, runs ingestion + feature build, uploads
+# the new feature partition, and optionally triggers/verifies the Render
+# deployment. Enable it once by creating the repository variable
+# AABHAS_REFRESH_ENABLED=true (Settings -> Secrets and variables -> Actions ->
+# Variables) and the secrets listed in DEPLOYMENT.md.
+
+on:
+  schedule:
+    # 04:30 UTC = 10:30 Asia/Dhaka, after FFWC publishes the previous day.
+    - cron: "30 4 * * *"
+  workflow_dispatch:
+    inputs:
+      date:
+        description: "Single date to process (YYYY-MM-DD). Leave blank for a 30-day catch-up."
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: aabhas-daily-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    name: Ingest, publish features, verify deployment
+    if: github.event_name == 'workflow_dispatch' || vars.AABHAS_REFRESH_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      HF_TOKEN: ${{ secrets.HF_TOKEN }}
+      HF_FEATURE_DATASET: ${{ secrets.HF_FEATURE_DATASET }}
+      HF_RAW_DATASET: ${{ secrets.HF_RAW_DATASET }}
+      RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
+      AABHAS_HEALTH_URL: ${{ vars.AABHAS_HEALTH_URL || 'https://aabhas-flood-predictor.onrender.com/health' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+
+      - name: Install pipeline dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-api.txt
+
+      - name: Validate refresh secrets
+        run: |
+          missing=0
+          for name in HF_TOKEN HF_FEATURE_DATASET HF_RAW_DATASET; do
+            if [ -z "${!name:-}" ]; then
+              echo "::error::$name secret is not set"
+              missing=1
+            fi
+          done
+          if [ "$missing" -ne 0 ]; then
+            echo "See DEPLOYMENT.md -> 'Automated daily refresh' for setup."
+            exit 1
+          fi
+
+      - name: Refresh data and publish
+        run: |
+          args=(--pull-raw --push-raw)
+          if [ -n "${RENDER_DEPLOY_HOOK:-}" ]; then
+            args+=(--deploy-hook)
+          fi
+          if [ -n "${{ inputs.date }}" ]; then
+            args+=(--date "${{ inputs.date }}")
+          else
+            args+=(--catchup)
+          fi
+          echo "Running: python system/ops/refresh_and_publish.py ${args[*]}"
+          python system/ops/refresh_and_publish.py "${args[@]}"
+
+      - name: Report freshness
+        if: success()
+        run: |
+          python - <<'PY'
+          import json
+          import urllib.request
+          from pathlib import Path
+
+          store = Path("system/data/processed/model_ready")
+          dates = sorted(p.name.split("=", 1)[1] for p in store.glob("date=*") if p.is_dir())
+          print(f"Feature partitions: {len(dates)} (latest {dates[-1] if dates else 'none'})")
+
+          url = "https://aabhas-flood-predictor.onrender.com/health"
+          try:
+              with urllib.request.urlopen(url, timeout=30) as response:
+                  health = json.loads(response.read().decode())
+              print(json.dumps(health, indent=2))
+              print(f"::notice::Live latest_feature_date={health.get('latest_feature_date')} age_days={health.get('latest_feature_age_days')}")
+          except Exception as exc:
+              print(f"::warning::Could not read live health: {exc}")
+          PY
+
+      - name: Open or update failure issue
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = "Daily data refresh failed";
+            const body = [
+              `The scheduled refresh failed on ${new Date().toISOString()}.`,
+              "",
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              "",
+              "Check the run log for the failing step. Common causes: FFWC/Open-Meteo outage, expired HF token, or missing repository secrets.",
+            ].join("\n");
+            const open = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: "open",
+              per_page: 100,
+            });
+            const existing = open.data.find((issue) => issue.title === title);
+            if (existing) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existing.number,
+                body,
+              });
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title,
+                body,
+              });
+            }

@@ -1,0 +1,30 @@
+# Pipeline Dockerfile for Aabhas Flood Predictor
+# Runs the daily data pipeline (ingestion + features + quality gate)
+
+FROM python:3.13-slim
+
+# System dependencies for LightGBM/XGBoost and parquet
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libgomp1 \
+    libstdc++6 \
+    curl \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Copy requirements first for better layer caching
+COPY requirements-api.txt .
+RUN pip install --no-cache-dir -r requirements-api.txt
+
+# Install huggingface_hub for feature store access
+RUN pip install --no-cache-dir huggingface_hub==0.26.2
+
+# Copy the entire project
+COPY . .
+
+# Create directories for data and logs
+RUN mkdir -p /app/system/data/processed /app/system/logs
+
+# Default command runs the daily pipeline catchup
+CMD ["python", "system/ops/daily_pipeline.py", "--catchup"]

@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 import time
 from pathlib import Path
@@ -31,7 +32,7 @@ from system.ingestion.provenance import ProvenanceManifest
 
 sys.stdout.reconfigure(encoding="utf-8")
 
-ROOT = Path(r"D:\Flood predictor")
+ROOT = Path(os.getenv("AABHAS_ROOT", Path(__file__).resolve().parents[2])).resolve()
 CONFIG = json.loads((ROOT / "system" / "config" / "ingestion_config.json").read_text(encoding="utf-8"))
 RAIN_CFG = CONFIG["rainfall"]
 NASA_CFG = RAIN_CFG["nasa_power"]

@@ -1,0 +1,14 @@
+{
+  "requested_end": "2026-11-20",
+  "checked_at": "2026-11-04T04:55:43.742409+00:00",
+  "sources": {
+    "glofas": {
+      "status": "stale",
+      "last_date": "2026-11-03",
+      "lag_days": 17,
+      "max_lag_days": 2,
+      "critical": true
+    }
+  },
+  "ok": false
+}

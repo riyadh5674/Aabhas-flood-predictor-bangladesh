@@ -88,6 +88,43 @@ def add_soil_moisture_features(df: pd.DataFrame, sm: pd.DataFrame) -> pd.DataFra
         return df
 
     sm = sm.sort_values(["station_id", "date"]).copy()
+
+    # NASA POWER publishes with a ~3-day lag. Carry each station's last observed
+    # value forward to the feature date so the model receives a defined "latest
+    # available soil" reading instead of nulls. Interior gaps are not filled; only
+    # the tail is extended. The source date is recorded in the quality report so
+    # consumers can see how stale the reading is.
+    target_max = pd.to_datetime(df["date"]).max()
+    tail_rows = []
+    carried = 0
+    for sid, grp in sm.groupby("station_id"):
+        valid = grp.dropna(
+            subset=["ps_wet_top", "ps_wet_root", "ps_wet_prof"], how="all"
+        )
+        if valid.empty:
+            continue
+        last = valid.sort_values("date").iloc[-1]
+        if last["date"] >= target_max:
+            continue
+        dates = pd.date_range(
+            last["date"] + pd.Timedelta(days=1), target_max, freq="D"
+        )
+        if len(dates) == 0:
+            continue
+        block = pd.DataFrame({"station_id": sid, "date": dates})
+        for c in ("ps_wet_top", "ps_wet_root", "ps_wet_prof"):
+            block[c] = last[c]
+        tail_rows.append(block)
+        carried += 1
+    if tail_rows:
+        sm = pd.concat([sm, *tail_rows], ignore_index=True).sort_values(
+            ["station_id", "date"]
+        )
+        print(
+            f"soil: carried last observed value forward for {carried} station(s) "
+            f"to {target_max.date()}"
+        )
+
     g = sm.groupby("station_id")
 
     for c in ("ps_wet_top", "ps_wet_root", "ps_wet_prof"):
