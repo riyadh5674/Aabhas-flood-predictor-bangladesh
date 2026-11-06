@@ -5054,6 +5054,8 @@ bahadurabad_brah,2026-10-31,6308.57,6308.57,in_country,Brahmaputra
 bahadurabad_brah,2026-11-01,6066.36,6080.35,in_country,Brahmaputra
 bahadurabad_brah,2026-11-02,5860.38,5873.89,in_country,Brahmaputra
 bahadurabad_brah,2026-11-03,5740.17,5740.17,in_country,Brahmaputra
+bahadurabad_brah,2026-11-04,5687.53,5687.53,in_country,Brahmaputra
+bahadurabad_brah,2026-11-05,5648.37,5648.37,in_country,Brahmaputra
 bhairab_meghna,2013-01-01,1913.26,1913.26,in_country,Meghna
 bhairab_meghna,2013-01-02,1895.71,1895.71,in_country,Meghna
 bhairab_meghna,2013-01-03,1882.65,1882.65,in_country,Meghna
@@ -10109,6 +10111,8 @@ bhairab_meghna,2026-10-31,3053.92,3053.92,in_country,Meghna
 bhairab_meghna,2026-11-01,3018.95,3025.91,in_country,Meghna
 bhairab_meghna,2026-11-02,2977.52,2977.52,in_country,Meghna
 bhairab_meghna,2026-11-03,2943.42,2943.42,in_country,Meghna
+bhairab_meghna,2026-11-04,2896.34,2896.34,in_country,Meghna
+bhairab_meghna,2026-11-05,2850.02,2850.02,in_country,Meghna
 bhimnagar_kosi,2013-01-01,10.32,10.32,upstream,Ganges
 bhimnagar_kosi,2013-01-02,10.32,10.32,upstream,Ganges
 bhimnagar_kosi,2013-01-03,10.32,10.32,upstream,Ganges
@@ -15164,6 +15168,8 @@ bhimnagar_kosi,2026-10-31,21.08,23.04,upstream,Ganges
 bhimnagar_kosi,2026-11-01,21.96,25.0,upstream,Ganges
 bhimnagar_kosi,2026-11-02,23.6,23.72,upstream,Ganges
 bhimnagar_kosi,2026-11-03,22.12,22.12,upstream,Ganges
+bhimnagar_kosi,2026-11-04,21.03,21.03,upstream,Ganges
+bhimnagar_kosi,2026-11-05,19.99,19.99,upstream,Ganges
 chisapani_karnali,2013-01-01,209.86,209.86,upstream,Ganges
 chisapani_karnali,2013-01-02,208.89,208.89,upstream,Ganges
 chisapani_karnali,2013-01-03,207.45,207.45,upstream,Ganges
@@ -20219,6 +20225,8 @@ chisapani_karnali,2026-10-31,673.53,675.08,upstream,Ganges
 chisapani_karnali,2026-11-01,671.98,1024.65,upstream,Ganges
 chisapani_karnali,2026-11-02,708.58,740.31,upstream,Ganges
 chisapani_karnali,2026-11-03,769.9,771.68,upstream,Ganges
+chisapani_karnali,2026-11-04,754.09,754.09,upstream,Ganges
+chisapani_karnali,2026-11-05,726.78,726.78,upstream,Ganges
 dibrugarh_brah,2013-01-01,1598.56,1598.56,upstream,Brahmaputra
 dibrugarh_brah,2013-01-02,1576.61,1576.61,upstream,Brahmaputra
 dibrugarh_brah,2013-01-03,1558.55,1558.55,upstream,Brahmaputra
@@ -25274,6 +25282,8 @@ dibrugarh_brah,2026-10-31,2641.41,2641.41,upstream,Brahmaputra
 dibrugarh_brah,2026-11-01,2563.48,2563.48,upstream,Brahmaputra
 dibrugarh_brah,2026-11-02,2493.6,2505.11,upstream,Brahmaputra
 dibrugarh_brah,2026-11-03,2448.06,2465.04,upstream,Brahmaputra
+dibrugarh_brah,2026-11-04,2575.32,2709.19,upstream,Brahmaputra
+dibrugarh_brah,2026-11-05,2923.15,3039.89,upstream,Brahmaputra
 farakka_ganges,2013-01-01,2734.27,2734.27,upstream,Ganges
 farakka_ganges,2013-01-02,2727.98,2727.98,upstream,Ganges
 farakka_ganges,2013-01-03,2715.44,2715.44,upstream,Ganges
@@ -30329,6 +30339,8 @@ farakka_ganges,2026-10-31,10838.27,10863.25,upstream,Ganges
 farakka_ganges,2026-11-01,10326.61,10374.28,upstream,Ganges
 farakka_ganges,2026-11-02,9861.79,9861.79,upstream,Ganges
 farakka_ganges,2026-11-03,9548.93,9548.93,upstream,Ganges
+farakka_ganges,2026-11-04,9726.47,9726.47,upstream,Ganges
+farakka_ganges,2026-11-05,9999.0,9999.0,upstream,Ganges
 hardinge_ganges,2013-01-01,2810.9,2810.9,in_country,Ganges
 hardinge_ganges,2013-01-02,2797.98,2797.98,in_country,Ganges
 hardinge_ganges,2013-01-03,2785.12,2785.12,in_country,Ganges
@@ -35384,6 +35396,8 @@ hardinge_ganges,2026-10-31,11427.79,11427.79,in_country,Ganges
 hardinge_ganges,2026-11-01,10888.31,10888.31,in_country,Ganges
 hardinge_ganges,2026-11-02,10398.21,10398.21,in_country,Ganges
 hardinge_ganges,2026-11-03,9930.16,9930.16,in_country,Ganges
+hardinge_ganges,2026-11-04,9704.1,9704.1,in_country,Ganges
+hardinge_ganges,2026-11-05,9907.32,9907.32,in_country,Ganges
 patna_ganges,2013-01-01,1908.85,1908.85,upstream,Ganges
 patna_ganges,2013-01-02,1891.34,1891.34,upstream,Ganges
 patna_ganges,2013-01-03,1878.32,1878.32,upstream,Ganges
@@ -40439,6 +40453,8 @@ patna_ganges,2026-10-31,7497.94,7515.23,upstream,Ganges
 patna_ganges,2026-11-01,7260.06,7446.32,upstream,Ganges
 patna_ganges,2026-11-02,7045.93,7045.93,upstream,Ganges
 patna_ganges,2026-11-03,7226.7,7226.7,upstream,Ganges
+patna_ganges,2026-11-04,7602.26,7602.26,upstream,Ganges
+patna_ganges,2026-11-05,7690.3,7690.3,upstream,Ganges
 silchar_barak,2013-01-01,542.25,542.25,upstream,Meghna
 silchar_barak,2013-01-02,538.51,538.51,upstream,Meghna
 silchar_barak,2013-01-03,536.03,536.03,upstream,Meghna
@@ -45494,6 +45510,8 @@ silchar_barak,2026-10-31,971.75,983.01,upstream,Meghna
 silchar_barak,2026-11-01,956.19,958.4,upstream,Meghna
 silchar_barak,2026-11-02,940.89,940.89,upstream,Meghna
 silchar_barak,2026-11-03,925.83,927.97,upstream,Meghna
+silchar_barak,2026-11-04,906.82,908.91,upstream,Meghna
+silchar_barak,2026-11-05,890.25,890.25,upstream,Meghna
 teesta_in,2013-01-01,149.66,149.66,upstream,Brahmaputra
 teesta_in,2013-01-02,149.31,149.31,upstream,Brahmaputra
 teesta_in,2013-01-03,148.62,148.62,upstream,Brahmaputra
@@ -50549,6 +50567,8 @@ teesta_in,2026-10-31,160.44,169.61,upstream,Brahmaputra
 teesta_in,2026-11-01,181.39,256.63,upstream,Brahmaputra
 teesta_in,2026-11-02,260.22,260.22,upstream,Brahmaputra
 teesta_in,2026-11-03,270.02,270.02,upstream,Brahmaputra
+teesta_in,2026-11-04,265.07,265.07,upstream,Brahmaputra
+teesta_in,2026-11-05,249.61,249.61,upstream,Brahmaputra
 tezpur_brah,2013-01-01,2611.16,2611.16,upstream,Brahmaputra
 tezpur_brah,2013-01-02,2557.59,2557.59,upstream,Brahmaputra
 tezpur_brah,2013-01-03,2510.89,2510.89,upstream,Brahmaputra
@@ -55604,3 +55624,5 @@ tezpur_brah,2026-10-31,4294.36,4294.36,upstream,Brahmaputra
 tezpur_brah,2026-11-01,4139.0,4148.54,upstream,Brahmaputra
 tezpur_brah,2026-11-02,4007.67,4016.91,upstream,Brahmaputra
 tezpur_brah,2026-11-03,3907.41,3907.41,upstream,Brahmaputra
+tezpur_brah,2026-11-04,3907.41,3943.57,upstream,Brahmaputra
+tezpur_brah,2026-11-05,3934.5,3952.67,upstream,Brahmaputra

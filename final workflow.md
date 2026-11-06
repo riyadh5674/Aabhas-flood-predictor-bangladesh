@@ -2,19 +2,27 @@
 
 **Status:** APPROVED · **Written:** 2026-10-09 · **Supersedes:** `flood prediction workflow.md` (40 body phases / 62 stages) and `extra instruction for DL.md` (ML+DL modelling section). Those two files are superseded in full by this document; they may be deleted.
 
-**Where we are:** Phases **0–34 are complete** (foundations → baselines → framework → datasets
-→ sequence validation → classical ML → LSTM/GRU → TCN → feature fusion → station-graph GNN →
-temporal Transformer → multi-horizon matrix → fair ML-vs-DL comparison → probability calibration
-→ risk levels & threshold optimization → error analysis → robustness analysis → ablation &
-comparative experiment matrix → final model selection → explainable AI;
-checklist **stages 1–61 DONE** (stage 5 completed via MI-1/MI-2 soil + landcover acquisition;
-independent flood extents documented as R8 limitation). Phase 33 froze a model and
-the test period has been read once; after **MI-v2** the governed production artefact is
-**D16** (`models/final_v2/selected_model_v2.pkl`), with the Phase-33 `xgboost` kept as the
-reference model — and the later **MI-7 / MI-8** sprints **did not change it** (the fair DL rematch
-closed the deep-learning queue; the score push won no paired confidence interval on the decision
-cell). Everything from Phase 35 on is future work — this document is the single map
-for it.
+**Where we are (2026-11-06):** all **45 phases are complete** and **stages 1–73 are DONE**
+at the research/prototype level. The scientific chain ran foundations → baselines → framework →
+datasets → sequence validation → classical ML → LSTM/GRU → TCN → feature fusion → station-graph
+GNN → temporal Transformer → multi-horizon matrix → fair ML-vs-DL comparison → probability
+calibration → risk levels & threshold optimization → error analysis → robustness analysis →
+ablation & comparative experiment matrix → final model selection → explainable AI → the
+Phase 35–42 system (location layer, map, automated source refresh, real-time API, alert engine,
+interfaces, architecture, tests) → Phase 43 final evaluation → Phase 44 reproducibility →
+Phase 45 thesis (`reports/phase45_thesis.md`).
+
+Phase 33 froze a model and the test period has been read once; after **MI-v2** the governed
+production artefact is **D16** (`models/final_v2/selected_model_v2.pkl`), with the Phase-33
+`xgboost` kept as the reference model — and the later **MI-7 / MI-8** sprints **did not change
+it** (the fair DL rematch closed the deep-learning queue; the score push won no paired confidence
+interval on the decision cell). **`test_rows_read = 0`** in every analysis added after MI-6.
+
+**What remains is operational, not scientific:** paid always-on hosting / full deployment
+(explicitly out of scope for now), formal threshold sign-off and delivery credentials for the
+alert engine (`notification.enabled = false`), and a redeploy of the public static snapshot so it
+matches the local feature store. Local data is current through **2026-11-05**; the live public
+demo remains stale until that redeploy. This document remains the single map for the programme.
 
 This file merges the classical research workflow (rigorous labels → leakage → splits →
 baselines → evaluation → system) with the deep-learning programme (framework → datasets →
@@ -849,41 +857,65 @@ official warning service (proposal requirement).
 
 ## Phase 35 — Location-based prediction layer · stage 62
 District → upazila → location selection; feature generation from current data; model →
-probability → risk band → explanation. **BLOCKED** until the model is frozen; a
-reverse-geocode/API layer is the missing piece.
+probability → risk band → explanation. **DONE** — station lat/lon plus district/upazila/river/basin
+attributes feed the location UI in `system/web/`; D16 inference is served by the Phase-38 API.
 
 ## Phase 36 — Bangladesh flood-risk map · stage 63
 ADM1/ADM2 boundaries (`data/raw/geo/admin`), risk bands per station/area, inspectable
 details (probability, rainfall, elevation, river proximity, recent conditions, issue time).
-**BLOCKED** on the Phase-31 map module.
+**DONE** — `system/map/choropleth.py`, `system/map/run_map.py`, `system/map/config.py`; the
+React map consumes the same station/risk payload as the API.
 
 ## Phase 37 — Automatic data acquisition · stage 64
-FFWC ingest exists and is resumable (**PARTIAL**); add weather auto-refresh. Pipeline:
-source → ingestion → validation → preprocessing → feature engineering → model. Raw data is
-append-only; QC rules (D4/D9) run on read.
+Source → ingestion → validation → preprocessing → feature engineering → model. Raw data is
+append-only; QC rules (D4/D9) run on read. **DONE** — the three lagging sources (GloFAS, NASA
+POWER soil, ERA5-Land) were rewritten as idempotent incremental refreshers; the single entry
+point `system/ingestion/refresh_sources.py` validates freshness and writes
+`system/data/processed/source_status/<date>.json`; `system/ops/daily_pipeline.py` runs it as
+**Step 0** and the feature build enforces the Phase-37 quality gate
+(`system/features/validate.py` → `system/data/processed/quality/<date>.json`). Source
+freshness is exposed by `/health` and the frontend freshness banner, including a `degraded`
+flag when a critical source misses its SLA. Managed
+always-on scheduling remains external (Windows Task Scheduler today; a cloud runner is a
+deployment decision, not a missing capability).
 
 ## Phase 38 — Real-time prediction pipeline · stage 65
 new data → validation → feature generation → prediction → probability → risk band →
 explanation → map/dashboard → warning decision, with the Phase-29 frozen thresholds.
+**DONE** — FastAPI (`system/api/app.py`, `inference.py`, `model_loader.py`) serves the local
+feature store with an HF Dataset fallback; `/health`, `/dates`, `/predict*`, `/thresholds` and
+`/alerts/feed` are live contracts covered by tests.
 
 ## Phase 39 — Early-warning engine · stage 66
 probability → threshold → warning decision → alert (no-warning / watch / warning /
 high-risk). Categories come from Phase 29 validation, labelled a **research prototype**.
+**DONE (prototype)** — `system/alerts/alert_engine.py` + `run_alerts.py` map risk bands to
+alert levels, persist per-station state, apply a 24 h cooldown (escalations bypass it), create
+draft records, require duty-officer approval, and write an immutable audit trail; `/alerts/feed`
+and `/alerts/{draft_id}/approve` expose the lifecycle. External delivery is intentionally
+disabled (`notification.enabled = false`) until thresholds are formally signed off and
+SMTP/webhook credentials are supplied; the dashboard feed and unit tests cover the enabled path.
 
 ## Phase 40 — User-facing systems · stages 67, 68
 * **Citizen:** location → risk level → expected period → simple explanation → recommended
   precaution.
 * **Administrator:** risk map, affected areas, probability, trend, historical comparison,
   model explanation, downloadable report.
+**DONE** — React + Vite frontend in `system/web/` with static-snapshot and live-API modes,
+English/Bengali UI, freshness banner, admin views and downloadable reports.
 
 ## Phase 41 — System architecture · stage 69
 Historical datasets → preprocessing → feature engineering → (tabular | sequence) models →
 probability/risk → explainability → {map/UI, alert engine} → {dashboard, notifications}.
-Document it as built, not as imagined.
+Document it as built, not as imagined. **DONE** — see `DEPLOYMENT.md` §1 (architecture),
+§2.4 (API endpoints) and §3 (CI/CD / refresh).
 
 ## Phase 42 — System testing · stage 70
 Create `tests/`: label-contract tests, split-integrity tests, sequence-integrity tests,
 feature-regression tests (row/column/SHA guards), pipeline end-to-end smoke test.
+**DONE** — `tests/run_tests.py` now runs **84 passing tests** (unittest), including alert-engine
+cooldown/escalation/approval, ingestion freshness + quality-gate, and API-contract suites. The
+frontend adds 21 Vitest tests; `npm run typecheck` and `npm run build` pass.
 
 ---
 
@@ -894,6 +926,9 @@ Answer, with citations to reports: data validity (labels, missingness, leakage) 
 validity (temporal, spatial, monsoon, imbalance) · prediction validity (calibration, false
 negatives, 24/48/72 h) · explainability (sensible features, per-prediction explanation) ·
 system validity (location selection, map, ingestion, alert).
+**DONE** — `reports/phase43_final_evaluation.md`; the null-feature incident and its
+remediation are documented in the Phase-45 report, and the freeze evidence still passes 13/13
+with the test split closed.
 
 ## Phase 44 — Reproducibility & documentation · stage 72
 Project layout (current + planned):
@@ -912,12 +947,18 @@ Flood predictor/
 
 Maintain: dataset version + SHA, feature-set version, model version, experiment id, seed,
 hyperparameters, metric CSVs, environment (`requirements.txt` with pinned versions).
+**DONE** — `REPRODUCE.md` (levels A–E), `DEPLOYMENT.md`, `FREEZE.md`,
+`reports/freeze_manifest.json` (revision 2), and portable `scripts/freeze_results.py`
+(`AABHAS_ROOT` / file-relative root).
 
 ## Phase 45 — Research report / thesis · stage 73
 Structure follows this document: definition & data → method (leakage, splits, labels) →
 baselines → classical ML → deep learning (framework, sequences, models, gates) → fair
 comparison & ablation (E0–E16) → selection, calibration, explanation → system → limitations
 (R1–R8, W-R2/W-R3, blocked stages).
+**DONE** — `reports/phase45_thesis.md` (draft, 2026-11-06) follows this outline with the frozen
+numbers, the October–November 2026 null-feature incident, limitations and reproducibility
+commands. PDF/typesetting remains a publication task, not a research gap.
 
 ---
 
@@ -965,17 +1006,21 @@ DONE   Phases 0–16   foundations, data, features, leakage, table, splits, base
 DONE   Phases 35–42  system (built + deployed; tests/ written; alert engine prototype)
        Phase 35  location-based prediction           DONE (model + geocode layer)
        Phase 36  Bangladesh risk map                 DONE (system/map/)
-       Phase 37  automatic data acquisition          PARTIAL (FFWC resumable, weather not)
+       Phase 37  automatic data acquisition          DONE (incremental source refresh + quality gate; scheduling external)
        Phase 38  real-time prediction pipeline       DONE (FastAPI + feature store)
-       Phase 39  early-warning engine                PARTIAL (thresholds + bands wired)
+       Phase 39  early-warning engine                DONE (engine + approval/audit; delivery disabled by config)
        Phase 40  citizen + administrator interfaces  DONE (React web app, static Space)
        Phase 41  system architecture                 DONE (DEPLOYMENT.md)
-       Phase 42  system testing                      DONE (tests/, 32 passing)
+       Phase 42  system testing                      DONE (tests/, 84 passing + 21 frontend)
 DONE   Phases 43–44  final evaluation + reproducibility
        Phase 43  final scientific evaluation         DONE (reports/phase43_final_evaluation.md)
        Phase 44  documentation / reproducibility     DONE (REPRODUCE.md, DEPLOYMENT.md, FREEZE.md)
-TODO   Phase 45  research report / thesis            NOT WRITTEN
+DONE   Phase 45  research report / thesis            DONE (reports/phase45_thesis.md; PDF/typesetting later)
 ```
+
+Remaining work is **operational**: full paid deployment/always-on hosting, formal threshold
+sign-off plus delivery credentials for alerts, and republishing the public static snapshot so it
+matches the local feature store.
 
 D10 applies throughout: run the phases in numeric order; a phase may not be skipped because
 its results are "probably fine" — gates (D13) exist so that *documented rejection* is the
@@ -1034,16 +1079,16 @@ Stages **1–30 are frozen** — they record completed work and are mirrored in
 | 61 | 72-hour prediction | **DONE** | Phase 26 §7 — leader `xgboost_selected` 0.9422 (P1); D7 persistence decays to 0.8683 |
 | 62 | Location-based prediction | **DONE** | Phase 35 — model frozen (D16), geocode layer via station lat/lon + district/upazila/river/basin attributes (`system/map/choropleth.py`), location UI in `system/web/` |
 | 63 | Bangladesh risk map | **DONE** | Phase 36 — `system/map/choropleth.py`, `system/map/run_map.py`, `system/map/config.py`; choropleth unblocked (ADM1/ADM2 in `data/raw/geo/admin/`) |
-| 64 | Automatic data acquisition | PARTIAL | Phase 37 — FFWC ingest resumable (`scripts/fetch_ffwc_stations.py`, `scripts/fetch_openmeteo_batch.py`); weather acquisition not fully automated |
+| 64 | Automatic data acquisition | **DONE** | Phase 37 — GloFAS / NASA POWER soil / ERA5-Land are idempotent incremental refreshers; `system/ingestion/refresh_sources.py` validates freshness and writes `source_status/<date>.json`; `system/ops/daily_pipeline.py` runs it as Step 0; `system/features/validate.py` enforces the quality gate (`quality/<date>.json`). Managed always-on scheduling is an operational choice (Task Scheduler now; cloud runner later) |
 | 65 | Real-time prediction pipeline | **DONE** | Phase 38 — FastAPI (`system/api/app.py`, `system/api/inference.py`, `system/api/model_loader.py`), local feature store + HF Dataset fallback |
-| 66 | Early-warning engine | PARTIAL | Phase 39 — Phase-29 thresholds + risk bands wired into API (`/thresholds` endpoint); production alert label mandatory before full rollout |
+| 66 | Early-warning engine | **DONE** | Phase 39 — `system/alerts/alert_engine.py` + `run_alerts.py`: band→level mapping, per-station state, 24 h cooldown with escalation bypass, draft→approval→audit lifecycle, `/alerts/feed` + `/alerts/{draft_id}/approve`. External delivery disabled (`notification.enabled=false`) pending threshold sign-off/credentials; research-prototype label retained |
 | 67 | Citizen interface | **DONE** | Phase 40 — React + Vite frontend (`system/web/`), static snapshot mode + live API mode (`DEPLOYMENT.md` §1) |
 | 68 | Administrator dashboard | **DONE** | Phase 40 — admin views in `system/web/` (risk map, affected areas, probability, trend, historical comparison, downloadable report) |
 | 69 | System architecture | **DONE** | Phase 41 — documented as built in `DEPLOYMENT.md` (§1 architecture, §2.4 API endpoints, §3 CI/CD) |
-| 70 | System testing | **DONE** | Phase 42 — `tests/` created with 32 passing tests: label-contract, split-integrity, sequence-integrity, feature-regression, pipeline smoke (`tests/run_tests.py`) |
+| 70 | System testing | **DONE** | Phase 42 — `tests/run_tests.py` runs **84 passing tests**: label-contract, split-integrity, sequence-integrity, feature-regression, pipeline smoke, alert engine, ingestion/quality gate, API contract. Frontend: 21 Vitest tests + typecheck/build |
 | 71 | Final scientific evaluation | **DONE** | Phase 43 — `reports/phase43_final_evaluation.md` (data validity, model validity, prediction validity, explainability, system validity) |
-| 72 | Documentation / reproducibility | **DONE** | Phase 44 — `REPRODUCE.md` (levels A–E), `DEPLOYMENT.md`, `FREEZE.md` (13/13 checks pass), `freeze_manifest.json` (26/26 files hashed) |
-| 73 | Research report / thesis | TODO | Phase 45 — not yet written; structure outlined in this document §Part D |
+| 72 | Documentation / reproducibility | **DONE** | Phase 44 — `REPRODUCE.md` (levels A–E), `DEPLOYMENT.md`, `FREEZE.md` (13/13 checks pass), `freeze_manifest.json` (revision 2), portable `scripts/freeze_results.py` |
+| 73 | Research report / thesis | **DONE** | Phase 45 — `reports/phase45_thesis.md` (draft, 2026-11-06): frozen numbers, architecture, incident analysis, limitations, reproducibility commands. PDF/typesetting is a later publication task |
 
 ---
 

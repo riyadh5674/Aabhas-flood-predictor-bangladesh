@@ -16,6 +16,7 @@ import argparse
 import datetime as _dt
 import hashlib
 import json
+import os
 import platform
 import subprocess
 import sys
@@ -25,7 +26,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-ROOT = Path(r"D:\Flood predictor")
+ROOT = Path(os.getenv("AABHAS_ROOT", Path(__file__).resolve().parents[1])).resolve()
 REP = ROOT / "reports"
 OUT = REP / "freeze_manifest.json"
 DOC = REP / "FREEZE.md"
@@ -62,6 +63,26 @@ FILES = [
 
 PACKAGES = ["numpy", "pandas", "scikit-learn", "scipy", "xgboost", "lightgbm",
             "torch", "matplotlib", "shap"]
+
+# Human-readable revision history for the evidence lock. Append a new entry
+# whenever a hashed artefact changes; never rewrite history in place.
+REVISIONS = [
+    {
+        "version": 1,
+        "date": "2026-10-22",
+        "note": "Initial lock: D16 frozen model, MI-6 test read, correction-sprint numbers.",
+    },
+    {
+        "version": 2,
+        "date": "2026-11-06",
+        "note": (
+            "Documentation-only refresh. `reports/test_read_ledger.md` and "
+            "`reports/mi6_test_read.md` were re-worded after the original lock; "
+            "all 13 numeric/evidence checks still pass. No dataset, model, "
+            "prediction, or headline number changed and the frozen test was not read."
+        ),
+    },
+]
 
 
 def sha256(path: Path, chunk: int = 1 << 20) -> str:
@@ -153,6 +174,7 @@ def build() -> dict:
         "frozen_at": _dt.datetime.now().isoformat(timespec="seconds"),
         "seed": 20261008,
         "test_policy": "closed - no read in this freeze; D16 headline is the valid MI-6 read",
+        "revisions": REVISIONS,
         "headline": {
             "val_2022_d16_per_horizon": v22,
             "val_2022_d16_horizon_mean": round(v22_mean, 6),
@@ -200,6 +222,15 @@ def write_doc(m: dict) -> None:
         "",
         "This file freezes the numbers the IEEE paper may quote. A later change to any",
         "hashed artefact invalidates the manifest and must be documented as a new version.",
+        "",
+        "## Revision history",
+        "",
+        "| version | date | change |",
+        "| ---: | --- | --- |",
+    ]
+    for rev in REVISIONS:
+        lines.append(f"| {rev['version']} | {rev['date']} | {rev['note']} |")
+    lines += [
         "",
         "## Headline numbers",
         "",

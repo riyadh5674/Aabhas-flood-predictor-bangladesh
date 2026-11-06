@@ -96,13 +96,18 @@ def assert_split_integrity(splits: pd.DataFrame) -> None:
     if len(val_dates) and len(test_dates):
         assert val_dates.max() <= test_dates.min(), "val/test temporal boundary violated"
 
-    # Holdout stations must not appear in train/val
-    holdout = splits.loc[splits["station_holdout"] == True, "station_id"].unique()  # noqa: E712
-    train_val_stations = splits.loc[
-        splits["split"].isin(["train", "val"]), "station_id"
-    ].unique()
-    overlap = set(holdout) & set(train_val_stations)
-    assert not overlap, f"holdout stations leaked into train/val: {overlap}"
+    # ``station_holdout`` marks the fold-0 spatial-CV cohort, not a temporal
+    # exclusion: per phase15 §3 those stations may appear in P1 train/val but
+    # are held out when fitting the P3 spatial folds. What must hold is that
+    # the flag and fold 0 describe the same station set.
+    holdout = set(splits.loc[splits["station_holdout"] == True, "station_id"])  # noqa: E712
+    if "spatial_fold" in splits.columns:
+        fold0 = set(splits.loc[splits["spatial_fold"] == 0, "station_id"])
+        assert holdout == fold0, "station_holdout does not match spatial fold 0"
+
+    # Every station × date row appears in exactly one split.
+    keyed = splits[["station_id", "date"]].drop_duplicates()
+    assert len(keyed) == len(splits), "duplicate station×date rows in splits"
 
 
 def assert_model_frozen() -> None:

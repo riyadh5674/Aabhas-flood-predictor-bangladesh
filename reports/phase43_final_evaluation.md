@@ -26,7 +26,8 @@ day within the next 24/48/72 h), not a classifier or susceptibility map
 
 - **Label contract:** `label_24h/48h/72h` = any observed reading in `(t, t+h]` ≥ FFWC danger
   level; missing stays NaN, never 0; `obs_days_*` columns banned as features
-  (`final workflow.md` §0.3). Verified by `tests/test_label_contract.py` (32 tests, all pass).
+  (`final workflow.md` §0.3). Verified by `tests/test_label_contract.py` (7 tests) and the
+  full suite (`tests/run_tests.py`, 84 tests, all pass).
 - **Label drift explained, never pooled** (D5): base rate drifts 16.8% (2017) → 1.19% (2023)
   (`reports/phase15_split_design.md` §1). All results are per-cell, never pooled (D8).
 - **Label ceiling:** MI-4 label audit bounds the achievable PR-AUC ceiling at ~0.96–0.97 on

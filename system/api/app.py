@@ -611,7 +611,7 @@ class AlertsListResponse(BaseModel):
     total_count: int
 
 
-@app.get("/alerts", response_model=AlertsListResponse, tags=["alerts"])
+@app.get("/alerts/feed", response_model=AlertsListResponse, tags=["alerts"])
 def get_alerts(
     status: Optional[str] = Query(None, description="Filter by status: draft, approved, dispatched"),
     limit: int = Query(100, ge=1, le=500, description="Max results"),
@@ -726,7 +726,7 @@ def trigger_pipeline(
     
     try:
         # Run in background
-        subprocess.Popen(cmd, cwd=str(ROOT))
+        subprocess.Popen(cmd, cwd=str(Path(__file__).resolve().parents[2]))
         return PipelineTriggerResponse(
             triggered=True,
             message=f"Pipeline started (run_id={run_id})",
@@ -742,7 +742,7 @@ def reload_model():
     try:
         from system.api.inference import get_model
         model = get_model()
-        model._load_model()
+        model.load()
         return {"reloaded": True, "model_version": model.version, "loaded": model.is_loaded}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Model reload failed: {e}")
@@ -765,7 +765,7 @@ def admin_status():
     
     # Latest source status
     sources = {}
-    status_dir = ROOT / "system" / "data" / "processed" / "source_status"
+    status_dir = Path(__file__).resolve().parents[2] / "system" / "data" / "processed" / "source_status"
     if status_dir.exists():
         status_files = sorted(status_dir.glob("*.json"))
         today = datetime.now(timezone.utc).date()
@@ -843,7 +843,7 @@ def monitoring_status():
     # Source status
     sources = {}
     degraded = False
-    status_dir = ROOT / "system" / "data" / "processed" / "source_status"
+    status_dir = Path(__file__).resolve().parents[2] / "system" / "data" / "processed" / "source_status"
     if status_dir.exists():
         status_files = sorted(status_dir.glob("*.json"))
         today = datetime.now(timezone.utc).date()

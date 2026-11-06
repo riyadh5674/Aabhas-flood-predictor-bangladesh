@@ -1,0 +1,28 @@
+{
+  "requested_end": "2026-11-04",
+  "checked_at": "2026-11-05T01:13:07.133706+00:00",
+  "sources": {
+    "glofas": {
+      "status": "ok",
+      "last_date": "2026-11-04",
+      "lag_days": 0,
+      "max_lag_days": 2,
+      "critical": true
+    },
+    "power_soil": {
+      "status": "ok",
+      "last_date": "2026-11-01",
+      "lag_days": 3,
+      "max_lag_days": 7,
+      "critical": true
+    },
+    "era5": {
+      "status": "ok",
+      "last_date": "2026-11-03",
+      "lag_days": 1,
+      "max_lag_days": 7,
+      "critical": true
+    }
+  },
+  "ok": true
+}

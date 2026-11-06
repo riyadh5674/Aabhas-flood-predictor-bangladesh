@@ -78,6 +78,38 @@ export function DataFreshnessBanner() {
   if (health.isLoading || !health.data) return null;
 
   const latestFeatureDate = health.data.latest_feature_date;
+  const staleCritical = Object.entries(health.data.sources ?? {}).filter(
+    ([, source]) => source.critical && source.status !== "ok",
+  );
+  const degraded = Boolean(health.data.degraded) || staleCritical.length > 0;
+
+  if (degraded) {
+    const names = staleCritical
+      .map(([name, source]) => (source.last_date ? `${name} (${shortDate(source.last_date)})` : name))
+      .join(", ");
+    return (
+      <Banner tone="var(--band-high)" icon={<AlertTriangle size={14} />} title="Data source degraded">
+        {names ? (
+          <>
+            Critical inputs are behind their freshness SLA: <strong>{names}</strong>. Forecasts may
+            be less reliable.
+          </>
+        ) : (
+          <>A critical data source is behind its freshness SLA. Forecasts may be less reliable.</>
+        )}
+        {latestFeatureDate ? (
+          <>
+            {" "}
+            Latest model features: <strong>{shortDate(latestFeatureDate)}</strong>.
+          </>
+        ) : null}{" "}
+        <Link to="/model" className="underline">
+          Model details
+        </Link>
+      </Banner>
+    );
+  }
+
   const freshness = evaluateFreshness(latestFeatureDate);
 
   if (!freshness.warn) return null;

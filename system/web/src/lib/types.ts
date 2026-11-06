@@ -54,13 +54,26 @@ export interface StationRisk extends Prediction {
   station: Station;
 }
 
+export interface SourceStatus {
+  status?: string | null;
+  last_date?: string | null;
+  lag_days?: number | null;
+  max_lag_days?: number | null;
+  critical?: boolean;
+}
+
 export interface Health {
   status: string;
   model_loaded: boolean;
   model_version: string | null;
   feature_store_dates: number;
   latest_feature_date: string | null;
+  latest_feature_age_days?: number | null;
   timestamp: string;
+  /** Per-source freshness from the daily pipeline (live API or snapshot). */
+  sources?: Record<string, SourceStatus>;
+  /** True when a critical source is behind its freshness SLA. */
+  degraded?: boolean;
   /** Round-trip time measured by the client, if it performed the request. */
   latencyMs?: number;
 }

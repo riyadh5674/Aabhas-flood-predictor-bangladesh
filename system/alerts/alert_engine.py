@@ -141,19 +141,47 @@ class AlertState:
 # Alert evaluation
 # ---------------------------------------------------------------------------
 
+def _cooldown_expired(
+    last_alert_at: Optional[str],
+    cooldown_hours: float,
+    now: datetime,
+) -> bool:
+    """True when a previous alert exists and the cooldown window has passed."""
+    if not last_alert_at:
+        return False
+    try:
+        last_dt = datetime.fromisoformat(last_alert_at)
+    except ValueError:
+        return False
+    if last_dt.tzinfo is None:
+        last_dt = last_dt.replace(tzinfo=timezone.utc)
+    return now - last_dt >= timedelta(hours=cooldown_hours)
+
+
 def evaluate_alerts(
     predictions: pd.DataFrame,
     state: AlertState,
     config: dict,
     target_date: date,
+    now: Optional[datetime] = None,
 ) -> list[dict]:
     """Compare each prediction to previous state and emit alert events.
 
     Returns a list of alert event dicts.
+
+    Rules:
+      * first detection of a non-low band always alerts;
+      * escalation to a worse band alerts immediately when
+        ``escalation_bypass_cooldown`` is true, otherwise only after cooldown;
+      * an unchanged non-low band re-fires only once the cooldown has expired;
+      * a return to ``low`` never alerts and clears the pending level.
     """
     cooldown_hours = config["cooldown"]["cooldown_hours"]
     escalation_bypass = config["cooldown"]["escalation_bypass_cooldown"]
-    now_utc = datetime.now(timezone.utc).isoformat()
+    now = now or datetime.now(timezone.utc)
+    if now.tzinfo is None:
+        now = now.replace(tzinfo=timezone.utc)
+    now_utc = now.isoformat()
 
     alerts: list[dict] = []
 
@@ -170,27 +198,32 @@ def evaluate_alerts(
         last_alert_at = prev.get("last_alert_at")
 
         should_alert = False
+        suppressed_escalation = False
         reason = ""
 
         if alert_level is None:
-            # Band resolved to low — no alert, just update state
-            state.update(sid, horizon, band, None, now_utc)
+            # Band resolved to low — no alert, clear any pending level.
+            state.update(sid, horizon, band, None, None)
             continue
 
         if prev_level is None:
-            # First-ever evaluation for this station+horizon
+            # First-ever evaluation for this station+horizon.
             should_alert = True
             reason = "initial_detection"
         elif is_worse(alert_level, prev_level):
-            # Escalation to a worse band
-            should_alert = True
-            reason = "escalation"
-        elif escalation_bypass is False and last_alert_at:
-            # Check cooldown
-            last_dt = datetime.fromisoformat(last_alert_at)
-            if datetime.now(timezone.utc) - last_dt > timedelta(hours=cooldown_hours):
+            # Escalation to a worse band. With the bypass enabled an escalation
+            # ignores the cooldown; otherwise it still waits out the window.
+            if escalation_bypass or _cooldown_expired(last_alert_at, cooldown_hours, now):
                 should_alert = True
-                reason = "cooldown_expired"
+                reason = "escalation"
+            else:
+                # Hold the previous band so the pending escalation is not
+                # silently downgraded into a routine cooldown re-fire.
+                suppressed_escalation = True
+        elif _cooldown_expired(last_alert_at, cooldown_hours, now):
+            # Same (or lower) non-low band, cooldown elapsed -> re-fire.
+            should_alert = True
+            reason = "cooldown_expired"
 
         if should_alert:
             alert_event = {
@@ -206,9 +239,13 @@ def evaluate_alerts(
             }
             alerts.append(alert_event)
             state.update(sid, horizon, band, alert_level, now_utc)
+        elif suppressed_escalation:
+            # Keep the previous band/level until the escalation is emitted.
+            state.update(sid, horizon, prev_band, prev_level, last_alert_at)
         else:
-            # No alert — still update band state
-            state.update(sid, horizon, band, alert_level, last_alert_at or now_utc)
+            # No alert — still update band state, but never fabricate a
+            # last_alert_at that did not happen.
+            state.update(sid, horizon, band, alert_level, last_alert_at)
 
     return alerts
 

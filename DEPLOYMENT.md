@@ -1,6 +1,6 @@
 # Aabhas Flood Predictor — Deployment Guide
 
-**Updated:** 2026-11-02
+**Updated:** 2026-11-06
 
 ## 🎯 Deployed architecture
 
@@ -108,11 +108,20 @@ Two layers must stay current:
 
 `system/ops/refresh_and_publish.py` orchestrates the daily update:
 
-1. ingestion → features (local partitioned parquet store);
+0. **source refresh** — `system/ingestion/refresh_sources.py` incrementally updates
+   GloFAS, NASA POWER soil and ERA5-Land, checks each manifest against its lag SLA,
+   and writes `system/data/processed/source_status/<date>.json`; a stale **critical**
+   source fails the run unless `--allow-stale` / `--skip-source-refresh` is used;
+1. ingestion → features (local partitioned parquet store), with
+   `system/features/validate.py` enforcing the quality gate and writing
+   `system/data/processed/quality/<date>.json`;
 2. **incremental** snapshot build — only dates missing from the published
    snapshot are scored; trend files are trimmed to a 90-day window;
 3. mirror the changed snapshot files into `system/web/dist`;
 4. upload **only changed files** to the Hugging Face Static Space.
+
+A degraded feature date is never published silently: `daily_pipeline.py` fails the
+date unless `--allow-degraded` is passed explicitly.
 
 The website is therefore dynamic without a server: each run appends the new
 date and republishes a few hundred small JSON files. Feature-dataset and
@@ -135,6 +144,17 @@ raw-input uploads are opt-in (`--push-features`, `--push-raw`).
 
 # Verify the plan without writing anything
 .\.venv\Scripts\python.exe system\ops\refresh_and_publish.py --dry-run
+
+# Source refresh only, with a freshness report (no feature build)
+.\.venv\Scripts\python.exe system\ingestion\refresh_sources.py --end 2026-11-05
+.\.venv\Scripts\python.exe system\ingestion\refresh_sources.py --only glofas,power_soil --dry-run
+
+# One date, full pipeline (source refresh → features → quality gate)
+.\.venv\Scripts\python.exe system\ops\daily_pipeline.py --date 2026-11-05
+
+# Inspect the latest gate + source telemetry
+Get-Content system\data\processed\quality\latest.json
+Get-Content system\data\processed\source_status\2026-11-05.json
 ```
 
 Publishing uses the token stored by `hf auth login` (or `HF_TOKEN` if set).
@@ -255,6 +275,11 @@ Notes:
   until the new data is in place.
 - Trend files keep the last 90 dates (`--trend-days`), enough for the UI's
   30-day chart and cheap to republish daily.
+- `data/snapshot/health.json` reports `station_count` for the **latest feature
+  date** (currently 112), `trend_station_count` for the 90-day union (127), and
+  `station_count_scope`; freshness banners use the latest-date value.
+- Source freshness and the feature-quality result are available locally under
+  `system/data/processed/source_status/` and `system/data/processed/quality/`.
 
 ---
 
@@ -287,7 +312,7 @@ Verify:
 ```powershell
 curl https://aabhas-flood-predictor.onrender.com/health
 curl https://aabhas-flood-predictor.onrender.com/dates
-curl "https://aabhas-flood-predictor.onrender.com/predict/trend?station_id=1&dates=2026-10-30,2026-10-31"
+curl "https://aabhas-flood-predictor.onrender.com/predict/trend?station_id=1&dates=2026-11-04,2026-11-05"
 ```
 
 Health should report `model_loaded: true`, `model_version: "D16"`, and a recent
@@ -299,7 +324,7 @@ Health should report `model_loaded: true`, `model_version: "D16"`, and a recent
 
 | Endpoint | Method | Description |
 |----------|--------|-------------|
-| `/health` | GET | Status, model version, latest feature date/age, cache stats |
+| `/health` | GET | Status, model version, latest feature date/age, per-source freshness, `degraded`, cache stats |
 | `/model/info` | GET | Frozen D16 metadata |
 | `/thresholds` | GET | Published thresholds and risk bands |
 | `/dates` | GET | Available feature dates |
@@ -307,10 +332,41 @@ Health should report `model_loaded: true`, `model_version: "D16"`, and a recent
 | `/predict/batch` | POST | Multiple stations (bounded) |
 | `/predict/all` | GET | All stations for a date/horizon |
 | `/predict/trend` | GET | One station across up to 60 dates |
+| `/alerts/feed` | GET | Draft/approved alert feed (`limit`, `offset`, `status`) |
+| `/alerts/{draft_id}/approve` | POST | Duty-officer approval (admin key required) |
 | `/docs` | GET | Only when `AABHAS_ENABLE_DOCS=true` |
 
 All JSON endpoints are also reachable under `/api/...`; the middleware strips
 the prefix before routing.
+
+---
+
+## 🚨 Early-warning engine
+
+`system/alerts/alert_engine.py` evaluates D16 output per `(station, horizon)` and
+maps risk bands to alert levels (`watch` / `warning` / `high`). It persists
+per-station state, applies a 24 h cooldown, bypasses the cooldown on escalation,
+creates **draft** records, requires duty-officer approval, and writes an immutable
+audit trail.
+
+```powershell
+# Evaluate one date (all horizons by default)
+.\.venv\Scripts\python.exe system\alerts\run_alerts.py --date 2026-11-05 --all-horizons
+.\.venv\Scripts\python.exe system\alerts\run_alerts.py --date 2026-11-05 --horizon 24h
+```
+
+State and logs:
+
+- per-station state — `system/data/processed/alert_state.json`
+- alert log — `system/logs/alerts.csv`
+- audit trail — `system/logs/alert_audit.jsonl`
+
+**Delivery is intentionally disabled** (`system/config/alert_config.json` →
+`notification.enabled = false`; SMTP and webhook are empty). The dashboard feed
+and approval endpoint work. Email/webhook delivery is enabled only after the
+thresholds are formally signed off (`docs/THRESHOLD_SIGN_OFF.md`) and credentials
+are supplied. Follow `docs/DUTY_OFFICER_PROCESS.md` for review, approval and
+escalation. Alerts remain decision support, **not official warnings**.
 
 ---
 
@@ -328,6 +384,9 @@ the prefix before routing.
 - **Preview/staging auth** — `AABHAS_PREVIEW_MODE=true` requires
   `AABHAS_PREVIEW_USER` and `AABHAS_PREVIEW_PASSWORD` and enables HTTP Basic
   auth on every request.
+- **Alert approval auth** — `/alerts/{draft_id}/approve` requires
+  `X-Admin-API-Key` matching `AABHAS_ADMIN_API_KEYS` (comma-separated). Without
+  configured keys the endpoint cannot approve alerts.
 - **Docs** — disabled in production via `AABHAS_ENABLE_DOCS=false`.
 - **Caching** — predictions are cached in-process (64 entries) and HTTP
   responses use `Cache-Control` + `ETag`/`stale-while-revalidate`. The HF date
@@ -366,8 +425,22 @@ consume the budget.
 - Open the workflow run log or the auto-created issue.
 - Common causes: FFWC/Open-Meteo outage, expired HF token, missing
   `HF_RAW_DATASET`, or a gap older than the 30-day catch-up window.
+- Check `system/data/processed/source_status/<date>.json` first: a `stale`
+  **critical** source (GloFAS > 2 d, POWER soil / ERA5-Land > 7 d) fails the run
+  by design.
+- If the feature quality gate fails, inspect
+  `system/data/processed/quality/<date>.json` for the failing group; rerun the
+  source refresh or pass `--allow-degraded` only for a documented exception.
 - For older gaps, run `daily_pipeline.py --date YYYY-MM-DD` for each missing
   date (or extend the catch-up window) and re-upload.
+
+### Alerts are not sending
+- `notification.enabled` is `false` by default; fill SMTP/webhook settings in
+  `system/config/alert_config.json` (or inject secrets) and set it to `true`.
+- Delivery also requires a draft to be approved; check `/alerts/feed` and the
+  audit trail in `system/logs/alert_audit.jsonl`.
+- `/alerts/{draft_id}/approve` returns 401/403 when `AABHAS_ADMIN_API_KEYS` is
+  unset or the `X-Admin-API-Key` header is wrong.
 
 ### Static Space 404 on deep links
 The static build uses hash routing (`/#/stations/1`). The API-served build uses
@@ -387,14 +460,31 @@ curl https://aabhas-flood-predictor.onrender.com/health
 
 # Local pipeline log
 Get-Content system\logs\daily_pipeline.log -Tail 200
+
+# Source freshness + feature quality (local)
+Get-Content system\data\processed\source_status\2026-11-05.json
+Get-Content system\data\processed\quality\latest.json
+
+# Snapshot metadata (latest-date vs trend-window station counts)
+Get-Content system\web\public\data\snapshot\health.json
 ```
 
 Daily expectations:
 
 - `latest_feature_age_days` ≤ 2 during normal FFWC publication;
 - `/dates` ends at the most recent successful pipeline date;
+- every **critical** source is `ok` in `source_status/<date>.json`
+  (GloFAS ≤ 2 d, POWER soil ≤ 7 d, ERA5-Land ≤ 7 d);
+- `quality/<date>.json` has `passed: true` and critical null share 0.0;
+- `health.json` reports `station_count` for the latest date (112 on 2026-11-05)
+  and `trend_station_count` for the 90-day union (127) — do not compare the two
+  as if they were the same scope;
 - the UI freshness banner is green (no warning) only when the feature date is
   current.
+
+Alert operations: run `system/alerts/run_alerts.py --date <date> --all-horizons`
+after each successful pipeline, review drafts via `/alerts/feed`, and approve
+only through the duty-officer process.
 
 **Model updates** remain deliberate: retrain locally, update
 `models/final_v2/` and `system/config/model_config.json`, rebuild/verify the

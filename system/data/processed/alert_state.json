@@ -74,9 +74,9 @@
       "last_alert_at": null
     },
     "48h": {
-      "band": "high",
-      "alert_level": "warning",
-      "last_alert_at": "2026-10-29T05:52:15.120773+00:00"
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
     },
     "72h": {
       "band": "high",
@@ -108,14 +108,14 @@
       "last_alert_at": null
     },
     "48h": {
-      "band": "moderate",
-      "alert_level": "watch",
-      "last_alert_at": "2026-10-29T05:52:15.120773+00:00"
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
     },
     "72h": {
-      "band": "high",
-      "alert_level": "warning",
-      "last_alert_at": "2026-10-29T05:52:15.243765+00:00"
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
     }
   },
   "12": {
@@ -283,9 +283,9 @@
       "last_alert_at": null
     },
     "72h": {
-      "band": "moderate",
-      "alert_level": "watch",
-      "last_alert_at": "2026-10-29T05:52:15.243765+00:00"
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
     }
   },
   "23": {
@@ -470,9 +470,9 @@
       "last_alert_at": null
     },
     "72h": {
-      "band": "high",
-      "alert_level": "warning",
-      "last_alert_at": "2026-10-29T05:52:15.243765+00:00"
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
     }
   },
   "35": {
@@ -703,14 +703,14 @@
       "last_alert_at": null
     },
     "48h": {
-      "band": "high",
-      "alert_level": "warning",
-      "last_alert_at": "2026-10-29T05:52:15.120773+00:00"
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
     },
     "72h": {
-      "band": "high",
-      "alert_level": "warning",
-      "last_alert_at": "2026-10-29T05:52:15.243765+00:00"
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
     }
   },
   "49": {
@@ -776,9 +776,9 @@
       "last_alert_at": null
     },
     "72h": {
-      "band": "high",
-      "alert_level": "warning",
-      "last_alert_at": "2026-10-29T05:52:15.243765+00:00"
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
     }
   },
   "53": {
@@ -907,14 +907,14 @@
       "last_alert_at": null
     },
     "48h": {
-      "band": "high",
-      "alert_level": "warning",
-      "last_alert_at": "2026-10-29T05:52:15.120773+00:00"
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
     },
     "72h": {
-      "band": "high",
-      "alert_level": "warning",
-      "last_alert_at": "2026-10-29T05:52:15.243765+00:00"
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
     }
   },
   "61": {
@@ -929,9 +929,9 @@
       "last_alert_at": null
     },
     "72h": {
-      "band": "moderate",
-      "alert_level": "watch",
-      "last_alert_at": "2026-10-29T05:52:15.243765+00:00"
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
     }
   },
   "62": {
@@ -980,9 +980,9 @@
       "last_alert_at": null
     },
     "72h": {
-      "band": "high",
-      "alert_level": "warning",
-      "last_alert_at": "2026-10-29T05:52:15.243765+00:00"
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
     }
   },
   "65": {
@@ -997,9 +997,9 @@
       "last_alert_at": null
     },
     "72h": {
-      "band": "moderate",
-      "alert_level": "watch",
-      "last_alert_at": "2026-10-29T05:52:15.243765+00:00"
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
     }
   },
   "66": {
@@ -1014,9 +1014,9 @@
       "last_alert_at": null
     },
     "72h": {
-      "band": "high",
-      "alert_level": "warning",
-      "last_alert_at": "2026-10-29T05:52:15.243765+00:00"
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
     }
   },
   "67": {
@@ -1116,9 +1116,9 @@
       "last_alert_at": null
     },
     "72h": {
-      "band": "high",
-      "alert_level": "warning",
-      "last_alert_at": "2026-10-29T05:52:15.243765+00:00"
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
     }
   },
   "73": {
@@ -1218,9 +1218,9 @@
       "last_alert_at": null
     },
     "72h": {
-      "band": "moderate",
-      "alert_level": "watch",
-      "last_alert_at": "2026-10-29T05:52:15.243765+00:00"
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
     }
   },
   "79": {
@@ -1320,9 +1320,9 @@
       "last_alert_at": null
     },
     "72h": {
-      "band": "moderate",
-      "alert_level": "watch",
-      "last_alert_at": "2026-10-29T05:52:15.243765+00:00"
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
     }
   },
   "86": {
@@ -1354,9 +1354,9 @@
       "last_alert_at": null
     },
     "72h": {
-      "band": "moderate",
-      "alert_level": "watch",
-      "last_alert_at": "2026-10-29T05:52:15.243765+00:00"
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
     }
   },
   "88": {
@@ -1383,14 +1383,14 @@
       "last_alert_at": null
     },
     "48h": {
-      "band": "high",
-      "alert_level": "warning",
-      "last_alert_at": "2026-10-29T05:52:15.120773+00:00"
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
     },
     "72h": {
-      "band": "high",
-      "alert_level": "warning",
-      "last_alert_at": "2026-10-29T05:52:15.243765+00:00"
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
     }
   },
   "90": {
@@ -1473,9 +1473,9 @@
       "last_alert_at": null
     },
     "72h": {
-      "band": "high",
-      "alert_level": "warning",
-      "last_alert_at": "2026-10-29T05:52:15.243765+00:00"
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
     }
   },
   "96": {
@@ -1485,14 +1485,14 @@
       "last_alert_at": null
     },
     "48h": {
-      "band": "moderate",
-      "alert_level": "watch",
-      "last_alert_at": "2026-10-29T05:52:15.120773+00:00"
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
     },
     "72h": {
-      "band": "high",
-      "alert_level": "warning",
-      "last_alert_at": "2026-10-29T05:52:15.243765+00:00"
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
     }
   },
   "97": {
@@ -1502,14 +1502,14 @@
       "last_alert_at": null
     },
     "48h": {
-      "band": "moderate",
-      "alert_level": "watch",
-      "last_alert_at": "2026-10-29T05:52:15.120773+00:00"
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
     },
     "72h": {
-      "band": "high",
-      "alert_level": "warning",
-      "last_alert_at": "2026-10-29T05:52:15.243765+00:00"
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
     }
   },
   "98": {
@@ -1536,14 +1536,14 @@
       "last_alert_at": null
     },
     "48h": {
-      "band": "high",
-      "alert_level": "warning",
-      "last_alert_at": "2026-10-29T05:52:15.120773+00:00"
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
     },
     "72h": {
-      "band": "high",
-      "alert_level": "warning",
-      "last_alert_at": "2026-10-29T05:52:15.243765+00:00"
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
     }
   },
   "100": {
@@ -1558,9 +1558,9 @@
       "last_alert_at": null
     },
     "72h": {
-      "band": "moderate",
-      "alert_level": "watch",
-      "last_alert_at": "2026-10-29T05:52:15.243765+00:00"
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
     }
   },
   "101": {
@@ -1660,9 +1660,9 @@
       "last_alert_at": null
     },
     "72h": {
-      "band": "moderate",
-      "alert_level": "watch",
-      "last_alert_at": "2026-10-29T05:52:15.243765+00:00"
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
     }
   },
   "110": {
@@ -1677,9 +1677,9 @@
       "last_alert_at": null
     },
     "72h": {
-      "band": "moderate",
-      "alert_level": "watch",
-      "last_alert_at": "2026-10-29T05:52:15.243765+00:00"
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
     }
   },
   "111": {
@@ -1728,9 +1728,9 @@
       "last_alert_at": null
     },
     "72h": {
-      "band": "moderate",
-      "alert_level": "watch",
-      "last_alert_at": "2026-10-29T05:52:15.243765+00:00"
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
     }
   },
   "114": {
@@ -1808,14 +1808,14 @@
       "last_alert_at": null
     },
     "48h": {
-      "band": "high",
-      "alert_level": "warning",
-      "last_alert_at": "2026-10-29T05:52:15.120773+00:00"
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
     },
     "72h": {
-      "band": "high",
-      "alert_level": "warning",
-      "last_alert_at": "2026-10-29T05:52:15.243765+00:00"
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
     }
   },
   "121": {
@@ -1859,18 +1859,28 @@
       "last_alert_at": null
     },
     "48h": {
-      "band": "high",
-      "alert_level": "warning",
-      "last_alert_at": "2026-10-29T05:52:15.120773+00:00"
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
     },
     "72h": {
-      "band": "high",
-      "alert_level": "warning",
-      "last_alert_at": "2026-10-29T05:52:15.243765+00:00"
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
     }
   },
   "124": {
     "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
       "band": "low",
       "alert_level": null,
       "last_alert_at": null
@@ -1881,10 +1891,30 @@
       "band": "low",
       "alert_level": null,
       "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
     }
   },
   "126": {
     "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
       "band": "low",
       "alert_level": null,
       "last_alert_at": null
@@ -1895,10 +1925,30 @@
       "band": "low",
       "alert_level": null,
       "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
     }
   },
   "134": {
     "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
       "band": "low",
       "alert_level": null,
       "last_alert_at": null
@@ -1916,10 +1966,30 @@
       "band": "low",
       "alert_level": null,
       "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
     }
   },
   "137": {
     "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
       "band": "low",
       "alert_level": null,
       "last_alert_at": null
@@ -1930,10 +2000,30 @@
       "band": "low",
       "alert_level": null,
       "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
     }
   },
   "139": {
     "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
       "band": "low",
       "alert_level": null,
       "last_alert_at": null
@@ -1944,10 +2034,30 @@
       "band": "low",
       "alert_level": null,
       "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
     }
   },
   "141": {
     "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
       "band": "low",
       "alert_level": null,
       "last_alert_at": null
@@ -1958,10 +2068,30 @@
       "band": "low",
       "alert_level": null,
       "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
     }
   },
   "143": {
     "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
       "band": "low",
       "alert_level": null,
       "last_alert_at": null
@@ -1972,6 +2102,16 @@
       "band": "low",
       "alert_level": null,
       "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
     }
   },
   "145": {
@@ -1979,10 +2119,30 @@
       "band": "low",
       "alert_level": null,
       "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
     }
   },
   "146": {
     "24h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "48h": {
+      "band": "low",
+      "alert_level": null,
+      "last_alert_at": null
+    },
+    "72h": {
       "band": "low",
       "alert_level": null,
       "last_alert_at": null

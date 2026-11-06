@@ -24,6 +24,7 @@ import argparse
 import json
 import shutil
 import sys
+from datetime import date as date_cls
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -172,6 +173,52 @@ def model_meta(model) -> dict:
     }
 
 
+def latest_station_count(out: Path, latest_date: str | None) -> int:
+    """Number of stations actually forecast on the newest snapshot date."""
+    if not latest_date:
+        return 0
+    path = out / "predictions" / f"{latest_date}.json"
+    if not path.exists():
+        return 0
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return 0
+    return len(payload.get(HORIZONS[0], []))
+
+
+def source_freshness() -> tuple[dict, bool]:
+    """Latest non-future per-source status and whether a critical source is stale."""
+    status_dir = ROOT / "system" / "data" / "processed" / "source_status"
+    if not status_dir.exists():
+        return {}, False
+    today = datetime.now(timezone.utc).date()
+    for path in sorted(status_dir.glob("*.json"), reverse=True):
+        try:
+            if date_cls.fromisoformat(path.stem) > today:
+                continue
+        except ValueError:
+            continue
+        try:
+            payload = json.loads(path.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            continue
+        sources: dict = {}
+        degraded = False
+        for name, info in payload.get("sources", {}).items():
+            sources[name] = {
+                "status": info.get("status"),
+                "last_date": info.get("last_date"),
+                "lag_days": info.get("lag_days"),
+                "max_lag_days": info.get("max_lag_days"),
+                "critical": bool(info.get("critical", False)),
+            }
+            if info.get("critical") and info.get("status") != "ok":
+                degraded = True
+        return sources, degraded
+    return {}, False
+
+
 def write_metadata(
     out: Path,
     dates: list[str],
@@ -179,6 +226,9 @@ def write_metadata(
     generated_at: str,
     station_count: int,
 ) -> None:
+    latest = dates[-1] if dates else None
+    latest_count = latest_station_count(out, latest)
+    sources, degraded = source_freshness()
     dump(
         out / "health.json",
         {
@@ -186,10 +236,17 @@ def write_metadata(
             "model_loaded": True,
             "model_version": model.version,
             "feature_store_dates": len(dates),
-            "latest_feature_date": dates[-1] if dates else None,
+            "latest_feature_date": latest,
             "timestamp": generated_at,
             "generated_at": generated_at,
-            "station_count": station_count,
+            # Stations with a prediction on the latest date. `trend_station_count`
+            # is the wider union over the trend window and can be larger when a
+            # station stops reporting.
+            "station_count": latest_count,
+            "trend_station_count": station_count,
+            "station_count_scope": "latest_feature_date",
+            "sources": sources,
+            "degraded": degraded,
             "notice": NOTICE,
         },
     )
@@ -267,10 +324,12 @@ def main(argv: list[str] | None = None) -> int:
         trend_dates = dates
     active = write_trends(out, trend_dates, stations)
     write_metadata(out, dates, model, generated_at, station_count=len(active))
+    latest_count = latest_station_count(out, dates[-1])
 
     print(
         f"Snapshot {'updated' if args.incremental else 'complete'}: "
-        f"{len(dates):,} dates, {len(active):,} active stations, D16 through {dates[-1]}."
+        f"{len(dates):,} dates, {latest_count:,} stations on {dates[-1]} "
+        f"({len(active):,} in the trend window), D16."
     )
     if new_dates:
         print(f"  scored {len(new_dates):,} new date(s): {new_dates[0]} .. {new_dates[-1]}")

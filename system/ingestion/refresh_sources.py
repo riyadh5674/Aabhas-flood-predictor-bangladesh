@@ -77,6 +77,18 @@ def _read_manifest_date(path: Path, key: str) -> date | None:
         return None
 
 
+def classify_freshness(last: date | None, end: date, max_lag_days: int) -> tuple[str, int | None]:
+    """Return ``(status, lag_days)`` for a source's last available date.
+
+    ``status`` is ``"ok"`` within the allowed lag, ``"stale"`` beyond it, and
+    ``"failed"`` when no usable date could be read.
+    """
+    if last is None:
+        return "failed", None
+    lag = max((end - last).days, 0)
+    return ("ok" if lag <= max_lag_days else "stale"), lag
+
+
 def refresh_source(source: dict, end: date, lookback_days: int) -> dict:
     script = ROOT / source["script"]
     if not script.exists():
@@ -106,8 +118,7 @@ def refresh_source(source: dict, end: date, lookback_days: int) -> dict:
     if last is None:
         return {"status": "failed", "detail": f"no usable date in {manifest}"}
 
-    lag = max((end - last).days, 0)
-    status = "ok" if lag <= source["max_lag_days"] else "stale"
+    status, lag = classify_freshness(last, end, source["max_lag_days"])
     return {
         "status": status,
         "last_date": last.isoformat(),
@@ -116,7 +127,7 @@ def refresh_source(source: dict, end: date, lookback_days: int) -> dict:
     }
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description="Refresh external data sources")
     ap.add_argument(
         "--end",
@@ -140,7 +151,7 @@ def main() -> int:
         help="Exit 0 even when a critical source is stale.",
     )
     ap.add_argument("--dry-run", action="store_true", help="Print the plan only.")
-    args = ap.parse_args()
+    args = ap.parse_args(argv)
 
     end = date.fromisoformat(args.end)
     selected = [s for s in SOURCES if not args.only or s["name"] in args.only.split(",")]

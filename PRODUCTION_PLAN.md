@@ -4,6 +4,16 @@
 **References:** `final workflow.md` (Phases 35–45 / stages 62–73), `FLAWS.md`, current repo, live static Space.
 **Purpose:** define exactly what remains to make the project fully dynamic and fit for a government organisation.
 
+> **Status update (2026-11-06):** the P0 data defect described in §0 is fixed. WP-1…WP-5 are
+> implemented — the three v2 sources are idempotent incremental refreshers,
+> `system/ingestion/refresh_sources.py` runs as **Step 0** of `daily_pipeline.py`, the feature
+> quality gate writes `system/data/processed/quality/<date>.json`, and the local feature store is
+> current through **2026-11-05** with critical null share **0.0**. The alert engine now has
+> approval, audit and `/alerts` endpoints with tests (external delivery still disabled), and
+> `reports/phase45_thesis.md` completes stage 73. Remaining work is **operational**: paid
+> always-on hosting / redeploy, formal threshold sign-off plus delivery credentials, and
+> republishing the public snapshot. The diagnosis below is retained as the 2026-11-04 history.
+
 ---
 
 ## 0. Bottom line
@@ -19,7 +29,7 @@ those "DONE" labels are only structurally true, and one stage is unfinished:
 | Production automation is a **single Windows PC + Task Scheduler**. | One powered-off machine stops the service. Not government-grade. |
 | The **live FastAPI service is down** (Render free, HTTP 000). Only the static snapshot works. | "Real-time" is really "yesterday's precomputed snapshot". |
 | The alert engine only writes **CSV + a stub**. Deliveries are disabled. | Stage 66 is not operational. |
-| There is **no thesis** (`reports/` Phase 45 missing). | Stage 73 TODO. |
+| There was **no thesis** (`reports/` Phase 45 missing). | Stage 73 was TODO (now written). |
 
 The workflow also states explicitly: *"Everything here is a research prototype, never an
 official warning service."* If a government body will use this operationally, that label can
@@ -36,20 +46,21 @@ Phases 35–45 map to stages 62–73:
 |---|---|---|
 | 62 | Location-based prediction | DONE |
 | 63 | Bangladesh flood-risk map | DONE |
-| 64 | **Automatic data acquisition** — source → ingestion → validation → preprocessing → features → model; raw append-only; QC on read | **PARTIAL** |
-| 65 | Real-time prediction pipeline | DONE structurally, **degraded in practice** |
-| 66 | **Early-warning engine** — probability → threshold → decision → alert (no-warning/watch/warning/high-risk), research-prototype label | **PARTIAL** |
+| 64 | **Automatic data acquisition** — source → ingestion → validation → preprocessing → features → model; raw append-only; QC on read | **DONE** — incremental source refresh + freshness telemetry + quality gate |
+| 65 | Real-time prediction pipeline | DONE (local/system); public live redeploy pending |
+| 66 | **Early-warning engine** — probability → threshold → decision → alert (no-warning/watch/warning/high-risk), research-prototype label | **DONE (prototype)** — engine + approval/audit/API; delivery disabled by config |
 | 67 | Citizen interface | DONE (static mode only in production) |
 | 68 | Administrator dashboard | DONE (static mode only in production) |
-| 69 | System architecture documented as built | DONE (must be updated after changes) |
-| 70 | System testing — label/split/sequence/feature/pipeline | DONE (32 tests; missing ingestion + alert + API contract tests) |
-| 71 | Final scientific evaluation | DONE (must be re-run after the feature repair) |
-| 72 | Reproducibility & documentation | DONE (must be updated) |
-| 73 | **Research report / thesis** | **TODO** |
+| 69 | System architecture documented as built | DONE (updated 2026-11-06) |
+| 70 | System testing — label/split/sequence/feature/pipeline | DONE (**84 tests**, incl. ingestion + alert + API contract) |
+| 71 | Final scientific evaluation | DONE (re-run; freeze 13/13, test split closed) |
+| 72 | Reproducibility & documentation | DONE (updated 2026-11-06) |
+| 73 | **Research report / thesis** | **DONE** — `reports/phase45_thesis.md` (draft; PDF/typesetting later) |
 
-So the literal remaining work is **stage 64, stage 66, stage 73**. But "government-grade,
-fully dynamic" adds non-code work that the workflow does not cover: always-on execution,
-managed hosting, auth, monitoring, alert delivery/approval, and data governance.
+The literal remaining work is **operational, not scientific**: paid always-on hosting and a
+public redeploy, formal threshold sign-off plus SMTP/webhook credentials, and the
+government-grade workstreams in §6–§7. Stages 64, 66 and 73 are now complete at the
+prototype level.
 
 ---
 

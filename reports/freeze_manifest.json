@@ -1,7 +1,19 @@
 {
-  "frozen_at": "2026-10-22T23:52:47",
+  "frozen_at": "2026-11-06T14:51:27",
   "seed": 20261008,
   "test_policy": "closed - no read in this freeze; D16 headline is the valid MI-6 read",
+  "revisions": [
+    {
+      "version": 1,
+      "date": "2026-10-22",
+      "note": "Initial lock: D16 frozen model, MI-6 test read, correction-sprint numbers."
+    },
+    {
+      "version": 2,
+      "date": "2026-11-06",
+      "note": "Documentation-only refresh. `reports/test_read_ledger.md` and `reports/mi6_test_read.md` were re-worded after the original lock; all 13 numeric/evidence checks still pass. No dataset, model, prediction, or headline number changed and the frozen test was not read."
+    }
+  ],
   "headline": {
     "val_2022_d16_per_horizon": {
       "label_24h": 0.9707888163782572,
@@ -119,7 +131,7 @@
   ],
   "environment": {
     "python": "3.13.7",
-    "platform": "Windows-11-10.0.26200-SP0",
+    "platform": "Windows-11-10.0.26300-SP0",
     "packages": {
       "numpy": "2.3.2",
       "pandas": "3.0.6",
@@ -133,8 +145,8 @@
     }
   },
   "git": {
-    "commit": "76bdbd137bce409db3e5bbf565890e0040d859d3",
-    "branch": "master",
+    "commit": "d00e3205149a47c9dcf71bfba1665b5c869abccf",
+    "branch": "main",
     "dirty": true
   },
   "files": [
@@ -261,8 +273,8 @@
     {
       "path": "reports/test_read_ledger.md",
       "exists": true,
-      "sha256": "61facbe76b23e6e1723216409bc73749c7d747a2ff26817790af0af096e564cd",
-      "bytes": 5766
+      "sha256": "84cdbcd28b3ade24a857911f931d467e06c8f492d8c48c36df9089991d264109",
+      "bytes": 5865
     },
     {
       "path": "reports/phase27_ml_vs_dl.md",
@@ -291,9 +303,9 @@
     {
       "path": "reports/mi6_test_read.md",
       "exists": true,
-      "sha256": "a49bf7397d076da6d97e510e9d4fa6e1ba8fe471f6c62fd28a772f35bf0974c2",
-      "bytes": 6129
+      "sha256": "e6e4e5b2b5ba20ac0837eb21b86f028aa558c71a0ab87941ca53bb885ef799d5",
+      "bytes": 6240
     }
   ],
-  "manifest_sha256": "82d1912a70223247cc4354e390ad5419af7b12accf227e4743d0e4b45bcdfddd"
+  "manifest_sha256": "e066d1561c1aa000174ac1e97344219447a1d9e4b8ca9e79fb5904c1d2934871"
 }

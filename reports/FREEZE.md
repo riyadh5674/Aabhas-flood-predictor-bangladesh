@@ -1,11 +1,18 @@
 # Frozen results — paper evidence lock
 
-**Frozen at:** 2026-10-22T23:52:47 · **Seed:** `20261008` · **Manifest SHA-256:** `82d1912a70223247cc4354e3…`
+**Frozen at:** 2026-11-06T14:51:27 · **Seed:** `20261008` · **Manifest SHA-256:** `e066d1561c1aa000174ac1e9…`
 
 **Verification:** ALL CHECKS PASS (13/13)
 
 This file freezes the numbers the IEEE paper may quote. A later change to any
 hashed artefact invalidates the manifest and must be documented as a new version.
+
+## Revision history
+
+| version | date | change |
+| ---: | --- | --- |
+| 1 | 2026-10-22 | Initial lock: D16 frozen model, MI-6 test read, correction-sprint numbers. |
+| 2 | 2026-11-06 | Documentation-only refresh. `reports/test_read_ledger.md` and `reports/mi6_test_read.md` were re-worded after the original lock; all 13 numeric/evidence checks still pass. No dataset, model, prediction, or headline number changed and the frozen test was not read. |
 
 ## Headline numbers
 
@@ -60,17 +67,17 @@ hashed artefact invalidates the manifest and must be documented as a new version
 | `reports/phase31_summary.json` | 4,374 | `2122d3f9ceb99c83f7a25d20c8f0538051031612851e9c334f9e9226f14fc05e` |
 | `reports/phase28_summary.json` | 1,782 | `f86d8379915c233062405f76c21e7ddd136f1686fec028a472b7b0a1659008d0` |
 | `reports/phase34_summary.json` | 12,971 | `c0b2a4635433185b9ee2ee0cea049fd82051a6cd568fc81b67205a79b2d02c86` |
-| `reports/test_read_ledger.md` | 5,766 | `61facbe76b23e6e1723216409bc73749c7d747a2ff26817790af0af096e564cd` |
+| `reports/test_read_ledger.md` | 5,865 | `84cdbcd28b3ade24a857911f931d467e06c8f492d8c48c36df9089991d264109` |
 | `reports/phase27_ml_vs_dl.md` | 20,394 | `4a86be65cebe95222c43d54dc80ed5822c91496ecc170d5d873a5fb5316d700a` |
 | `reports/phase31_robustness.md` | 14,117 | `693430167cbfad749c0591470e3214ed25d02e4aceeab5b3df72a3070af3a092` |
 | `reports/phase28_calibration.md` | 12,641 | `99f8b1b0573221b6e24ad08d3aa0648aa65100bac4cc8daeb9a69a2b6339b442` |
 | `reports/phase34_xai.md` | 17,511 | `296215e0afc8e385d930d380aca13178d863cb762ae861022d7f506d1706a8f4` |
-| `reports/mi6_test_read.md` | 6,129 | `a49bf7397d076da6d97e510e9d4fa6e1ba8fe471f6c62fd28a772f35bf0974c2` |
+| `reports/mi6_test_read.md` | 6,240 | `e6e4e5b2b5ba20ac0837eb21b86f028aa558c71a0ab87941ca53bb885ef799d5` |
 
 ## Environment
 
-- Python 3.13.7 on Windows-11-10.0.26200-SP0
-- Git: `76bdbd137bce` (dirty)
+- Python 3.13.7 on Windows-11-10.0.26300-SP0
+- Git: `d00e3205149a` (dirty)
 - numpy 2.3.2
 - pandas 3.0.6
 - scikit-learn 1.9.1

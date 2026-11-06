@@ -1,9 +1,9 @@
 # Aabhas Flood Predictor — Flaw Tracker (Updated)
 
 **Generated:** 2026-11-01  
-**Updated:** 2026-11-02  
-**Status:** Production-hardened (API + frontend in this checkout). Static HF Space remains the published demo; the FastAPI deployment path is ready for a Docker-capable host.  
-**Total open items:** 16 (tracked below)
+**Updated:** 2026-11-06  
+**Status:** Research/prototype complete — D16 frozen, test split closed (`test_rows_read = 0`), automated source refresh + quality gate wired into the daily pipeline, alert engine implemented (external delivery disabled by config), 84 Python + 21 frontend tests passing. Static HF Space remains the published demo; the FastAPI deployment path is ready for a Docker-capable host.  
+**Total open items:** 17 (tracked below; all remaining P0s need external accounts/credentials or a deploy)
 
 > This tracker reflects the current repo state. Items marked **Resolved** were fixed in this working tree (API middleware, security headers, rate limiting, freshness banner, ErrorBoundary, PWA/offline shell, trend endpoint, demo gating, tests, path portability).
 
@@ -31,9 +31,15 @@
 | R-07 | Trend performance | Batched `/predict/trend` (dates list, max 60), legacy per-date fallback, caching in inference. |
 | R-08 | PWA/offline | Service worker (offline shell, cache-first assets, network-first data/shell), manifest, PWA registration (prod only). |
 | R-09 | Portability | Hardcoded `D:\Flood predictor` roots replaced with `AABHAS_ROOT`/file-relative paths across ingestion/features/ops/alerts/map/ui/backtest; `sys.executable` used in pipeline. |
-| R-10 | Tests | `vitest` + 21 tests (`freshness`, `risk`, `format`, `aggregate`). `npm run typecheck` and `npm run build` pass. |
+| R-10 | Tests | `vitest` + 21 tests (`freshness`, `risk`, `format`, `aggregate`). `npm run typecheck` and `npm run build` pass. Python: **84 unittest tests** via `tests/run_tests.py` (label/split/sequence/feature regression, pipeline smoke, alert engine, ingestion + quality gate, API contract). |
 | R-11 | Stations resilience | Safe loading, error states in StationDetail; snapshot/static builds use precomputed data. |
 | R-12 | Query tuning | Backoff on retries, reasonable intervals, cache keys include horizon/date/mode. |
+| R-13 | Automated source refresh | GloFAS, NASA POWER soil and ERA5-Land fetchers are idempotent incremental refreshers; `system/ingestion/refresh_sources.py` validates freshness and writes `system/data/processed/source_status/<date>.json`; `system/ops/daily_pipeline.py` runs it as Step 0. `/health` and the freshness banner surface per-source status and a `degraded` flag. |
+| R-14 | Feature quality gate | `system/features/validate.py` checks critical-group null shares, required columns/types and active-station row count; writes `system/data/processed/quality/<date>.json` and fails the build unless `--allow-degraded`. Latest 2026-11-05 partition: 112 rows, critical null share 0.0, `passed: true`. |
+| R-15 | Snapshot metadata | `station_count` now scopes to the latest feature date (112) and `trend_station_count` reports the 90-day union (127), with `station_count_scope`; health metadata regenerated. |
+| R-16 | Alert engine correctness | Same-band re-fire after cooldown, escalation bypass, suppressed-escalation pending state, draft→approval→audit lifecycle, `/alerts/feed` + approve endpoint; no fabricated `last_alert_at`. |
+| R-17 | Freeze portability | `scripts/freeze_results.py` resolves `AABHAS_ROOT` / file-relative root and records manifest revision history; `--check` → `13/13`, 0 changed files. |
+| R-18 | Thesis | `reports/phase45_thesis.md` written with frozen numbers, architecture, incident analysis, limitations and reproducibility commands. |
 
 ---
 
@@ -42,8 +48,8 @@
 ### P0 — Still requires external action/config
 | ID | Area | Issue | Fix |
 |---|------|-------|-----|
-| O-01 | Data freshness (live) | Live Render currently behind (`2026-10-30`); local has `2026-11-01`. Snapshot Space also lags until rebuilt. | Run daily pipeline (`system/ops/daily_pipeline.py`) → upload features to HF → rebuild snapshot → redeploy (GitHub Actions workflow_dispatch or local). Needs HF secrets and external data sources. |
-| O-02 | Automated refresh | No scheduled ingestion→HF→deploy pipeline in repo. | Add scheduled GitHub Action (cron) with secrets, runbook, failure alerts. Document in DEPLOYMENT.md/README. |
+| O-01 | Data freshness (live) | **Local** sources and feature store are current through `2026-11-05` (GloFAS `2026-11-05`, POWER soil `2026-11-02`, ERA5-Land `2026-11-03`; quality gate green). The **public Render service and HF Static Space** still serve an older snapshot until they are redeployed; this is a deployment action, not a pipeline defect. | Run `system/ops/refresh_and_publish.py --catchup`, rebuild/upload the snapshot, and redeploy (Render deploy hook or manual). Needs HF secrets and a live host. |
+| O-02 | Always-on scheduling | The refresh itself is implemented and wired (`refresh_sources.py` Step 0 → features → quality gate → publish), but execution still depends on one Windows Task Scheduler machine; no managed cloud scheduler is configured. | Add a cloud runner (Cloud Run Job + Scheduler, GitHub Actions cron with secrets, or an agency VM) with retry/lock/run-summary. Documented in `DEPLOYMENT.md` §3. |
 | O-03 | AuthZ (optional) | Public API has no auth; mitigated by rate limiting + single-instance deployment. | If exposed publicly beyond same-origin, add API key/JWT and admin auth. Not required for same-origin static+API behind proxy. |
 
 ### P1
@@ -76,10 +82,20 @@
 
 ## Quick Verification
 ```powershell
+# Python suite (from repo root)
+.\.venv\Scripts\python.exe tests\run_tests.py        # 84 tests, exit 0
+
+# Frozen evidence
+.\.venv\Scripts\python.exe scripts\freeze_results.py --check   # 13/13; changed files 0
+
+# Source freshness + feature quality (latest date)
+Get-Content system\data\processed\source_status\2026-11-05.json
+Get-Content system\data\processed\quality\latest.json
+
 # API
 curl http://127.0.0.1:8765/health
-curl "http://127.0.0.1:8765/predict/trend?station_id=1&dates=2026-10-25,2026-11-01"
-curl -i -X GET "http://127.0.0.1:8765/predict/all?date=2026-11-01"  # check 429 after burst
+curl "http://127.0.0.1:8765/predict/trend?station_id=1&dates=2026-10-25,2026-11-05"
+curl -i -X GET "http://127.0.0.1:8765/predict/all?date=2026-11-05"  # check 429 after burst
 
 # Frontend
 cd system/web

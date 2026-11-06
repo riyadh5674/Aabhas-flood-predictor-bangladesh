@@ -2,7 +2,7 @@
 
 **Version:** 1.0  
 **Date:** 2026-11-04  
-**Status:** DRAFT SKELETON — For Writing
+**Status:** SUPERSEDED — the written report is [`reports/phase45_thesis.md`](../reports/phase45_thesis.md) (2026-11-06). This skeleton is retained as the outline.
 
 ---
 
