@@ -31,11 +31,10 @@ REP = ROOT / "reports"
 OUT = REP / "freeze_manifest.json"
 DOC = REP / "FREEZE.md"
 
-# Files that define the paper's quantitative evidence.
-FILES = [
+# Files that define the paper's quantitative evidence. These are required and
+# hash-checked on every run.
+CORE_FILES = [
     "data/processed/experimental_dataset.csv",
-    "data/processed/mi_v2_features.csv",
-    "data/processed/mi8_features.csv",
     "models/final_v2/selected_model_v2.pkl",
     "models/final_v2/final_config_v2.json",
     "reports/p2p3_rescore/summary.json",
@@ -61,6 +60,15 @@ FILES = [
     "reports/mi6_test_read.md",
 ]
 
+# Large, regenerable deep-learning experiment caches. They are not inputs to the
+# frozen D16 result and are not distributed with the slim repository checkout.
+# If present, their hashes are still recorded; if absent, verification skips
+# them instead of failing the D16 evidence lock.
+OPTIONAL_FILES = {
+    "data/processed/mi_v2_features.csv": "regenerable MI-2 feature cache (~132 MiB)",
+    "data/processed/mi8_features.csv": "regenerable MI-8 feature cache (~157 MiB)",
+}
+
 PACKAGES = ["numpy", "pandas", "scikit-learn", "scipy", "xgboost", "lightgbm",
             "torch", "matplotlib", "shap"]
 
@@ -80,6 +88,16 @@ REVISIONS = [
             "`reports/mi6_test_read.md` were re-worded after the original lock; "
             "all 13 numeric/evidence checks still pass. No dataset, model, "
             "prediction, or headline number changed and the frozen test was not read."
+        ),
+    },
+    {
+        "version": 3,
+        "date": "2026-11-07",
+        "note": (
+            "Mark the two multi-hundred-MB MI feature caches as optional, "
+            "regenerable artefacts. They were never shipped in git and are not "
+            "inputs to the frozen D16 result. All core D16 evidence files remain "
+            "strictly hash-checked; no number, model, or dataset changed."
         ),
     },
 ]
@@ -154,7 +172,7 @@ def build() -> dict:
 
     # ---- hashes ------------------------------------------------------
     files = []
-    for rel in FILES:
+    for rel in CORE_FILES:
         p = ROOT / rel
         if not p.exists():
             files.append({"path": rel, "exists": False, "sha256": None, "bytes": None})
@@ -162,6 +180,20 @@ def build() -> dict:
         files.append({"path": rel, "exists": True, "sha256": sha256(p), "bytes": p.stat().st_size})
     check("all frozen files exist", all(f["exists"] for f in files),
           f"{sum(f['exists'] for f in files)}/{len(files)}")
+
+    optional = []
+    for rel, reason in OPTIONAL_FILES.items():
+        p = ROOT / rel
+        entry = {
+            "path": rel,
+            "optional": True,
+            "reason": reason,
+            "exists": p.exists(),
+            "sha256": sha256(p) if p.exists() else None,
+            "bytes": p.stat().st_size if p.exists() else None,
+        }
+        optional.append(entry)
+    files.extend(optional)
 
     pkgs = {}
     for name in PACKAGES:
@@ -203,7 +235,14 @@ def build() -> dict:
         "files": files,
     }
     manifest["manifest_sha256"] = hashlib.sha256(
-        json.dumps(sorted((f["path"], f["sha256"]) for f in files), sort_keys=True).encode()
+        json.dumps(
+            sorted(
+                (f["path"], f["sha256"])
+                for f in files
+                if not f.get("optional")
+            ),
+            sort_keys=True,
+        ).encode()
     ).hexdigest()
     return manifest
 
@@ -262,10 +301,15 @@ def write_doc(m: dict) -> None:
         "| --- | ---: | --- |",
     ]
     for f in m["files"]:
+        label = f"`{f['path']}`"
+        if f.get("optional"):
+            label += " *(optional)*"
         if f["exists"]:
-            lines.append(f"| `{f['path']}` | {f['bytes']:,} | `{f['sha256']}` |")
+            lines.append(f"| {label} | {f['bytes']:,} | `{f['sha256']}` |")
+        elif f.get("optional"):
+            lines.append(f"| {label} | — | not shipped (regenerable) |")
         else:
-            lines.append(f"| `{f['path']}` | — | **MISSING** |")
+            lines.append(f"| {label} | — | **MISSING** |")
     lines += [
         "",
         "## Environment",
@@ -307,7 +351,17 @@ def main(argv=None) -> int:
             return 2
         old = json.loads(OUT.read_text(encoding="utf-8"))
         old_h = {f["path"]: f["sha256"] for f in old["files"]}
-        bad = [f["path"] for f in m["files"] if old_h.get(f["path"]) != f["sha256"]]
+        optional_paths = set(OPTIONAL_FILES)
+        bad = []
+        for f in m["files"]:
+            old_sha = old_h.get(f["path"])
+            if old_sha == f["sha256"]:
+                continue
+            # A regenerable cache that was absent at the lock and is still
+            # absent (or has since been downloaded) is not evidence drift.
+            if f["path"] in optional_paths and old_sha is None:
+                continue
+            bad.append(f["path"])
         if bad:
             print("CHANGED FILES:")
             for b in bad:

@@ -1,5 +1,5 @@
 {
-  "frozen_at": "2026-11-06T14:51:27",
+  "frozen_at": "2026-11-07T14:06:19",
   "seed": 20261008,
   "test_policy": "closed - no read in this freeze; D16 headline is the valid MI-6 read",
   "revisions": [
@@ -12,6 +12,11 @@
       "version": 2,
       "date": "2026-11-06",
       "note": "Documentation-only refresh. `reports/test_read_ledger.md` and `reports/mi6_test_read.md` were re-worded after the original lock; all 13 numeric/evidence checks still pass. No dataset, model, prediction, or headline number changed and the frozen test was not read."
+    },
+    {
+      "version": 3,
+      "date": "2026-11-07",
+      "note": "Mark the two multi-hundred-MB MI feature caches as optional, regenerable artefacts. They were never shipped in git and are not inputs to the frozen D16 result. All core D16 evidence files remain strictly hash-checked; no number, model, or dataset changed."
     }
   ],
   "headline": {
@@ -126,7 +131,7 @@
     {
       "check": "all frozen files exist",
       "pass": true,
-      "detail": "26/26"
+      "detail": "24/24"
     }
   ],
   "environment": {
@@ -139,13 +144,13 @@
       "scipy": "1.18.1",
       "xgboost": "3.4.1",
       "lightgbm": "4.7.0",
-      "torch": "2.14.1+cpu",
+      "torch": "2.14.0",
       "matplotlib": "3.10.6",
-      "shap": "0.53.0"
+      "shap": null
     }
   },
   "git": {
-    "commit": "d00e3205149a47c9dcf71bfba1665b5c869abccf",
+    "commit": "312fb3818b3f5588263ce99d32a48102d0f51cae",
     "branch": "main",
     "dirty": true
   },
@@ -155,18 +160,6 @@
       "exists": true,
       "sha256": "a6748529083fcdceb8bb8a657b067bf12b5c861f3a7a6b09c8977ea63be73c8e",
       "bytes": 125682549
-    },
-    {
-      "path": "data/processed/mi_v2_features.csv",
-      "exists": true,
-      "sha256": "16287675df99eb5afb521c5c99252efd119c480fd1c7166435519fd43ff62a3c",
-      "bytes": 138077364
-    },
-    {
-      "path": "data/processed/mi8_features.csv",
-      "exists": true,
-      "sha256": "57ea7e8ccbf15c9ab4df153834f3aa1d219ad7addd5aef9725970f7479d23a6f",
-      "bytes": 164445566
     },
     {
       "path": "models/final_v2/selected_model_v2.pkl",
@@ -305,7 +298,23 @@
       "exists": true,
       "sha256": "e6e4e5b2b5ba20ac0837eb21b86f028aa558c71a0ab87941ca53bb885ef799d5",
       "bytes": 6240
+    },
+    {
+      "path": "data/processed/mi_v2_features.csv",
+      "optional": true,
+      "reason": "regenerable MI-2 feature cache (~132 MiB)",
+      "exists": false,
+      "sha256": null,
+      "bytes": null
+    },
+    {
+      "path": "data/processed/mi8_features.csv",
+      "optional": true,
+      "reason": "regenerable MI-8 feature cache (~157 MiB)",
+      "exists": false,
+      "sha256": null,
+      "bytes": null
     }
   ],
-  "manifest_sha256": "e066d1561c1aa000174ac1e97344219447a1d9e4b8ca9e79fb5904c1d2934871"
+  "manifest_sha256": "67e88d1be7eeaae7afd0816c0f9e0b6238aec6abfb07664b96fec7abb691f750"
 }

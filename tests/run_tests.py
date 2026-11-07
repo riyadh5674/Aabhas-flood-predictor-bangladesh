@@ -24,7 +24,7 @@ from tests.test_alert_engine import (
     AlertMappingTests,
     AlertWorkflowTests,
 )
-from tests.test_api_contract import APIContractTests
+from tests.test_api_contract import APIContractTests, BundledDemoStoreTests
 from tests.test_feature_regression import FeatureRegressionTests
 from tests.test_ingestion_sources import (
     FreshnessTests,
@@ -54,6 +54,7 @@ def main():
         FreshnessTests,
         QualityGateTests,
         APIContractTests,
+        BundledDemoStoreTests,
     ):
         suite.addTests(loader.loadTestsFromTestCase(test_class))
 

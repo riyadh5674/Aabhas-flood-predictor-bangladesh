@@ -1,6 +1,6 @@
 # Frozen results — paper evidence lock
 
-**Frozen at:** 2026-11-06T14:51:27 · **Seed:** `20261008` · **Manifest SHA-256:** `e066d1561c1aa000174ac1e9…`
+**Frozen at:** 2026-11-07T14:06:19 · **Seed:** `20261008` · **Manifest SHA-256:** `67e88d1be7eeaae7afd0816c…`
 
 **Verification:** ALL CHECKS PASS (13/13)
 
@@ -13,6 +13,7 @@ hashed artefact invalidates the manifest and must be documented as a new version
 | ---: | --- | --- |
 | 1 | 2026-10-22 | Initial lock: D16 frozen model, MI-6 test read, correction-sprint numbers. |
 | 2 | 2026-11-06 | Documentation-only refresh. `reports/test_read_ledger.md` and `reports/mi6_test_read.md` were re-worded after the original lock; all 13 numeric/evidence checks still pass. No dataset, model, prediction, or headline number changed and the frozen test was not read. |
+| 3 | 2026-11-07 | Mark the two multi-hundred-MB MI feature caches as optional, regenerable artefacts. They were never shipped in git and are not inputs to the frozen D16 result. All core D16 evidence files remain strictly hash-checked; no number, model, or dataset changed. |
 
 ## Headline numbers
 
@@ -41,15 +42,13 @@ hashed artefact invalidates the manifest and must be documented as a new version
 | event analysis is dev-only | PASS | 0 |
 | event analysis has all cells | PASS | 7 |
 | dataset row count | PASS | 200665 |
-| all frozen files exist | PASS | 26/26 |
+| all frozen files exist | PASS | 24/24 |
 
 ## Artefact hashes
 
 | file | bytes | SHA-256 |
 | --- | ---: | --- |
 | `data/processed/experimental_dataset.csv` | 125,682,549 | `a6748529083fcdceb8bb8a657b067bf12b5c861f3a7a6b09c8977ea63be73c8e` |
-| `data/processed/mi_v2_features.csv` | 138,077,364 | `16287675df99eb5afb521c5c99252efd119c480fd1c7166435519fd43ff62a3c` |
-| `data/processed/mi8_features.csv` | 164,445,566 | `57ea7e8ccbf15c9ab4df153834f3aa1d219ad7addd5aef9725970f7479d23a6f` |
 | `models/final_v2/selected_model_v2.pkl` | 5,496,212 | `0b1cd34074d860b6797889410728905003909902bc1613a7da512a77291a0d79` |
 | `models/final_v2/final_config_v2.json` | 3,721 | `091f08bbad0c3bb4d2a160eb1618fb6c4a97a58933afb854108a3b64215f1d37` |
 | `reports/p2p3_rescore/summary.json` | 7,921 | `b0ab1f97723da72d795054f2de271dd79a5b1b70f70c754fbe705ba97e710300` |
@@ -73,20 +72,22 @@ hashed artefact invalidates the manifest and must be documented as a new version
 | `reports/phase28_calibration.md` | 12,641 | `99f8b1b0573221b6e24ad08d3aa0648aa65100bac4cc8daeb9a69a2b6339b442` |
 | `reports/phase34_xai.md` | 17,511 | `296215e0afc8e385d930d380aca13178d863cb762ae861022d7f506d1706a8f4` |
 | `reports/mi6_test_read.md` | 6,240 | `e6e4e5b2b5ba20ac0837eb21b86f028aa558c71a0ab87941ca53bb885ef799d5` |
+| `data/processed/mi_v2_features.csv` *(optional)* | — | not shipped (regenerable) |
+| `data/processed/mi8_features.csv` *(optional)* | — | not shipped (regenerable) |
 
 ## Environment
 
 - Python 3.13.7 on Windows-11-10.0.26300-SP0
-- Git: `d00e3205149a` (dirty)
+- Git: `312fb3818b3f` (dirty)
 - numpy 2.3.2
 - pandas 3.0.6
 - scikit-learn 1.9.1
 - scipy 1.18.1
 - xgboost 3.4.1
 - lightgbm 4.7.0
-- torch 2.14.1+cpu
+- torch 2.14.0
 - matplotlib 3.10.6
-- shap 0.53.0
+- shap not installed
 
 ## Test policy at freeze
 
