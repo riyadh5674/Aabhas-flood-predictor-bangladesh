@@ -61,11 +61,11 @@ band, plain-language guidance and an auditable trail.
 
 | Map | Station detail |
 |---|---|
-| <img src="docs/screenshots/map.png" alt="Risk map" /> | <img src="docs/screenshots/station-detail.png" alt="Station detail" /> |
+| <img src="docs/screenshots/map.png" alt="Risk map" width="100%" /> | <img src="docs/screenshots/station-detail.png" alt="Station detail" width="100%" /> |
 
 | Model & evidence | Alerts |
 |---|---|
-| <img src="docs/screenshots/model.png" alt="Model page" /> | <img src="docs/screenshots/alerts.png" alt="Alerts page" /> |
+| <img src="docs/screenshots/model.png" alt="Model page" width="100%" /> | <img src="docs/screenshots/alerts.png" alt="Alerts page" width="100%" /> |
 
 > **Research prototype, not an official warning service.** FFWC advisories and government
 > instructions always take precedence. The app labels its own data freshness and never

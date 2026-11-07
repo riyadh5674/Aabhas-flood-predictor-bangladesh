@@ -40,6 +40,7 @@
 | R-16 | Alert engine correctness | Same-band re-fire after cooldown, escalation bypass, suppressed-escalation pending state, draft→approval→audit lifecycle, `/alerts/feed` + approve endpoint; no fabricated `last_alert_at`. |
 | R-17 | Freeze portability | `scripts/freeze_results.py` resolves `AABHAS_ROOT` / file-relative root and records manifest revision history; `--check` → `13/13`, 0 changed files. |
 | R-18 | Thesis | `reports/phase45_thesis.md` written with frozen numbers, architecture, incident analysis, limitations and reproducibility commands. |
+| R-19 | Public demo | Static build published to GitHub Pages (`gh-pages`) with a sub-path-aware base, service worker and manifest; investor pitch, demo script, architecture and community docs added. |
 
 ---
 
@@ -48,7 +49,7 @@
 ### P0 — Still requires external action/config
 | ID | Area | Issue | Fix |
 |---|------|-------|-----|
-| O-01 | Data freshness (live) | **Local** sources and feature store are current through `2026-11-05` (GloFAS `2026-11-05`, POWER soil `2026-11-02`, ERA5-Land `2026-11-03`; quality gate green). The **public Render service and HF Static Space** still serve an older snapshot until they are redeployed; this is a deployment action, not a pipeline defect. | Run `system/ops/refresh_and_publish.py --catchup`, rebuild/upload the snapshot, and redeploy (Render deploy hook or manual). Needs HF secrets and a live host. |
+| O-01 | Data freshness (live) | **Local** sources and feature store are current through `2026-11-05` (GloFAS `2026-11-05`, POWER soil `2026-11-02`, ERA5-Land `2026-11-03`; quality gate green). The public GitHub Pages demo serves the snapshot built on 2026-11-06. The **Render API** still serves its last deployed snapshot until redeployed; this is a deployment action, not a pipeline defect. | Run `system/ops/refresh_and_publish.py --catchup`, rebuild/upload the snapshot, and redeploy (Render deploy hook or manual). Needs HF secrets and a live host. |
 | O-02 | Always-on scheduling | The refresh itself is implemented and wired (`refresh_sources.py` Step 0 → features → quality gate → publish), but execution still depends on one Windows Task Scheduler machine; no managed cloud scheduler is configured. | Add a cloud runner (Cloud Run Job + Scheduler, GitHub Actions cron with secrets, or an agency VM) with retry/lock/run-summary. Documented in `DEPLOYMENT.md` §3. |
 | O-03 | AuthZ (optional) | Public API has no auth; mitigated by rate limiting + single-instance deployment. | If exposed publicly beyond same-origin, add API key/JWT and admin auth. Not required for same-origin static+API behind proxy. |
 

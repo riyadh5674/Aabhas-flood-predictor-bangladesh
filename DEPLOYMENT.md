@@ -281,6 +281,37 @@ Notes:
 - Source freshness and the feature-quality result are available locally under
   `system/data/processed/source_status/` and `system/data/processed/quality/`.
 
+### GitHub Pages (free, always-on public demo)
+
+The current public demo is a static build published to the `gh-pages` branch:
+
+**https://riyadh5674.github.io/Aabhas-flood-predictor-bangladesh/**
+
+Build and publish manually:
+
+```powershell
+# 1. Snapshot (from the local feature store)
+.\.venv\Scripts\python.exe system\deploy\build_static_snapshot.py
+
+# 2. Build for the project sub-path, without source maps
+cd system\web
+$env:VITE_AABHAS_STATIC_SNAPSHOT="true"
+$env:AABHAS_BASE="/Aabhas-flood-predictor-bangladesh/"
+$env:AABHAS_SOURCEMAP="false"
+npm run build
+
+# 3. Publish dist/ to gh-pages (force-push an orphan deploy repo)
+git -C ..\.. subtree push --prefix system\web\dist origin gh-pages
+```
+
+`AABHAS_BASE` makes asset URLs, the service worker scope, the manifest and all data
+fetches sub-path aware. For an automated rebuild from the HF feature dataset, run the
+**Publish static demo to GitHub Pages** workflow (`.github/workflows/pages.yml`,
+manual trigger; requires `HF_FEATURE_DATASET` and optional `HF_TOKEN`).
+
+Pages source is **Deploy from a branch → `gh-pages` → `/`**. The site is served over
+HTTPS at no cost and needs no server process.
+
 ---
 
 ## ☁️ Render deployment
