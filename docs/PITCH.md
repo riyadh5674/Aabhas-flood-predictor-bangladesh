@@ -96,7 +96,7 @@ The strongest asset is not a slide — it is a reproducible evidence base.
 | Missed floods vs. persistence | **−58 %** | `reports/phase43_final_evaluation.md` |
 | Out-of-fold calibration error | **0.0031** | `reports/phase33_selection.md` |
 | Spatial robustness points vs. persistence | **63 / 63** | `reports/phase31_robustness.md` |
-| Automated tests | **84 Python + 21 frontend** | `tests/`, `system/web` |
+| Automated tests | **86 Python + 21 frontend** | `tests/`, `system/web` |
 | Frozen evidence checks | **13 / 13** | `scripts/freeze_results.py --check` |
 | Data coverage | **2,617 days**, **153 stations** | `system/data/processed/model_ready/` |
 

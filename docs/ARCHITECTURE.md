@@ -155,17 +155,21 @@ GitHub Actions build → snapshot + Vite build → GitHub Pages (gh-pages)
 Used for: stakeholder demos, GitHub Pages, Hugging Face Static Space.
 Limitation: no live prediction, no alert delivery.
 
-### B. Single-container live deployment
+### B. Single-container live deployment (current)
 
 ```
 Docker image
   ├── FastAPI (uvicorn) on $PORT
-  └── compiled SPA + dist/
+  ├── frozen D16 model (models/final_v2/selected_model_v2.pkl)
+  ├── bundled 120-day feature store (system/data/demo/model_ready/)
+  └── compiled SPA (dist/)
         └── same origin, no CORS
 ```
 
-Used for: Render / Cloud Run / any Docker host. Environment variables and the full
-runbook are in [`DEPLOYMENT.md`](../DEPLOYMENT.md).
+Used for: Render / Cloud Run / any Docker host. The bundled slice makes the image
+self-contained; `AABHAS_FEATURE_STORE` or `HF_FEATURE_DATASET` can point at the full
+2,617-date store when available. Environment variables and the full runbook are in
+[`DEPLOYMENT.md`](../DEPLOYMENT.md).
 
 ### C. Daily data refresh
 

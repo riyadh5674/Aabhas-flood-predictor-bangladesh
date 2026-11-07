@@ -3,7 +3,8 @@
 For investors, agencies, NGOs and reviewers. The goal is to show **one real decision**
 being made with Aabhas — not to tour every screen.
 
-**Live demo:** https://riyadh5674.github.io/Aabhas-flood-predictor-bangladesh/
+**Static demo:** https://riyadh5674.github.io/Aabhas-flood-predictor-bangladesh/
+**Live API + app:** https://aabhas-flood-predictor-xckw.onrender.com
 **Local fallback:** see §6.
 
 ---
@@ -11,6 +12,10 @@ being made with Aabhas — not to tour every screen.
 ## Before you start
 
 - Open the live demo in a desktop browser at 1440 px width or wider.
+- The hosted API ships a **120-day** feature slice (2026-07-09 → 2026-11-05). The
+  latest date is post-monsoon and mostly low risk; for the high-risk walkthrough
+  select **2026-09-11** in the date picker (10 stations above Low, peak probability
+  ≈ 0.99). The static snapshot and the live API tell the same story.
 - Have the repository open in a second tab.
 - Optional: open `reports/phase43_final_evaluation.md` for the evidence Q&A.
 - Say this once, early: *"This is a research prototype and decision-support tool, not an
@@ -61,7 +66,7 @@ Show:
 Then switch to the repository and show:
 
 ```powershell
-.\.venv\Scripts\python.exe tests\run_tests.py          # 84/84
+.\.venv\Scripts\python.exe tests\run_tests.py          # 86/86
 .\.venv\Scripts\python.exe scripts\freeze_results.py --check   # 13/13
 ```
 

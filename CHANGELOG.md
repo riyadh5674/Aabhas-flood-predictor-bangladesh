@@ -3,6 +3,37 @@
 All notable changes to Aabhas are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [SemVer](https://semver.org/).
 
+## [1.1.0] — 2026-11-07
+
+### Added
+
+- **Self-contained live API on Render** — the Docker image now bundles a tracked
+  120-day, 112-station feature-store slice (`system/data/demo/model_ready/`), so the
+  frozen D16 model serves real predictions with no external credentials.
+- `scripts/build_demo_store.py` to refresh the bundled slice from the full local store.
+- `AABHAS_FEATURE_STORE` override plus automatic fallback to the bundled store.
+- Bundled-store and prediction-date regression tests.
+
+### Changed
+
+- Render is no longer dependent on Hugging Face secrets; the full HF dataset remains
+  an optional override for deployment with the complete 2,617-date history.
+- The Docker image now includes `system/features` and `system/alerts` so `/monitoring`
+  and the alert feed work in production.
+- The Python test suite is tracked in git (ad-hoc script ignores are root-anchored).
+
+### Fixed
+
+- Prediction rows now carry the requested date even when an older feature partition
+  omits the `date` column.
+- Default-branch drift: `main` and `master` now point at the same commit so Render's
+  connected branch receives the same code.
+
+### Verified
+
+- 86/86 Python tests pass.
+- `/health` reports `model_loaded: true`, `feature_store_dates: 120`.
+
 ## [1.0.0] — 2026-11-07
 
 ### Added

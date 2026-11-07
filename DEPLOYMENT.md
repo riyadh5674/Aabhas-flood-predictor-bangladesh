@@ -1,20 +1,22 @@
 # Aabhas Flood Predictor — Deployment Guide
 
-**Updated:** 2026-11-06
+**Updated:** 2026-11-07
 
 ## 🎯 Deployed architecture
 
 The production app is a single FastAPI container that serves both the JSON API
-and the compiled React SPA. It runs on Render's free tier and reads feature
-partitions from a private Hugging Face Dataset on demand.
+and the compiled React SPA. It runs on Render's free tier with a tracked,
+120-day feature-store slice bundled into the image. The full feature store can
+optionally be read from a private Hugging Face Dataset.
 
 | Component | Host | URL |
 |-----------|------|-----|
-| Web app + API | Render (Docker, free) | <https://aabhas-flood-predictor.onrender.com> |
-| Feature store | HF Dataset (private) | `HF_FEATURE_DATASET` (e.g. `riyadhuggy/aabhas-flood-features`) |
+| Web app + API | Render (Docker, free) | <https://aabhas-flood-predictor-xckw.onrender.com> |
+| Static snapshot (demo) | GitHub Pages | <https://riyadh5674.github.io/Aabhas-flood-predictor-bangladesh/> |
+| Bundled demo features | This repository | `system/data/demo/model_ready/` (120 dates) |
+| Full feature store (optional) | HF Dataset (private) | `HF_FEATURE_DATASET` (e.g. `riyadhuggy/aabhas-flood-features`) |
 | Raw/reference inputs | HF Dataset (private, optional) | `HF_RAW_DATASET` (used by scheduled refresh) |
-| Static snapshot (demo) | HF Static Space | <https://riyadhuggy-aabhas-flood-outlook.static.hf.space/> |
-| Model + API code | GitHub | `riyadh5674/flood-predictor` |
+| Model + API code | GitHub | `riyadh5674/Aabhas-flood-predictor-bangladesh` |
 
 ```
                     ┌───────────────────────────────┐
@@ -220,7 +222,7 @@ One-time setup:
 4. Add repository variable `AABHAS_REFRESH_ENABLED=true`. Scheduled runs are
    skipped until this is set, so a fork without secrets stays green.
 5. Optionally set variable `AABHAS_HEALTH_URL` (default:
-   `https://aabhas-flood-predictor.onrender.com/health`).
+   `https://aabhas-flood-predictor-xckw.onrender.com/health`).
 
 What the workflow does:
 
@@ -324,26 +326,44 @@ HTTPS at no cost and needs no server process.
 - `autoDeploy: true` on pushes to the connected branch;
 - no pinned `PORT` (the container reads Render's `$PORT`).
 
-Required Render environment variables:
+The image is **self-contained**: `system/data/demo/model_ready/` ships a tracked
+120-day slice of the model-ready feature store, and `models/final_v2/selected_model_v2.pkl`
+is included via `.dockerignore`. No secrets are required for a working demo.
 
-| Variable | Value |
-|----------|-------|
-| `HF_FEATURE_DATASET` | private feature-store dataset ID |
-| `HF_TOKEN` | read token for that dataset |
-| `HF_FEATURE_REVISION` | `main` |
-| `AABHAS_PREVIEW_MODE` | `false` |
-| `AABHAS_ENABLE_DOCS` | `false` |
-| `AABHAS_RATE_LIMIT_PER_MINUTE` | `180` |
-| `AABHAS_RATE_LIMIT_PREDICT_PER_MINUTE` | `60` |
-| `AABHAS_ALLOWED_ORIGINS` | only if the SPA is hosted separately |
+Environment variables:
 
-First deploy: Render Dashboard → New → Blueprint → select this repo.
+| Variable | Required | Value |
+|----------|----------|-------|
+| `AABHAS_FEATURE_STORE` | recommended | `system/data/demo/model_ready` |
+| `HF_FEATURE_DATASET` | optional | private full feature-store dataset ID |
+| `HF_TOKEN` | optional | read token for that dataset |
+| `HF_FEATURE_REVISION` | optional | `main` |
+| `AABHAS_PREVIEW_MODE` | no | `false` |
+| `AABHAS_ENABLE_DOCS` | no | `false` |
+| `AABHAS_RATE_LIMIT_PER_MINUTE` | no | `180` |
+| `AABHAS_RATE_LIMIT_PREDICT_PER_MINUTE` | no | `60` |
+| `AABHAS_ALLOWED_ORIGINS` | no | only if the SPA is hosted separately |
+
+When `AABHAS_FEATURE_STORE` / `HF_FEATURE_DATASET` are absent, the API falls back to
+the bundled demo store automatically. Refresh that slice after new dates are published:
+
+```powershell
+python scripts\build_demo_store.py --days 120
+git add system/data/demo && git commit -m "chore: refresh bundled demo features"
+git push origin main
+```
+
+First deploy: Render Dashboard → New → Blueprint → select this repo. Render deploys
+the branch configured on the service; this repository keeps `main` and `master` in
+sync so either choice receives the same code.
+
 Verify:
 
 ```powershell
-curl https://aabhas-flood-predictor.onrender.com/health
-curl https://aabhas-flood-predictor.onrender.com/dates
-curl "https://aabhas-flood-predictor.onrender.com/predict/trend?station_id=1&dates=2026-11-04,2026-11-05"
+curl https://aabhas-flood-predictor-xckw.onrender.com/health
+curl https://aabhas-flood-predictor-xckw.onrender.com/dates
+curl "https://aabhas-flood-predictor-xckw.onrender.com/predict/trend?station_id=1&dates=2026-11-04,2026-11-05"
+curl "https://aabhas-flood-predictor-xckw.onrender.com/predict/all?date=2026-11-05&horizon=24h"
 ```
 
 Health should report `model_loaded: true`, `model_version: "D16"`, and a recent
@@ -433,10 +453,13 @@ store (Redis). The current implementation is intentionally single-instance.
 ## 🐛 Troubleshooting
 
 ### Live app says "Live API unavailable" / no forecasts
-- Check `https://aabhas-flood-predictor.onrender.com/health`.
+- Check `https://aabhas-flood-predictor-xckw.onrender.com/health`.
 - If `model_loaded=false`, inspect Render logs for a missing model file or
   Python dependency.
-- If `latest_feature_age_days` is large, run the refresh workflow/task.
+- If `feature_store_dates=0`, confirm `system/data/demo/model_ready/` is committed
+  and present in the image, or set `AABHAS_FEATURE_STORE` / `HF_FEATURE_DATASET`.
+- If `latest_feature_age_days` is large, run the refresh workflow/task and then
+  `python scripts/build_demo_store.py --days 120`.
 - The frontend never substitutes demo data in production; it shows an explicit
   error instead.
 
@@ -483,7 +506,7 @@ clean browser URLs and its SPA fallback.
 
 ```powershell
 # Freshness and model status
-curl https://aabhas-flood-predictor.onrender.com/health
+curl https://aabhas-flood-predictor-xckw.onrender.com/health
 
 # Deployment history
 # Render Dashboard → Logs / Events

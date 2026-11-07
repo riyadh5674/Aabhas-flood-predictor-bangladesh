@@ -49,7 +49,7 @@
 ### P0 — Still requires external action/config
 | ID | Area | Issue | Fix |
 |---|------|-------|-----|
-| O-01 | Data freshness (live) | **Local** sources and feature store are current through `2026-11-05` (GloFAS `2026-11-05`, POWER soil `2026-11-02`, ERA5-Land `2026-11-03`; quality gate green). The public GitHub Pages demo serves the snapshot built on 2026-11-06. The Render instance is running but reports `model_loaded: false` / 0 feature dates because its model + feature-store credentials are not configured; it is not presented as a working live API. | Run `system/ops/refresh_and_publish.py --catchup`, rebuild/upload the snapshot, and redeploy (Render deploy hook or manual). Needs HF secrets and a live host. |
+| O-01 | Data freshness (live) | **Local** sources and feature store are current through `2026-11-05` (GloFAS `2026-11-05`, POWER soil `2026-11-02`, ERA5-Land `2026-11-03`; quality gate green). The public GitHub Pages demo serves the snapshot built on 2026-11-06. The Render service bundles the frozen D16 model plus a tracked **120-day** feature slice (`2026-07-09` → `2026-11-05`), so `/health` reports `model_loaded: true` and `feature_store_dates: 120` and the live API serves real predictions. It is a recently-current demo store, not the full 2,617-date history. | Refresh the bundled slice after each publish (`python scripts/build_demo_store.py --days 120`) or attach the full HF dataset; rebuild/upload the static snapshot and redeploy. Needs a live host for always-on freshness. |
 | O-02 | Always-on scheduling | The refresh itself is implemented and wired (`refresh_sources.py` Step 0 → features → quality gate → publish), but execution still depends on one Windows Task Scheduler machine; no managed cloud scheduler is configured. | Add a cloud runner (Cloud Run Job + Scheduler, GitHub Actions cron with secrets, or an agency VM) with retry/lock/run-summary. Documented in `DEPLOYMENT.md` §3. |
 | O-03 | AuthZ (optional) | Public API has no auth; mitigated by rate limiting + single-instance deployment. | If exposed publicly beyond same-origin, add API key/JWT and admin auth. Not required for same-origin static+API behind proxy. |
 
@@ -84,7 +84,7 @@
 ## Quick Verification
 ```powershell
 # Python suite (from repo root)
-.\.venv\Scripts\python.exe tests\run_tests.py        # 84 tests, exit 0
+.\.venv\Scripts\python.exe tests\run_tests.py        # 86 tests, exit 0
 
 # Frozen evidence
 .\.venv\Scripts\python.exe scripts\freeze_results.py --check   # 13/13; changed files 0

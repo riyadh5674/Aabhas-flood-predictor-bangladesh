@@ -6,14 +6,15 @@
 
 **Station-level, probabilistic flood outlook for Bangladesh — 24, 48 and 72 hours ahead.**
 
-[![Live demo](https://img.shields.io/badge/live_demo-GitHub_Pages-2ea44f?style=for-the-badge&logo=github)](https://riyadh5674.github.io/Aabhas-flood-predictor-bangladesh/)
-[![API](https://img.shields.io/badge/API-FastAPI_(Docker)-009688?style=for-the-badge&logo=fastapi)](system/api)
+[![Live demo](https://img.shields.io/badge/static_demo-GitHub_Pages-2ea44f?style=for-the-badge&logo=github)](https://riyadh5674.github.io/Aabhas-flood-predictor-bangladesh/)
+[![Live API](https://img.shields.io/badge/live_API-Render-46E3B7?style=for-the-badge&logo=render&logoColor=black)](https://aabhas-flood-predictor-xckw.onrender.com/health)
 [![Python](https://img.shields.io/badge/python-3.13-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
 [![React](https://img.shields.io/badge/React_19-TypeScript-61DAFB?style=for-the-badge&logo=react&logoColor=black)](system/web)
-[![Tests](https://img.shields.io/badge/tests-84_python_%2B_21_frontend-success?style=for-the-badge)](tests)
+[![Tests](https://img.shields.io/badge/tests-86_python_%2B_21_frontend-success?style=for-the-badge)](tests)
 [![License](https://img.shields.io/badge/license-MIT-blue?style=for-the-badge)](LICENSE)
 
-[**Live demo**](https://riyadh5674.github.io/Aabhas-flood-predictor-bangladesh/) ·
+[**Live app**](https://aabhas-flood-predictor-xckw.onrender.com) ·
+[**Static demo**](https://riyadh5674.github.io/Aabhas-flood-predictor-bangladesh/) ·
 [**Investor brief**](docs/PITCH.md) ·
 [**5-minute demo script**](docs/DEMO.md) ·
 [**Architecture**](docs/ARCHITECTURE.md) ·
@@ -88,7 +89,7 @@ reproducible from committed artefacts.
 | Out-of-fold calibration error (ECE) | **0.0031** |
 | Leakage control | 7-day embargo, station-disjoint folds, banned-feature assertions |
 | Robustness | Beats persistence on **63 / 63** spatial cell × horizon points |
-| Automated checks | **84 Python + 21 frontend tests**, frozen-evidence check **13 / 13** |
+| Automated checks | **86 Python + 21 frontend tests**, frozen-evidence check **13 / 13** |
 | Data coverage | **2,617** feature dates (2017 → 2026), **112** active stations in the latest partition |
 
 The full scientific case — validity, calibration, ablations, error analysis and the
@@ -151,12 +152,17 @@ Full component map, data contracts and deployment topology: [`docs/ARCHITECTURE.
 
 ### Option A — public demo (no install)
 
-**https://riyadh5674.github.io/Aabhas-flood-predictor-bangladesh/**
+**Static demo:** https://riyadh5674.github.io/Aabhas-flood-predictor-bangladesh/
 
-The demo ships a precomputed snapshot and runs entirely in the browser; no API key or
-server is required. A hosted FastAPI instance needs a model artefact and feature store
-(plus hosting credentials), so the reliable public path is the static snapshot. The API
-is fully runnable locally or as a Docker container (Option C).
+**Live API + app:** https://aabhas-flood-predictor-xckw.onrender.com
+
+The GitHub Pages demo ships a precomputed snapshot and runs entirely in the browser.
+The Render deployment runs the real FastAPI service and the frozen D16 model against a
+bundled 120-day feature-store slice, so `/health`, `/predict/all` and `/predict/trend`
+return live model output without any external credentials. Render's free tier sleeps
+after inactivity; the first request can take about a minute to wake the service.
+
+Both are research prototypes. FFWC advisories remain the operational authority.
 
 ### Option B — run the full stack locally
 
@@ -211,7 +217,7 @@ The full 5-minute walkthrough with talking points is in [`docs/DEMO.md`](docs/DE
 │   ├── deploy/              Static snapshot builder + host publishers
 │   ├── ops/                 Daily pipeline, refresh/publish, scheduler
 │   └── map/                 Choropleth risk-map generator
-├── tests/                   84 Python contract/regression tests
+├── tests/                   86 Python contract/regression tests
 ├── docs/                    Pitch, demo, architecture, ops and governance docs
 └── DEPLOYMENT.md            Runbook, CI/CD, troubleshooting
 ```
@@ -221,7 +227,7 @@ The full 5-minute walkthrough with talking points is in [`docs/DEMO.md`](docs/DE
 ## Verification
 
 ```powershell
-# Python suite — 84 tests
+# Python suite — 86 tests
 .\.venv\Scripts\python.exe tests\run_tests.py
 
 # Frozen evidence — 13/13 checks, 0 changed files
@@ -234,7 +240,7 @@ npm run test
 npm run build
 ```
 
-Current verified state: **84/84 Python tests**, **21/21 frontend tests**, **freeze 13/13**,
+Current verified state: **86/86 Python tests**, **21/21 frontend tests**, **freeze 13/13**,
 quality gate green through **2026-11-05**, source freshness within SLA.
 
 ---
