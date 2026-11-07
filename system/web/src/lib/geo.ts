@@ -32,7 +32,7 @@ const cache = new Map<MapLevel, Promise<GeoCollection>>();
 export function loadGeo(level: MapLevel): Promise<GeoCollection> {
   const existing = cache.get(level);
   if (existing) return existing;
-  const promise = fetch(`/data/geo/${level}.geojson`)
+  const promise = fetch(`${import.meta.env.BASE_URL}data/geo/${level}.geojson`)
     .then((r) => {
       if (!r.ok) throw new Error(`${level}.geojson ${r.status}`);
       return r.json() as Promise<GeoCollection>;

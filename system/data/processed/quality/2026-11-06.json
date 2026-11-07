@@ -1,0 +1,44 @@
+{
+  "date": "2026-11-06",
+  "rows": 94,
+  "stations": 94,
+  "critical_null_share": {
+    "glofas": 1.0,
+    "soil": 0.0,
+    "interactions": 0.6,
+    "temperature": 0.0
+  },
+  "watch_null_share": {
+    "hydrology": 0.003273322422258592,
+    "rainfall": 0.0,
+    "upstream": 0.7074468085106383
+  },
+  "all_null_columns": [
+    "gf_up_ratio",
+    "gf_up_rise3d",
+    "gf_up_ratio_lag1",
+    "gf_up_ratio_lag2",
+    "gf_up_ratio_lag3",
+    "gf_up_ratio_lag5",
+    "gf_up_ratio_lag7",
+    "gf_up_ratio_lag10",
+    "gf_up_ratio_lag14",
+    "gf_up_ratio_3d",
+    "gf_up_ratio_7d",
+    "gf_up_ratio_14d",
+    "gf_up_rise3d_lag1",
+    "gf_up_rise3d_lag3",
+    "gf_up_accel",
+    "gf_near_dis",
+    "gf_near_dis_lag1",
+    "gf_near_dis_lag3",
+    "ix_wet_top_x_updis",
+    "ix_updis_x_wlrise",
+    "ix_updis14_x_api"
+  ],
+  "passed": false,
+  "failures": [
+    "glofas=100.0%",
+    "interactions=60.0%"
+  ]
+}

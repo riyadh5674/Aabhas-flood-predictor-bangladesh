@@ -2,14 +2,15 @@
   "name": "Aabhas — Bangladesh Flood Outlook",
   "short_name": "Aabhas",
   "description": "Explore flood risk and preparedness guidance for Bangladesh.",
-  "start_url": "/",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#f5f6f2",
   "theme_color": "#102c2b",
   "lang": "en",
   "icons": [
     {
-      "src": "/favicon.svg",
+      "src": "./favicon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any"

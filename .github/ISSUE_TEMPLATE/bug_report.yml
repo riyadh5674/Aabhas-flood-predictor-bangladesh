@@ -1,0 +1,67 @@
+name: Bug report
+description: Report something that is broken or behaves unexpectedly
+title: "[bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug. For security issues, do **not** use this form —
+        see SECURITY.md.
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - API / inference
+        - Web app / UI
+        - Data ingestion / features
+        - Alerts / governance
+        - Deployment / CI
+        - Documentation
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Include the exact error, page or endpoint.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. ...
+        2. ...
+        3. ...
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version / commit
+      description: Output of `git rev-parse --short HEAD` if available.
+  - type: dropdown
+    id: mode
+    attributes:
+      label: Data mode
+      options:
+        - Live API
+        - Static snapshot
+        - Demo (synthetic)
+        - Not sure
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs
+      description: API logs, browser console, or test output. Redact secrets.
+      render: shell

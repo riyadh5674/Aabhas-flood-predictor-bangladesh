@@ -6,6 +6,9 @@ import { fileURLToPath, URL } from "node:url";
 const API_TARGET = process.env.AABHAS_API ?? process.env.NODI_API ?? "http://127.0.0.1:8000";
 
 export default defineConfig({
+  // AABHAS_BASE lets the same build be served from a sub-path (e.g. a GitHub
+  // Pages project site at /<repo>/) without patching asset URLs.
+  base: process.env.AABHAS_BASE ?? "/",
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
@@ -25,7 +28,7 @@ export default defineConfig({
   },
   build: {
     target: "es2022",
-    sourcemap: true,
+    sourcemap: process.env.AABHAS_SOURCEMAP !== "false",
     rollupOptions: {
       output: {
         manualChunks: {

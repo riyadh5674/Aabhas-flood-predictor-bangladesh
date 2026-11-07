@@ -7,7 +7,7 @@ let inflight: Promise<Station[]> | null = null;
 export async function loadStations(): Promise<Station[]> {
   if (cache) return cache;
   if (inflight) return inflight;
-  inflight = fetch("/data/stations.json")
+  inflight = fetch(`${import.meta.env.BASE_URL}data/stations.json`)
     .then((r) => {
       if (!r.ok) throw new Error(`stations.json ${r.status}`);
       return r.json() as Promise<Station[]>;

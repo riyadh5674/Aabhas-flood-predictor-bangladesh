@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/riyadh5674/Aabhas-flood-predictor-bangladesh/security/advisories/new
+    about: Report security issues privately — never in a public issue.
+  - name: Live demo
+    url: https://riyadh5674.github.io/Aabhas-flood-predictor-bangladesh/
+    about: Try the public demo before filing a rendering issue.
+  - name: Documentation index
+    url: https://github.com/riyadh5674/Aabhas-flood-predictor-bangladesh/blob/main/docs/README.md
+    about: Find the right document first.

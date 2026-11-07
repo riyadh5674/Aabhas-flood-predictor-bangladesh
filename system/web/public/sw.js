@@ -6,12 +6,16 @@
  * offline. It deliberately does NOT cache /api responses: a stale probability
  * served without the normal freshness checks could be mistaken for a current
  * forecast. The UI's own freshness banner handles that distinction.
+ *
+ * All paths are derived from the registration scope so the same build works at
+ * a root domain, a GitHub Pages project path, or a Hugging Face Space.
  */
-const VERSION = "aabhas-v1";
+const VERSION = "aabhas-v2";
 const SHELL_CACHE = `${VERSION}-shell`;
 const DATA_CACHE = `${VERSION}-data`;
 const ASSET_CACHE = `${VERSION}-assets`;
-const SHELL = ["/", "/index.html", "/manifest.webmanifest", "/favicon.svg"];
+const BASE = new URL(self.registration.scope).pathname;
+const SHELL = [BASE, `${BASE}index.html`, `${BASE}manifest.webmanifest`, `${BASE}favicon.svg`];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -44,7 +48,7 @@ self.addEventListener("message", (event) => {
 
 function isAsset(url) {
   return (
-    url.pathname.startsWith("/assets/") ||
+    url.pathname.startsWith(`${BASE}assets/`) ||
     /\.(?:css|js|mjs|woff2?|ttf|png|jpg|jpeg|svg|webp|ico)$/i.test(url.pathname)
   );
 }
@@ -84,11 +88,11 @@ self.addEventListener("fetch", (event) => {
   if (url.pathname.startsWith("/api/")) return;
 
   if (request.mode === "navigate") {
-    event.respondWith(networkFirst(request, SHELL_CACHE, "/index.html"));
+    event.respondWith(networkFirst(request, SHELL_CACHE, `${BASE}index.html`));
     return;
   }
 
-  if (url.pathname.startsWith("/data/")) {
+  if (url.pathname.startsWith(`${BASE}data/`)) {
     event.respondWith(networkFirst(request, DATA_CACHE));
     return;
   }

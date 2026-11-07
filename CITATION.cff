@@ -1,0 +1,27 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "Aabhas: Leakage-Aware Probabilistic Flood Forecasting for Bangladesh"
+abstract: >-
+  Aabhas is a station-level, probabilistic flood outlook for Bangladesh that
+  forecasts the chance a river station crosses its danger level in the next
+  24, 48 or 72 hours. It combines a frozen gradient-boosting model (D16),
+  leakage-aware validation, cost-derived risk bands, a FastAPI service and a
+  bilingual React PWA. It is a research prototype and decision-support tool,
+  not an official flood-warning service.
+authors:
+  - name: "Aabhas contributors"
+    url: "https://github.com/riyadh5674/Aabhas-flood-predictor-bangladesh"
+type: software
+license: MIT
+repository-code: "https://github.com/riyadh5674/Aabhas-flood-predictor-bangladesh"
+url: "https://riyadh5674.github.io/Aabhas-flood-predictor-bangladesh/"
+keywords:
+  - flood forecasting
+  - Bangladesh
+  - hydrology
+  - machine learning
+  - early warning
+  - probabilistic forecasting
+  - climate adaptation
+version: "1.0.0"
+date-released: "2026-11-07"

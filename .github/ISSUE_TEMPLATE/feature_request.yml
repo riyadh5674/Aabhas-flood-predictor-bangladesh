@@ -1,0 +1,46 @@
+name: Feature or research proposal
+description: Propose a product feature, data source or evaluation improvement
+title: "[proposal] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For changes to labels, splits, thresholds or the frozen model, explain the
+        scientific impact. The test split is closed by policy.
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind of proposal
+      options:
+        - Product / UX
+        - Data source
+        - Model or evaluation
+        - Operations / reliability
+        - Accessibility / i18n
+        - Documentation
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: Who is affected and what decision gets better?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed change
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence or validation plan
+      description: How would we know it worked? Which split or metric?
+  - type: textarea
+    id: risks
+    attributes:
+      label: Risks and non-goals
+      description: Licensing, leakage, latency, cost, operational burden.
