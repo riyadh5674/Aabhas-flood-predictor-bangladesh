@@ -8,8 +8,13 @@
 
 **Station-level 24/48/72-hour probabilistic flood outlook for Bangladesh**, built on a leakage-aware ML pipeline with rigorous temporal/spatial validation and a frozen production model (D16).
 
-**Live app + API:** https://aabhas-flood-predictor.onrender.com  
-**Static snapshot (demo):** https://riyadhuggy-aabhas-flood-outlook.static.hf.space  
+**Live Demo:**
+
+**Dashboard:** https://riyadh5674.github.io/Aabhas-flood-predictor-bangladesh/  
+**API Health:** https://aabhas-flood-predictor-xckw.onrender.com/health  
+**API Docs (Swagger):** https://aabhas-flood-predictor-xckw.onrender.com/docs  
+**Monitoring:** https://aabhas-flood-predictor-xckw.onrender.com/monitoring  
+**Static Snapshot (fallback):** https://riyadhuggy-aabhas-flood-outlook.static.hf.space  
 **Deployment runbook:** [DEPLOYMENT.md](DEPLOYMENT.md)
 
 > ⚠️ Aabhas is a research prototype, **not an official flood warning service**. The live app serves model output from the latest published feature date; the in-app freshness banner and `/health` show exactly how old that is. Always follow FFWC advisories.
