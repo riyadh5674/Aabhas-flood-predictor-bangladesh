@@ -16,16 +16,15 @@ paper/
 src/
 system/data/raw/
 system/data/processed/map/
+# Full runtime store is excluded; the tracked demo slice in
+# system/data/demo/model_ready is copied into the image instead.
 system/data/processed/model_ready/
 system/web/public/data/snapshot/
 system/ui/
 system/ingestion/
-system/features/
 system/ops/
 system/tests/
 system/docs/
-system/alerts/
-system/map/
 system/backtest.py
 models/*
 !models/final_v2/

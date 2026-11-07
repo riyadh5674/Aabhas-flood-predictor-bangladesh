@@ -228,10 +228,13 @@ class D16Model:
         self,
         features_df,
         horizon: str,
+        target_date: str | None = None,
     ):
         """Run inference: probabilities + risk bands.
 
-        Returns a DataFrame with columns:
+        `target_date` is used for the output `date` column when the feature
+        frame itself has no usable date column (some older feature partitions
+        omit it). Returns a DataFrame with columns:
           station_id, date, horizon, probability, band, action, threshold,
           model_version, computed_at
         """
@@ -278,6 +281,10 @@ class D16Model:
             )
         else:
             date_values = [""] * n_rows
+
+        fallback_date = target_date or ""
+        if fallback_date:
+            date_values = [value or fallback_date for value in date_values]
 
         band_names: list[str] = []
         actions: list[str] = []

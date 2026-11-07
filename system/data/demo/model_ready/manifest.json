@@ -1,0 +1,11 @@
+{
+  "purpose": "Self-contained demo feature store for the hosted Aabhas API.",
+  "source": "system/data/processed/model_ready",
+  "partition_count": 120,
+  "first_date": "2026-07-09",
+  "last_date": "2026-11-05",
+  "total_bytes": 14519623,
+  "built_at_utc": "2026-11-07T07:49:53.738504+00:00",
+  "refresh_command": "python scripts/build_demo_store.py --days 120",
+  "notes": "This is a recent slice of the model-ready feature store, not the full research dataset. It exists so the public demo can serve real D16 predictions without external credentials."
+}

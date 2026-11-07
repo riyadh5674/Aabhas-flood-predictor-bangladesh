@@ -1,6 +1,8 @@
 # Render.com Blueprint for Aabhas Flood Predictor
 # Deploy: Connect this repo to Render → New → Blueprint
-# Required secrets (set in Render Dashboard): HF_FEATURE_DATASET, HF_TOKEN
+# The image ships with a bundled 120-day feature-store slice, so the API works
+# without any secrets. HF_FEATURE_DATASET / HF_TOKEN are optional overrides for
+# pointing at the full feature store on Hugging Face.
 
 services:
   # Main API + Frontend (single service, serves both)
@@ -14,6 +16,10 @@ services:
     # Render injects PORT itself. Do not pin it here: the Dockerfile reads
     # $PORT, so the platform can choose the port without a rebuild.
     envVars:
+      # Self-contained demo features (tracked in git, copied into the image).
+      - key: AABHAS_FEATURE_STORE
+        value: system/data/demo/model_ready
+      # Optional: use the full feature store hosted as a Hugging Face Dataset.
       - key: HF_FEATURE_DATASET
         sync: false
       - key: HF_TOKEN

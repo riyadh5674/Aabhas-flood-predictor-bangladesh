@@ -34,8 +34,20 @@ THRESHOLDS = _CFG["thresholds"]["values"]
 RISK_BANDS = _CFG["risk_bands"]["values"]
 
 # --- Inference ---
-# Local feature store paths (development fallback)
-FEATURE_STORE = ROOT / _CFG["inference"]["feature_store"]
+# Local feature store paths (development fallback).
+#
+# AABHAS_FEATURE_STORE lets a deployment point at a different store without
+# editing JSON. The bundled demo slice is used automatically when the full
+# (gitignored) feature store is not present — for example in a slim Docker
+# image built for Render.
+FEATURE_STORE = Path(
+    os.getenv("AABHAS_FEATURE_STORE") or _CFG["inference"]["feature_store"]
+)
+if not FEATURE_STORE.is_absolute():
+    FEATURE_STORE = ROOT / FEATURE_STORE
+BUNDLED_FEATURE_STORE = ROOT / "system" / "data" / "demo" / "model_ready"
+if not FEATURE_STORE.exists() and BUNDLED_FEATURE_STORE.exists():
+    FEATURE_STORE = BUNDLED_FEATURE_STORE
 FEATURE_STORE_FORMAT = _CFG["inference"]["feature_store_format"]
 SINGLE_FILE_FALLBACK = ROOT / _CFG["inference"]["single_file_fallback"]
 LATENCY_TARGET_MS = _CFG["inference"]["latency_target_ms"]
@@ -66,6 +78,7 @@ __all__ = [
     "THRESHOLDS",
     "RISK_BANDS",
     "FEATURE_STORE",
+    "BUNDLED_FEATURE_STORE",
     "FEATURE_STORE_FORMAT",
     "SINGLE_FILE_FALLBACK",
     "LATENCY_TARGET_MS",

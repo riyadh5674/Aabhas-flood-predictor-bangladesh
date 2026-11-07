@@ -397,7 +397,7 @@ def predict_all_stations(
 
     model = get_model()
     df = load_features_for_date(target_date)
-    result = model.predict(df, horizon)
+    result = model.predict(df, horizon, target_date=_iso_date(target_date))
     _cache_put(key, result)
     return result.copy()
 
