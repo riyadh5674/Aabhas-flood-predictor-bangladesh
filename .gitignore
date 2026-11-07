@@ -83,12 +83,12 @@ figures/mi7_*.png
 figures/mi12_*.png
 figures/phase34_*.png
 
-# --- check/test scripts (local only) ---
-check_*.py
-compare_*.py
-smoke_*.py
-test_*.py
-verify_*.py
+# --- local ad-hoc check scripts (repo root only; tests/ is tracked) ---
+/check_*.py
+/compare_*.py
+/smoke_*.py
+/test_*.py
+/verify_*.py
 
 # --- IDE / OS ---
 .vscode/
