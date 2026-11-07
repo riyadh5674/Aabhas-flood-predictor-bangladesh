@@ -12,6 +12,11 @@ being made with Aabhas — not to tour every screen.
 ## Before you start
 
 - Open the live demo in a desktop browser at 1440 px width or wider.
+- **Warm the live API first:** open
+  <https://aabhas-flood-predictor-xckw.onrender.com/health> about a minute before the
+  demo. Render's free tier sleeps after inactivity; the first request can take
+  30–60 s. The GitHub Pages static demo has no cold start if you need a guaranteed
+  fallback.
 - The hosted API ships a **120-day** feature slice (2026-07-09 → 2026-11-05). The
   latest date is post-monsoon and mostly low risk; for the high-risk walkthrough
   select **2026-09-11** in the date picker (10 stations above Low, peak probability
