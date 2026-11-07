@@ -7,7 +7,7 @@
 **Station-level, probabilistic flood outlook for Bangladesh — 24, 48 and 72 hours ahead.**
 
 [![Live demo](https://img.shields.io/badge/live_demo-GitHub_Pages-2ea44f?style=for-the-badge&logo=github)](https://riyadh5674.github.io/Aabhas-flood-predictor-bangladesh/)
-[![API](https://img.shields.io/badge/API-FastAPI-009688?style=for-the-badge&logo=fastapi)](https://aabhas-flood-predictor-xckw.onrender.com/health)
+[![API](https://img.shields.io/badge/API-FastAPI_(Docker)-009688?style=for-the-badge&logo=fastapi)](system/api)
 [![Python](https://img.shields.io/badge/python-3.13-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
 [![React](https://img.shields.io/badge/React_19-TypeScript-61DAFB?style=for-the-badge&logo=react&logoColor=black)](system/web)
 [![Tests](https://img.shields.io/badge/tests-84_python_%2B_21_frontend-success?style=for-the-badge)](tests)
@@ -154,7 +154,9 @@ Full component map, data contracts and deployment topology: [`docs/ARCHITECTURE.
 **https://riyadh5674.github.io/Aabhas-flood-predictor-bangladesh/**
 
 The demo ships a precomputed snapshot and runs entirely in the browser; no API key or
-server is required.
+server is required. A hosted FastAPI instance needs a model artefact and feature store
+(plus hosting credentials), so the reliable public path is the static snapshot. The API
+is fully runnable locally or as a Docker container (Option C).
 
 ### Option B — run the full stack locally
 
