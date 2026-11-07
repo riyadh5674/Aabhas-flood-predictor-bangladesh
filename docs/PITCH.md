@@ -204,6 +204,7 @@ If you want to evaluate the work before a conversation, the fastest path is:
 2. Read [the 5-minute demo script](DEMO.md).
 3. Run `tests\run_tests.py` and `scripts\freeze_results.py --check` yourself.
 4. Read [the final evaluation](../reports/phase43_final_evaluation.md).
+5. The original project proposal is in [Proposal.docx](../Proposal.docx).
 
 ---
 

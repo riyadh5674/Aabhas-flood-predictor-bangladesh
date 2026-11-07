@@ -9,6 +9,7 @@ Start with the document that matches your role.
 | [PITCH.md](PITCH.md) | Problem, product, evidence, market, roadmap and funding ask |
 | [DEMO.md](DEMO.md) | 5-minute live demo script with talking points and Q&A |
 | [../README.md](../README.md) | Project overview and live links |
+| [../Proposal.docx](../Proposal.docx) | Original project proposal (Word) |
 | [../reports/phase43_final_evaluation.md](../reports/phase43_final_evaluation.md) | Independent-style scientific validity assessment |
 
 ## For engineers and reviewers
