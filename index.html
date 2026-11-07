@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#102c2b" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#f5f6f2" media="(prefers-color-scheme: light)" />
+    <meta
+      name="description"
+      content="Aabhas — a clear flood outlook for Bangladesh. Explore station-level flood risk and practical guidance for the next 24, 48 and 72 hours."
+    />
+    <link rel="icon" type="image/svg+xml" href="/Aabhas-flood-predictor-bangladesh/favicon.svg" />
+    <link rel="manifest" href="/Aabhas-flood-predictor-bangladesh/manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="/Aabhas-flood-predictor-bangladesh/favicon.svg" />
+    <title>Aabhas — Know your river. Plan ahead.</title>
+
+    <script>
+      // Apply the stored theme before first paint to avoid a flash.
+      (function () {
+        try {
+          var t = localStorage.getItem("aabhas.theme");
+          if (!t) t = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+          document.documentElement.setAttribute("data-theme", t);
+        } catch (e) {}
+      })();
+    </script>
+    <script type="module" crossorigin src="/Aabhas-flood-predictor-bangladesh/assets/index-BHRYh9ss.js"></script>
+    <link rel="modulepreload" crossorigin href="/Aabhas-flood-predictor-bangladesh/assets/query-DjdqLvpn.js">
+    <link rel="modulepreload" crossorigin href="/Aabhas-flood-predictor-bangladesh/assets/motion-CXiq6xlf.js">
+    <link rel="stylesheet" crossorigin href="/Aabhas-flood-predictor-bangladesh/assets/index-_fZluxLb.css">
+  </head>
+  <body>
+    <div id="root"></div>
+    <noscript>
+      Aabhas needs JavaScript enabled to display the Bangladesh flood outlook.
+    </noscript>
+  </body>
+</html>

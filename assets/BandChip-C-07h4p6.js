@@ -1,0 +1,1 @@
+import{j as n}from"./query-DjdqLvpn.js";import{u as i,f as u,x as d}from"./index-BHRYh9ss.js";function p({band:s,solid:a=!1,showDot:t=!0,className:e,label:o}){const{t:r}=i(),c=o??r(`band.${s}`);return n.jsxs("span",{className:d("band",`band--${s}`,a&&"band--solid",e),title:u[s].guidance,children:[t&&!a?n.jsx("span",{className:"band__dot"}):null,c]})}export{p as B};

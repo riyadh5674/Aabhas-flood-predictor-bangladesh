@@ -1,0 +1,1 @@
+import{j as e}from"./query-DjdqLvpn.js";import{x as c}from"./index-BHRYh9ss.js";function d({children:r,className:a,hover:s=!1,flat:o=!1,...t}){return e.jsx("div",{className:c("card",s&&"card--hover",o&&"card--flat",a),...t,children:r})}export{d as C};

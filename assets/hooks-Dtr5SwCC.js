@@ -1,0 +1,1 @@
+import{r as e}from"./query-DjdqLvpn.js";function a(){const t=e.useRef(null),[o,c]=e.useState({width:0,height:0});return e.useEffect(()=>{const r=t.current;if(!r)return;const s=new ResizeObserver(u=>{const n=u[0];if(!n)return;const{width:i,height:f}=n.contentRect;c({width:i,height:f})});return s.observe(r),()=>s.disconnect()},[]),{ref:t,...o}}export{a as u};

@@ -1,0 +1,1 @@
+import{g as o}from"./index-BHRYh9ss.js";const t=[["path",{d:"M7 7h10v10",key:"1tivn9"}],["path",{d:"M7 17 17 7",key:"1vkiza"}]],n=o("arrow-up-right",t);const a=[["path",{d:"M5 12h14",key:"1ays0h"}]],s=o("minus",a);export{n as A,s as M};
