@@ -217,6 +217,7 @@ One-time setup:
    | `HF_TOKEN` | Read/write the private feature and raw datasets |
    | `HF_FEATURE_DATASET` | Feature-store dataset (e.g. `username/aabhas-flood-features`) |
    | `HF_RAW_DATASET` | Raw-input mirror (e.g. `username/aabhas-flood-raw`) |
+   | `FFWC_INTERNAL_KEY` | FFWC observed-water-level API key (required for fresh FFWC catch-up; do not commit) |
    | `RENDER_DEPLOY_HOOK` | Optional Render deploy hook URL |
 
 4. Add repository variable `AABHAS_REFRESH_ENABLED=true`. Scheduled runs are

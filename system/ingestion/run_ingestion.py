@@ -31,7 +31,14 @@ def run_stations() -> None:
     print("=" * 60)
     print("STEP 1: FFWC station master")
     print("=" * 60)
-    fetch_stations()
+    try:
+        fetch_stations()
+    except Exception as exc:
+        from system.ingestion.ingest_ffwc import STATIONS_FILE
+        if STATIONS_FILE.exists():
+            print(f"WARNING: station master fetch failed ({exc}); using existing {STATIONS_FILE}")
+            return
+        raise
 
 
 def run_ffwc(start: str, end: str, stations: list[int] | None, workers: int, stride: int) -> None:
@@ -45,7 +52,10 @@ def run_ffwc(start: str, end: str, stations: list[int] | None, workers: int, str
     ]
     if stations is not None:
         sys.argv += ["--stations"] + [str(s) for s in stations]
-    ffc_main()
+    try:
+        ffc_main()
+    except Exception as exc:
+        print(f"WARNING: FFWC harvest failed ({exc}); continuing with existing water-level data")
 
 
 def run_rainfall(start: str, end: str, source: str, stations: list[int] | None, sleep: float) -> None:

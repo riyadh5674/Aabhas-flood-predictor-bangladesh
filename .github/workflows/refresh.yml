@@ -36,7 +36,9 @@ jobs:
       HF_FEATURE_DATASET: ${{ secrets.HF_FEATURE_DATASET }}
       HF_RAW_DATASET: ${{ secrets.HF_RAW_DATASET }}
       RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
-      AABHAS_HEALTH_URL: ${{ vars.AABHAS_HEALTH_URL || 'https://aabhas-flood-predictor.onrender.com/health' }}
+      FFWC_INTERNAL_KEY: ${{ secrets.FFWC_INTERNAL_KEY }}
+      AABHAS_VERIFY_MODEL_SHA: ${{ vars.AABHAS_VERIFY_MODEL_SHA || 'false' }}
+      AABHAS_HEALTH_URL: ${{ vars.AABHAS_HEALTH_URL || 'https://aabhas-flood-predictor-xckw.onrender.com/health' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -59,6 +61,9 @@ jobs:
               missing=1
             fi
           done
+          if [ -z "${FFWC_INTERNAL_KEY:-}" ]; then
+            echo "::warning::FFWC_INTERNAL_KEY is not set; FFWC ingestion may fail with 403 and model-ready catch-up can stall."
+          fi
           if [ "$missing" -ne 0 ]; then
             echo "See DEPLOYMENT.md -> 'Automated daily refresh' for setup."
             exit 1
@@ -83,6 +88,7 @@ jobs:
         run: |
           python - <<'PY'
           import json
+          import os
           import urllib.request
           from pathlib import Path
 
@@ -90,7 +96,7 @@ jobs:
           dates = sorted(p.name.split("=", 1)[1] for p in store.glob("date=*") if p.is_dir())
           print(f"Feature partitions: {len(dates)} (latest {dates[-1] if dates else 'none'})")
 
-          url = "https://aabhas-flood-predictor.onrender.com/health"
+          url = os.environ.get("AABHAS_HEALTH_URL", "https://aabhas-flood-predictor-xckw.onrender.com/health")
           try:
               with urllib.request.urlopen(url, timeout=30) as response:
                   health = json.loads(response.read().decode())
@@ -111,7 +117,7 @@ jobs:
               "",
               `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
               "",
-              "Check the run log for the failing step. Common causes: FFWC/Open-Meteo outage, expired HF token, or missing repository secrets.",
+              "Check the run log for the failing step. Common causes: FFWC access/403 (FFWC_INTERNAL_KEY), Open-Meteo outage, expired HF token, or missing repository secrets.",
             ].join("\n");
             const open = await github.rest.issues.listForRepo({
               owner: context.repo.owner,
