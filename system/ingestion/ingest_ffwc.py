@@ -41,7 +41,13 @@ CONFIG = json.loads((ROOT / "system" / "config" / "ingestion_config.json").read_
 FFWC_CFG = CONFIG["ffwc"]
 
 API_BASE = FFWC_CFG["api_base"]
-HEADERS = FFWC_CFG["headers"]
+HEADERS = dict(FFWC_CFG.get("headers", {}))
+_ffwc_key = os.getenv("FFWC_INTERNAL_KEY") or os.getenv("FFWC_API_KEY")
+if _ffwc_key:
+    HEADERS["x-ffwc-internal-key"] = _ffwc_key
+elif not HEADERS.get("x-ffwc-internal-key"):
+    # No hardcoded key shipped; set FFWC_INTERNAL_KEY in environment if required.
+    HEADERS.pop("x-ffwc-internal-key", None)
 QUERY_STRIDE = FFWC_CFG["query_stride_days"]
 MAX_WORKERS = FFWC_CFG["max_workers"]
 RETRIES = FFWC_CFG["retries"]

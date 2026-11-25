@@ -39,12 +39,16 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements-api.txt
+          pip install pytest
 
       - name: API import checks
         run: |
           python -c "from system.api.app import app; print('API imports OK')"
           python -c "from system.api.inference import load_features_for_date; print('Inference imports OK')"
           python -c "from system.config.model_config import HORIZONS; print('Config imports OK', HORIZONS)"
+
+      - name: Python tests
+        run: python -m pytest -q tests
 
       - uses: actions/setup-node@v4
         with:
@@ -55,6 +59,10 @@ jobs:
       - name: Install web dependencies
         working-directory: system/web
         run: npm ci
+
+      - name: Frontend tests
+        working-directory: system/web
+        run: npm test -- --run
 
       # A fresh checkout has no snapshot data (it is generated, not committed),
       # so this validates types and the production build, not forecast output.

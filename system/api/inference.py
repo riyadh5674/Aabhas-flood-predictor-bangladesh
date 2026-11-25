@@ -31,6 +31,22 @@ from system.api.model_loader import D16Model
 
 # Lazy-import the model so FastAPI can start even if the artefact is missing
 _model: D16Model | None = None
+_MODEL_LOCK = threading.Lock()
+
+# The frozen artefact stores the short training names; the public API exposes
+# the canonical library names used everywhere else in the repo.
+_FAMILY_ALIASES = {
+    "lgbm": "lightgbm",
+    "lightgbm": "lightgbm",
+    "xgb": "xgboost",
+    "xgboost": "xgboost",
+    "xgboost_selected": "xgboost",
+}
+
+
+def canonical_family(family: str) -> str:
+    """Map an artefact training name to its canonical library name."""
+    return _FAMILY_ALIASES.get(str(family), str(family))
 
 # Cache for HF dataset access to avoid repeated remote reads
 _hf_dataset_cache: Optional[pd.DataFrame] = None
@@ -56,11 +72,18 @@ _HF_PARTITION_RE = re.compile(
 
 
 def get_model() -> D16Model:
-    """Singleton model loader."""
+    """Singleton model loader (thread-safe)."""
     global _model
-    if _model is None:
-        _model = D16Model()
-        _model.load(verify_sha256=False)
+    if _model is not None:
+        return _model
+    with _MODEL_LOCK:
+        if _model is None:
+            model = D16Model()
+            strict_sha = os.getenv("AABHAS_VERIFY_MODEL_SHA", "").strip().lower() in {
+                "1", "true", "yes", "strict"
+            }
+            model.load(verify_sha256=strict_sha)
+            _model = model
     return _model
 
 
@@ -437,7 +460,19 @@ def predict_station_series(
 
 def model_info() -> dict:
     """Return model metadata."""
+    from system.config.model_config import PER_HORIZON_FAMILY
+
     model = get_model()
+    raw_families = (
+        model._artefact.get("per_horizon_family") if model._artefact else None
+    )
+    if raw_families:
+        families = {
+            label: canonical_family(family)
+            for label, family in raw_families.items()
+        }
+    else:
+        families = PER_HORIZON_FAMILY
     return {
         "version": model.version,
         "decision": "D16",
@@ -446,7 +481,7 @@ def model_info() -> dict:
         "n_features": model.n_features,
         "frozen_at_utc": model.frozen_at_utc,
         "dataset_sha256_v2": model.dataset_sha256_v2,
-        "per_horizon_family": model._artefact.get("per_horizon_family") if model._artefact else None,
+        "per_horizon_family": families,
         "horizons": ["24h", "48h", "72h"],
         "loaded_at": model._loaded_at.isoformat() if model._loaded_at else None,
     }

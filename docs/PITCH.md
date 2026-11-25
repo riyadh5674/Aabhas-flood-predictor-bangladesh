@@ -30,10 +30,12 @@ crosses its danger level in the next **24, 48 or 72 hours**, with:
 - an approval-gated alert workflow with a hash-chained audit trail,
 - a fully reproducible, leakage-audited evaluation.
 
-The model is trained on **2,617 days of data across 153 FFWC stations** and validated
-on a **frozen 2023–2026 test period** that was opened exactly once. It beats the
-operational persistence baseline on **21/21** test points and reduces missed floods by
-**58 %**.
+The system covers **2,622 feature dates across 153 FFWC stations**; the frozen model
+trains on the leakage-controlled ≤2021 split, validates on `val_2022`, and was
+evaluated on a frozen 2023–2026 test period. The programme-level test-read ledger records
+multiple exposures/two full reads; the reported headline is the valid MI-6 read and must be
+disclosed as such. It beats the operational persistence baseline on **21/21** test points and
+reduces missed floods by **52.5 %** vs D7 on the frozen test.
 
 **The ask:** an initial **US$150k–350k** grant/seed to convert the validated prototype
 into a paid institutional pilot with one agency or NGO, plus the operational
@@ -93,19 +95,20 @@ The strongest asset is not a slide — it is a reproducible evidence base.
 | Frozen test PR-AUC | **0.7708** | `reports/mi6_summary.json` |
 | Persistence baseline (test) | 0.6675 | `reports/mi6_summary.json` |
 | Test points beating persistence | **21 / 21** | `reports/mi6_summary.json` |
-| Missed floods vs. persistence | **−58 %** | `reports/phase43_final_evaluation.md` |
+| Missed floods vs. persistence | **−52.5 %** | `reports/phase43_final_evaluation.md` |
 | Out-of-fold calibration error | **0.0031** | `reports/phase33_selection.md` |
 | Spatial robustness points vs. persistence | **63 / 63** | `reports/phase31_robustness.md` |
-| Automated tests | **86 Python + 21 frontend** | `tests/`, `system/web` |
+| Automated tests | **89 Python + 21 frontend** | `tests/`, `system/web` |
 | Frozen evidence checks | **13 / 13** | `scripts/freeze_results.py --check` |
-| Data coverage | **2,617 days**, **153 stations** | `system/data/processed/model_ready/` |
+| Data coverage | **2,622 days**, **153 stations** | `system/data/processed/model_ready/` |
 
 ### Why the evaluation is trustworthy
 
 - **Leakage-controlled splits:** 7-day embargo, station-disjoint spatial folds, banned
   label-window features asserted absent.
-- **Frozen test set:** opened once in MI-6; every later analysis records
-  `test_rows_read = 0`.
+- **Frozen test governance:** the programme-level ledger records six exposures/two full model
+  reads; the valid MI-6 headline is reported with that caveat. Any future read must be
+  pre-registered and added to `reports/test_read_ledger.md`.
 - **Fair ML vs. DL comparison:** identical features, budgets and seeds; deep learning
   did not beat the classical model, so the DL queue was closed.
 - **Operational realism:** cost-derived thresholds, calibration, missingness and

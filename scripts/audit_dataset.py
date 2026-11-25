@@ -142,15 +142,18 @@ check("A2c no single-reading spikes survive (F8 rule) / day jumps plausible",
 # A4 live FFWC API compare — skipped on demand (FFWC throttles after the ~21k-call harvest)
 if not SKIP_LIVE:
     def ffwc_json(sid: int, day: str) -> list:
+        headers = {
+            "User-Agent": "Mozilla/5.0",
+            "Referer": "https://ffwc.gov.bd/",
+            "Origin": "https://ffwc.gov.bd",
+            "Accept": "application/json",
+        }
+        _ffwc_key = os.getenv("FFWC_INTERNAL_KEY") or os.getenv("FFWC_API_KEY")
+        if _ffwc_key:
+            headers["x-ffwc-internal-key"] = _ffwc_key
         r = requests.get(
             f"https://api.ffwc.gov.bd/data_load/observed-waterlevel-by-station-and-date/{sid}/{day}",
-            headers={
-                "User-Agent": "Mozilla/5.0",
-                "x-ffwc-internal-key": "FFWC-Project-2026-Secure-V1",
-                "Referer": "https://ffwc.gov.bd/",
-                "Origin": "https://ffwc.gov.bd",
-                "Accept": "application/json",
-            },
+            headers=headers,
             timeout=8,
         )
         r.raise_for_status()

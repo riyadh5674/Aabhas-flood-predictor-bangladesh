@@ -50,7 +50,7 @@ numbers from the CSVs/JSONs (D16 `val_2022` per horizon and mean; D16 test per h
 and mean; D7 test mean; the event-analysis flags; the dataset row count). It fails if
 any value or hash drifted. `reports/FREEZE.md` lists the checks and hashes.
 
-Expected: `checks 14/14; changed files 0`.
+Expected: `checks 13/13; changed files 0`.
 
 ---
 

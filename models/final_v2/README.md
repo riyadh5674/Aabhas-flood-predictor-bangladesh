@@ -9,8 +9,11 @@
 | **Selection** | validation + spatial-CV only (7 dev cells), rule D16 |
 | **Frozen** | 2026-10-15 (MI-5) |
 
-**Test period never read** (`test_rows_read = 0`).  This freeze is provisional: the
-frozen test is opened exactly once, in MI-6.
+**Test governance note (updated).** This README's original freeze text is historical. The
+programme-level frozen-test history is recorded in `reports/test_read_ledger.md`: six
+exposures/two full model reads; MI-6 is the valid reported headline. `test_rows_read = 0` in
+the config reflects this file's local/script state and must not be read as a programme-level
+claim. D16 remains the governed model.
 
 ```python
 import sys, joblib

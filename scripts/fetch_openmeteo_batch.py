@@ -201,12 +201,31 @@ def main() -> int:
     if args.rescan_stations:
         print("Rescanning stations from FFWC master...")
 
-    # Determine which stations need fetching
-    missing = st[~st.station_id.astype(int).map(
-        lambda s: (OUT / f"{s}.csv").exists() and (OUT / f"{s}.csv").stat().st_size > 500
-    )]
-    print(f"stations total={len(st)}  missing={len(missing)}")
-    if missing.empty:
+    # Determine which stations need fetching: missing, corrupt, or stale vs requested end.
+    end_ts = pd.Timestamp(args.end)
+
+    def station_needs_fetch(sid: int) -> bool:
+        p = OUT / f"{int(sid)}.csv"
+        if not p.exists() or p.stat().st_size <= 500:
+            return True
+        try:
+            cols = pd.read_csv(p, nrows=0).columns
+            date_col = "date" if "date" in cols else "time" if "time" in cols else None
+            if date_col is None:
+                return True
+            df = pd.read_csv(p, usecols=[date_col])
+            if df.empty:
+                return True
+            last = pd.to_datetime(df[date_col], errors="coerce").max()
+            if pd.isna(last):
+                return True
+            return last.strftime("%Y-%m-%d") < args.end
+        except Exception:
+            return True
+
+    needs = st[st.station_id.astype(int).map(station_needs_fetch)].copy()
+    print(f"stations total={len(st)}  needs_fetch={len(needs)}")
+    if needs.empty:
         concatenate(args.end)
         return 0
 
@@ -234,8 +253,8 @@ def main() -> int:
     t0 = time.time()
 
     # Process in batches
-    for i in range(0, len(missing), args.batch):
-        batch = missing.iloc[i:i + args.batch]
+    for i in range(0, len(needs), args.batch):
+        batch = needs.iloc[i:i + args.batch]
         print(f"batch {i//args.batch+1}: {len(batch)} stations")
 
         # Submit batch requests in parallel
@@ -264,7 +283,7 @@ def main() -> int:
 
     print()
     concatenate(args.end)
-    remaining = len(load_stations()) - len(list(OUT.glob('*.csv')))
+    remaining = sum(1 for sid in st.station_id.astype(int) if not (OUT / f"{sid}.csv").exists())
     print(f"done: updated={ok} current={current} failed={fail}  still missing={remaining}")
     return 0 if fail == 0 else 1
 

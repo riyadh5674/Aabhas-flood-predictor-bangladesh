@@ -3,6 +3,50 @@
 All notable changes to Aabhas are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [SemVer](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+
+- `system/deploy/build_static_snapshot.py --remap-bands` recomputes band/action
+  fields from stored probabilities and the current config, so a risk-band change
+  no longer requires re-scoring 2,619 dates.
+- API contract tests for `/alerts/feed` status validation and for
+  `pending_count` remaining correct under a status filter.
+
+### Fixed
+
+- **Risk bands (48 h / 72 h)** now use the documented four-level cost-derived
+  scheme, including `very_high`. Cuts were re-derived from the actual D16
+  validation predictions: 48 h (`lightgbm`) `0.0434 / 0.0868 / 0.563`; 72 h
+  (`xgboost`) `0.0482 / 0.0963 / 0.5277`. Config, frontend fallback, tests and
+  the static snapshot now agree.
+- **Alert lifecycle**: auto-approved alerts are persisted instead of stranded in
+  the draft directory; manual approval dispatches when notifications are enabled;
+  final status is `approved`, `dispatched` or `dispatch_failed`; approval and
+  dispatch are both written to the hash-chained audit log.
+- **`/alerts/feed`**: reads drafts and approved/dispatched records, deduplicates
+  by `draft_id`, validates the status filter (400 for unknown values) and reports
+  `pending_count` independently of that filter.
+- **Inference**: thread-safe model singleton; `/model/info` canonicalises
+  `lgbm`/`xgb` to `lightgbm`/`xgboost` (the static snapshot `model.json` does the
+  same).
+- **Empty feature partitions** return an empty prediction set (HTTP 200) instead
+  of a 500 from `predict_proba`.
+- **Monitoring**: Prometheus uptime uses process uptime on a monotonic clock; the
+  admin-or-preview dependency is awaited correctly.
+
+### Verified
+
+- 89/89 Python tests (`tests/run_tests.py`) and 21/21 frontend tests pass;
+  `typecheck`, production build and `compileall` pass.
+- Frozen evidence check 13/13, 0 changed files.
+- Live API on port 8010: `/health`, `/api/health`, `/dates`, `/predict`,
+  `/predict/all`, `/predict/trend`, `/model/info`, `/thresholds`, `/monitoring`,
+  `/monitoring/prometheus`, `/alerts/feed` and SPA routes all return 200.
+- API predictions match direct `model.predict` output exactly (max absolute
+  probability difference `0.0`, zero band mismatches) for all three horizons on
+  `2026-11-07`.
+
 ## [1.1.0] — 2026-11-07
 
 ### Added
@@ -79,7 +123,7 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ## [0.8.0] — 2026-11-01
 
-- D16 frozen production model; test split closed after a single read.
+- D16 frozen production model; frozen-test history disclosed in `reports/test_read_ledger.md` (six programme-level exposures/two full reads; MI-6 is the valid headline).
 - Cost-derived thresholds and four risk bands per horizon.
 - Calibration, robustness, ablation, error analysis and explainability reports.
 - FastAPI inference service and React dashboard.

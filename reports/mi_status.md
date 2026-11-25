@@ -17,7 +17,7 @@
 
 **One-line state:** **MI-v2 complete** — MI-1 done (ERA5 **complete**, 133/133), MI-2 done,
 MI-3 done (ensemble rejected), MI-4 done (labels bound the ceiling), MI-5 done (frozen
-`hpo_perhorizon_FULL_V2`, D16), **MI-6 done — the frozen test read once** (D16 test
+`hpo_perhorizon_FULL_V2`, D16), **MI-6 done — frozen test read recorded in the ledger** (D16 test
 horizon-mean **0.77076** vs Phase-33 `xgboost` 0.75601 vs D7 0.66755); **MI-3a(ERA5) probe
 done — ERA5 is a wash on the primary cell (−0.00025 val_2022), so D16 stands**.
 

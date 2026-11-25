@@ -11,13 +11,17 @@ sys.stdout.reconfigure(encoding="utf-8")
 RAW = Path(r"D:\Flood predictor\data\raw\ffwc")
 RAW.mkdir(parents=True, exist_ok=True)
 
+import os
+
 H = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/126.0 Safari/537.36",
-    "x-ffwc-internal-key": "FFWC-Project-2026-Secure-V1",
     "Referer": "https://ffwc.gov.bd/",
     "Origin": "https://ffwc.gov.bd",
     "Accept": "application/json",
 }
+_ffwc_key = os.getenv("FFWC_INTERNAL_KEY") or os.getenv("FFWC_API_KEY")
+if _ffwc_key:
+    H["x-ffwc-internal-key"] = _ffwc_key
 API = "https://api.ffwc.gov.bd/data_load"
 
 

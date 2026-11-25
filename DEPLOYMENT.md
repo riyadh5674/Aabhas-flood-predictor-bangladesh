@@ -148,15 +148,15 @@ raw-input uploads are opt-in (`--push-features`, `--push-raw`).
 .\.venv\Scripts\python.exe system\ops\refresh_and_publish.py --dry-run
 
 # Source refresh only, with a freshness report (no feature build)
-.\.venv\Scripts\python.exe system\ingestion\refresh_sources.py --end 2026-11-05
+.\.venv\Scripts\python.exe system\ingestion\refresh_sources.py --end 2026-11-07
 .\.venv\Scripts\python.exe system\ingestion\refresh_sources.py --only glofas,power_soil --dry-run
 
 # One date, full pipeline (source refresh → features → quality gate)
-.\.venv\Scripts\python.exe system\ops\daily_pipeline.py --date 2026-11-05
+.\.venv\Scripts\python.exe system\ops\daily_pipeline.py --date 2026-11-07
 
 # Inspect the latest gate + source telemetry
 Get-Content system\data\processed\quality\latest.json
-Get-Content system\data\processed\source_status\2026-11-05.json
+Get-Content system\data\processed\source_status\2026-11-07.json
 ```
 
 Publishing uses the token stored by `hf auth login` (or `HF_TOKEN` if set).
@@ -402,8 +402,8 @@ audit trail.
 
 ```powershell
 # Evaluate one date (all horizons by default)
-.\.venv\Scripts\python.exe system\alerts\run_alerts.py --date 2026-11-05 --all-horizons
-.\.venv\Scripts\python.exe system\alerts\run_alerts.py --date 2026-11-05 --horizon 24h
+.\.venv\Scripts\python.exe system\alerts\run_alerts.py --date 2026-11-07 --all-horizons
+.\.venv\Scripts\python.exe system\alerts\run_alerts.py --date 2026-11-07 --horizon 24h
 ```
 
 State and logs:
@@ -435,9 +435,10 @@ escalation. Alerts remain decision support, **not official warnings**.
 - **Preview/staging auth** — `AABHAS_PREVIEW_MODE=true` requires
   `AABHAS_PREVIEW_USER` and `AABHAS_PREVIEW_PASSWORD` and enables HTTP Basic
   auth on every request.
-- **Alert approval auth** — `/alerts/{draft_id}/approve` requires
-  `X-Admin-API-Key` matching `AABHAS_ADMIN_API_KEYS` (comma-separated). Without
-  configured keys the endpoint cannot approve alerts.
+- **Alert approval auth** - `/alerts/{draft_id}/approve` requires
+  `X-Admin-API-Key` matching `AABHAS_ADMIN_API_KEYS` (comma-separated). Configure
+  it as an environment secret (never commit keys). Without configured keys the
+  endpoint cannot approve alerts.
 - **Docs** — disabled in production via `AABHAS_ENABLE_DOCS=false`.
 - **Caching** — predictions are cached in-process (64 entries) and HTTP
   responses use `Cache-Control` + `ETag`/`stale-while-revalidate`. The HF date
@@ -516,7 +517,7 @@ curl https://aabhas-flood-predictor-xckw.onrender.com/health
 Get-Content system\logs\daily_pipeline.log -Tail 200
 
 # Source freshness + feature quality (local)
-Get-Content system\data\processed\source_status\2026-11-05.json
+Get-Content system\data\processed\source_status\2026-11-07.json
 Get-Content system\data\processed\quality\latest.json
 
 # Snapshot metadata (latest-date vs trend-window station counts)
@@ -530,8 +531,8 @@ Daily expectations:
 - every **critical** source is `ok` in `source_status/<date>.json`
   (GloFAS ≤ 2 d, POWER soil ≤ 7 d, ERA5-Land ≤ 7 d);
 - `quality/<date>.json` has `passed: true` and critical null share 0.0;
-- `health.json` reports `station_count` for the latest date (112 on 2026-11-05)
-  and `trend_station_count` for the 90-day union (127) — do not compare the two
+- `health.json` reports `station_count` for the latest date (91 on 2026-11-07)
+  and `trend_station_count` for the 90-day union — do not compare the two
   as if they were the same scope;
 - the UI freshness banner is green (no warning) only when the feature date is
   current.

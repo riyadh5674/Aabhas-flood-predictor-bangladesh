@@ -71,7 +71,7 @@ Show:
 Then switch to the repository and show:
 
 ```powershell
-.\.venv\Scripts\python.exe tests\run_tests.py          # 86/86
+.\.venv\Scripts\python.exe tests\run_tests.py          # 89/89
 .\.venv\Scripts\python.exe scripts\freeze_results.py --check   # 13/13
 ```
 
@@ -143,8 +143,9 @@ remains the authority.
 
 **"How do you know the model is not leaking?"**
 The splits use a 7-day embargo and station-disjoint folds. Label-window columns are
-banned as features and asserted absent in tests. The test set was opened once, and a
-read ledger records zero reads after that.
+banned as features and asserted absent in tests. The frozen-test history is disclosed in
+`reports/test_read_ledger.md`: programme-level six exposures/two full model reads, with MI-6
+as the valid headline. Any future read must be pre-registered and added to the ledger.
 
 **"Why not deep learning?"**
 We ran a fair DL rematch on identical features, budgets and seeds. It did not beat the
