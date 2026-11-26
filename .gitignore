@@ -102,3 +102,6 @@ figures/phase34_*.png
 
 # --- deployment state (local upload hash manifest) ---
 system/deploy/.deploy_state.json
+
+# --- Office temp files ---
+reports/~$*.docx

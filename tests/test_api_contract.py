@@ -7,8 +7,10 @@ admin auth. No external network calls are made.
 
 from __future__ import annotations
 
+import json
 import os
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -198,6 +200,46 @@ class APIContractTests(unittest.TestCase):
     def test_alerts_feed_rejects_bad_limit(self):
         resp = self.client.get("/alerts/feed", params={"limit": 0})
         self.assertEqual(resp.status_code, 422, resp.text)
+
+    def test_alerts_feed_rejects_unknown_status(self):
+        resp = self.client.get("/alerts/feed", params={"status": "bogus"})
+        self.assertEqual(resp.status_code, 400, resp.text)
+
+    def test_alerts_feed_pending_count_ignores_status_filter(self):
+        from system.alerts import alert_engine as ae
+
+        old_draft, old_approved = ae.DRAFT_DIR, ae.APPROVED_DIR
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            ae.DRAFT_DIR = base / "drafts"
+            ae.APPROVED_DIR = base / "approved"
+            ae.DRAFT_DIR.mkdir()
+            ae.APPROVED_DIR.mkdir()
+            draft = {
+                "draft_id": "d1", "status": "draft",
+                "triggered_at": "2026-07-15T00:00:00+00:00",
+                "station_id": 7, "date": "2026-07-15", "horizon": "24h",
+                "risk_band": "high", "probability": 0.9,
+                "alert_level": "warning", "reason": "initial_detection",
+            }
+            sent = {
+                "draft_id": "d2", "status": "dispatched",
+                "triggered_at": "2026-07-16T00:00:00+00:00",
+                "station_id": 8, "date": "2026-07-16", "horizon": "24h",
+                "risk_band": "very_high", "probability": 0.95,
+                "alert_level": "high", "reason": "escalation",
+            }
+            (ae.DRAFT_DIR / "d1.json").write_text(json.dumps(draft), encoding="utf-8")
+            (ae.APPROVED_DIR / "d2.json").write_text(json.dumps(sent), encoding="utf-8")
+            try:
+                resp = self.client.get("/alerts/feed", params={"status": "dispatched"})
+                self.assertEqual(resp.status_code, 200, resp.text)
+                body = resp.json()
+                self.assertEqual(body["total_count"], 1)
+                self.assertEqual(body["pending_count"], 1)
+                self.assertEqual(body["alerts"][0]["draft_id"], "d2")
+            finally:
+                ae.DRAFT_DIR, ae.APPROVED_DIR = old_draft, old_approved
 
     def test_monitoring_schema(self):
         resp = self.client.get("/monitoring")

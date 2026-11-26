@@ -1,22 +1,30 @@
 # Aabhas Flood Predictor — Completion & Production Plan
 
-**Status date:** 2026-11-04
-**References:** `final workflow.md` (Phases 35–45 / stages 62–73), `FLAWS.md`, current repo, live static Space.
+**Status date:** 2026-11-10
+**References:** `final workflow.md` (Phases 35–45 / stages 62–73), `FLAWS.md`, current repo, live GitHub Pages site and Render API.
 **Purpose:** define exactly what remains to make the project fully dynamic and fit for a government organisation.
 
-> **Status update (2026-11-06):** the P0 data defect described in §0 is fixed. WP-1…WP-5 are
+> **Status update (2026-11-10):** the P0 data defect described in §0 is fixed. WP-1…WP-5 are
 > implemented — the three v2 sources are idempotent incremental refreshers,
 > `system/ingestion/refresh_sources.py` runs as **Step 0** of `daily_pipeline.py`, the feature
 > quality gate writes `system/data/processed/quality/<date>.json`, and the local feature store is
-> current through **2026-11-05** with critical null share **0.0**. The alert engine now has
-> approval, audit and `/alerts` endpoints with tests (external delivery still disabled), and
-> `reports/phase45_thesis.md` completes stage 73. Remaining work is **operational**: paid
-> always-on hosting / redeploy, formal threshold sign-off plus delivery credentials, and
-> republishing the public snapshot. The diagnosis below is retained as the 2026-11-04 history.
+> current through **2026-11-09** with critical null share **0.0**. The alert engine has
+> approval, dispatch, audit and `/alerts` endpoints with tests (external delivery still disabled).
+> `reports/phase45_thesis.md` completes stage 73. Both public surfaces are live and verified:
+> the **GitHub Pages** static site (2,621-date snapshot through 2026-11-09) and the **Render**
+> free API (120-day demo slice through 2026-11-05, `degraded: false`). The internal
+> research-prototype threshold sign-off is recorded in `docs/THRESHOLD_SIGN_OFF.md` (2026-11-10).
+> Remaining work is **operational**: managed always-on scheduling, external/agency sign-off,
+> alert-delivery credentials, and paid hosting if an SLA is required. The diagnosis below is
+> retained as the 2026-11-04 history.
 
 ---
 
 ## 0. Bottom line
+
+> **Historical diagnosis (2026-11-04).** The defects in this section were fixed by WP-1…WP-5;
+> the current state is the status update above and `FLAWS.md`. This table is retained to show
+> what was wrong and why the quality gate exists.
 
 The final workflow lists 12 system/closure stages (62–73). Ten are marked DONE, but two of
 those "DONE" labels are only structurally true, and one stage is unfinished:
@@ -47,20 +55,20 @@ Phases 35–45 map to stages 62–73:
 | 62 | Location-based prediction | DONE |
 | 63 | Bangladesh flood-risk map | DONE |
 | 64 | **Automatic data acquisition** — source → ingestion → validation → preprocessing → features → model; raw append-only; QC on read | **DONE** — incremental source refresh + freshness telemetry + quality gate |
-| 65 | Real-time prediction pipeline | DONE (local/system); public live redeploy pending |
+| 65 | Real-time prediction pipeline | DONE (Render free API + static snapshot both live) |
 | 66 | **Early-warning engine** — probability → threshold → decision → alert (no-warning/watch/warning/high-risk), research-prototype label | **DONE (prototype)** — engine + approval/audit/API; delivery disabled by config |
 | 67 | Citizen interface | DONE (static mode only in production) |
 | 68 | Administrator dashboard | DONE (static mode only in production) |
 | 69 | System architecture documented as built | DONE (updated 2026-11-06) |
-| 70 | System testing — label/split/sequence/feature/pipeline | DONE (**84 tests**, incl. ingestion + alert + API contract) |
+| 70 | System testing — label/split/sequence/feature/pipeline | DONE (**89 tests**, incl. ingestion + alert + API contract) |
 | 71 | Final scientific evaluation | DONE (re-run; freeze 13/13, test split closed) |
 | 72 | Reproducibility & documentation | DONE (updated 2026-11-06) |
 | 73 | **Research report / thesis** | **DONE** — `reports/phase45_thesis.md` (draft; PDF/typesetting later) |
 
-The literal remaining work is **operational, not scientific**: paid always-on hosting and a
-public redeploy, formal threshold sign-off plus SMTP/webhook credentials, and the
-government-grade workstreams in §6–§7. Stages 64, 66 and 73 are now complete at the
-prototype level.
+The literal remaining work is **operational, not scientific**: managed always-on scheduling,
+external/agency threshold sign-off plus SMTP/webhook credentials, and the government-grade
+workstreams in §6–§7. Stages 64, 66 and 73 are complete at the prototype level; the public
+GitHub Pages site and the Render API are both live.
 
 ---
 
@@ -206,8 +214,10 @@ The repo already contains `render.yaml`, a multi-stage `Dockerfile`, `docker-com
 a hardened FastAPI app (`system/api/app.py`). What is missing is a working host and the
 production wiring.
 
-**Render free is not suitable:** it sleeps, cold-starts, has no SLA, and the current service
-is unreachable (HTTP 000). Choose one:
+**Render free is not suitable for an SLA:** it sleeps, cold-starts and has no uptime guarantee.
+The dated 2026-11-04 observation that the service was unreachable (HTTP 000) is **resolved**: as
+of 2026-11-10 `/health` returns 200 with `model_loaded: true` and `degraded: false`. For an
+operational service, choose one:
 
 - **Render paid** — fastest path; still a third-party PaaS.
 - **Google Cloud Run** — recommended managed option; region, IAM, uptime checks, audit logs.
@@ -235,21 +245,25 @@ procedure.
 
 ## 5. P1 — Early-warning engine (stage 66)
 
-Current state: `system/alerts/alert_engine.py` maps bands → alert levels, applies per-station
-state and a 24 h cooldown, writes `system/logs/alerts.csv`, and calls `notify_stub()`.
-`system/config/alert_config.json` has `notification.enabled = false`.
+**Current state (2026-11-10):** `system/alerts/alert_engine.py` maps bands → alert levels,
+applies per-station state and a 24 h cooldown (escalation bypass), and writes
+`system/logs/alerts.csv` plus a hash-chained audit. The draft → approval → dispatch lifecycle,
+`/alerts/feed` and `/alerts/{draft_id}/approve` are implemented with tests. The internal
+research-prototype threshold sign-off is recorded (`docs/THRESHOLD_SIGN_OFF.md`, 2026-11-10).
+`system/config/alert_config.json` still has `notification.enabled = false`.
 
-Missing:
+Remaining for operational use:
 
-1. **Threshold sign-off.** The Phase-29 thresholds are research-derived. The agency must
-   review and formally adopt them (or supply official danger levels).
+1. **External sign-off.** The Phase-29 thresholds are research-derived and internally signed
+   for prototype use only. An agency must review and formally adopt them (or supply official
+   danger levels); see `docs/THRESHOLD_SIGN_OFF.md` §6.2.
 2. **Delivery adapters.** Email (SMTP/SES), SMS gateway, Teams/Slack/webhook, dashboard feed.
-   Retries, dedupe, rate limits, per-channel test mode.
-3. **Human-in-the-loop.** Draft alert → duty officer review/approve → send → acknowledgement;
-   escalation if unacknowledged; immutable audit log (who, when, what, why).
-4. **Alert lifecycle and API.** Expose current alerts via `/alerts` and the dashboard; keep
-   the "research prototype — not an official warning" label until formal approval.
-5. **Tests.** Band→level mapping, cooldown, escalation, approval, audit, delivery failure.
+   Retries, dedupe, rate limits, per-channel test mode. The code path exists, but no real
+   credentials or recipient are configured.
+3. **Duty-officer cover.** A named approving officer, escalation if unacknowledged, and a
+   published review SLA.
+4. **Tests.** Already covered: band→level mapping, cooldown, escalation, approval, audit,
+   delivery failure. Add a live-channel integration test once credentials exist.
 
 **Acceptance:** a simulated high-risk event creates a draft, cannot send without approval,
 sends to a test channel, records an audit trail, and appears on the dashboard.
@@ -295,9 +309,11 @@ Until then, every UI surface and API response should carry the research-prototyp
 
 ---
 
-## 8. P2 — Research report / thesis (stage 73)
+## 8. P2 — Research report / thesis (stage 73) — COMPLETE
 
-Write `reports/phase45_thesis.md` (and PDF) following the document's outline:
+`reports/phase45_thesis.md` is written (draft, 2026-11-06; 89-test and 2026-11-10 status noted)
+and stage 73 is DONE at the research-report level. It follows the outline below. PDF/typesetting
+remains a publication task.
 
 1. Definition and data (including the new automatic-acquisition design and QC).
 2. Method: leakage controls, splits, label contract.
@@ -317,15 +333,15 @@ Write `reports/phase45_thesis.md` (and PDF) following the document's outline:
 
 ## 9. Recommended order
 
-| Order | Work | Why |
-|---|---|---|
-| 1 | WP-1…WP-5: source refreshers, pipeline wiring, quality gate, backfill, freshness | Fixes the live accuracy defect; no external accounts needed |
-| 2 | Re-run evaluation + snapshot publish | Proves the fix and updates the public site |
-| 3 | Always-on runner (CI or cloud job) + failure alerts | Removes the laptop single point of failure |
-| 4 | Choose host and deploy live API + staging | Delivers stages 65/67–69 in production form |
-| 5 | Alert delivery + approval + audit | Completes stage 66 |
-| 6 | Hardening, tests, docs | Government readiness |
-| 7 | Thesis | Completes stage 73 |
+| Order | Work | Why | Status |
+|---|---|---|---|
+| 1 | WP-1…WP-5: source refreshers, pipeline wiring, quality gate, backfill, freshness | Fixes the live accuracy defect; no external accounts needed | **DONE** |
+| 2 | Re-run evaluation + snapshot publish | Proves the fix and updates the public site | **DONE** (snapshot through 2026-11-09; frozen test unchanged) |
+| 3 | Always-on runner (CI or cloud job) + failure alerts | Removes the laptop single point of failure | Workflow built, **opt-in**; managed runner still open |
+| 4 | Choose host and deploy live API + staging | Delivers stages 65/67–69 in production form | Demo **LIVE** on Render free; paid/staging host open |
+| 5 | Alert delivery + approval + audit | Completes stage 66 | Lifecycle **DONE**; external delivery/sign-off open |
+| 6 | Hardening, tests, docs | Government readiness | Partly done; 89 Python + 21 frontend tests |
+| 7 | Thesis | Completes stage 73 | **DONE** (draft) |
 
 ---
 

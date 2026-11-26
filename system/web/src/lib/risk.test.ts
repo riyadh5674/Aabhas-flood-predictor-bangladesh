@@ -20,12 +20,23 @@ describe("risk bands", () => {
   });
 
   it("respects horizon-specific schemes", () => {
-    expect(bandFor(0.0868, "48h", FALLBACK_RISK)).toBe("moderate");
-    expect(bandFor(0.1736, "48h", FALLBACK_RISK)).toBe("high");
-    expect(bandFor(0.0963, "72h", FALLBACK_RISK)).toBe("moderate");
-    expect(bandFor(0.1926, "72h", FALLBACK_RISK)).toBe("high");
-    // 48h/72h have no very_high band in the frozen configuration.
-    expect(bandFor(0.999, "48h", FALLBACK_RISK)).toBe("high");
+    // 48h: watch cut = t_warn/2, warning cut = t_warn=0.0868,
+    // very-high cut = first validation score with precision >= 0.90.
+    expect(bandFor(0.0433, "48h", FALLBACK_RISK)).toBe("low");
+    expect(bandFor(0.0434, "48h", FALLBACK_RISK)).toBe("moderate");
+    expect(bandFor(0.0867, "48h", FALLBACK_RISK)).toBe("moderate");
+    expect(bandFor(0.0868, "48h", FALLBACK_RISK)).toBe("high");
+    expect(bandFor(0.5629, "48h", FALLBACK_RISK)).toBe("high");
+    expect(bandFor(0.563, "48h", FALLBACK_RISK)).toBe("very_high");
+
+    // 72h: t_warn=0.0963, very-high cut=0.5277.
+    expect(bandFor(0.0481, "72h", FALLBACK_RISK)).toBe("low");
+    expect(bandFor(0.0482, "72h", FALLBACK_RISK)).toBe("moderate");
+    expect(bandFor(0.0962, "72h", FALLBACK_RISK)).toBe("moderate");
+    expect(bandFor(0.0963, "72h", FALLBACK_RISK)).toBe("high");
+    expect(bandFor(0.5276, "72h", FALLBACK_RISK)).toBe("high");
+    expect(bandFor(0.5277, "72h", FALLBACK_RISK)).toBe("very_high");
+    expect(bandFor(0.999, "48h", FALLBACK_RISK)).toBe("very_high");
   });
 
   it("never turns missing values into low risk", () => {

@@ -441,50 +441,138 @@ def dispatch_alert(alert: dict, config: dict) -> dict:
 
 DRAFT_DIR = ROOT / "system" / "data" / "processed" / "alerts_draft"
 APPROVED_DIR = ROOT / "system" / "data" / "processed" / "alerts_approved"
+DEFAULT_AUDIT_LOG = "system/logs/alert_audit.jsonl"
+
+
+def _audit_path(config: dict) -> Path:
+    return ROOT / config.get("state", {}).get("audit_log", DEFAULT_AUDIT_LOG)
+
+
+def _store_approved(draft_id: str, alert: dict) -> None:
+    """Persist the final alert record and remove its draft file.
+
+    Dispatched and approved-but-not-dispatched alerts both live in
+    APPROVED_DIR; the ``status`` field distinguishes them so /alerts/feed can
+    filter on ``approved`` or ``dispatched``.
+    """
+    APPROVED_DIR.mkdir(parents=True, exist_ok=True)
+    (APPROVED_DIR / f"{draft_id}.json").write_text(
+        json.dumps(alert, indent=2), encoding="utf-8"
+    )
+    draft_path = DRAFT_DIR / f"{draft_id}.json"
+    if draft_path.exists():
+        draft_path.unlink()
+
+
+def _dispatch_and_store(alert: dict, draft_id: str, config: dict) -> dict:
+    """Dispatch an approved alert and record the delivery result.
+
+    ``dispatched`` means at least one configured channel accepted the alert;
+    ``dispatch_failed`` keeps the record visible for retry/audit instead of
+    pretending delivery succeeded.
+    """
+    delivery = dispatch_alert(alert, config)
+    alert["delivery"] = delivery
+    alert["dispatched_at"] = datetime.now(timezone.utc).isoformat()
+    alert["status"] = (
+        "dispatched"
+        if any(result.get("success") for result in delivery.values())
+        else "dispatch_failed"
+    )
+    write_audit_log(
+        {
+            "action": (
+                "alert_dispatched"
+                if alert["status"] == "dispatched"
+                else "alert_dispatch_failed"
+            ),
+            "draft_id": draft_id,
+            "alert": alert,
+            "delivery": delivery,
+        },
+        _audit_path(config),
+    )
+    return alert
+
 
 def create_draft(alert: dict, config: dict) -> str:
-    """Create a draft alert record requiring approval."""
+    """Create an alert record, auto-approving watch alerts when configured.
+
+    Alerts that require approval are written to ``DRAFT_DIR``. Alerts that are
+    auto-approved (or when approval is disabled entirely) are persisted directly
+    to ``APPROVED_DIR`` and dispatched immediately if notifications are enabled.
+    """
     DRAFT_DIR.mkdir(parents=True, exist_ok=True)
     draft_id = f"{alert['station_id']}_{alert['horizon']}_{alert['date']}_{int(time.time())}"
-    draft_path = DRAFT_DIR / f"{draft_id}.json"
-    
+    alert["draft_id"] = draft_id
+    alert["created_at"] = datetime.now(timezone.utc).isoformat()
+
     auto_approve = config["approval"].get("auto_approve_watch", False)
     requires_approval = config["approval"].get("required", True)
-    
+
     if not requires_approval or (auto_approve and alert["alert_level"] == "watch"):
-        # Auto-approve
         alert["status"] = "approved"
         alert["approved_at"] = datetime.now(timezone.utc).isoformat()
         alert["approved_by"] = "auto"
-    else:
-        alert["status"] = "draft"
-        alert["created_at"] = datetime.now(timezone.utc).isoformat()
-    
-    alert["draft_id"] = draft_id
-    draft_path.write_text(json.dumps(alert, indent=2), encoding="utf-8")
+        write_audit_log(
+            {
+                "action": "alert_approved",
+                "draft_id": draft_id,
+                "approved_by": "auto",
+                "alert": alert,
+            },
+            _audit_path(config),
+        )
+        if config.get("notification", {}).get("enabled", False):
+            _dispatch_and_store(alert, draft_id, config)
+        _store_approved(draft_id, alert)
+        return draft_id
+
+    alert["status"] = "draft"
+    (DRAFT_DIR / f"{draft_id}.json").write_text(
+        json.dumps(alert, indent=2), encoding="utf-8"
+    )
     return draft_id
 
 
-def approve_alert(draft_id: str, approver: str) -> tuple[bool, str]:
-    """Approve a draft alert and move to approved directory."""
+def approve_alert(
+    draft_id: str, approver: str, config: dict | None = None
+) -> tuple[bool, str]:
+    """Approve a draft alert and move it to the approved directory.
+
+    When notifications are enabled the approved alert is dispatched immediately
+    and its final status becomes ``dispatched`` or ``dispatch_failed``;
+    otherwise it is stored as ``approved`` for a later dispatch attempt.
+    """
     draft_path = DRAFT_DIR / f"{draft_id}.json"
     if not draft_path.exists():
         return False, "draft not found"
-    
+
     alert = json.loads(draft_path.read_text(encoding="utf-8"))
     if alert.get("status") != "draft":
         return False, f"alert not in draft state: {alert.get('status')}"
-    
+
+    if config is None:
+        config = load_alert_config()
+
     alert["status"] = "approved"
     alert["approved_at"] = datetime.now(timezone.utc).isoformat()
     alert["approved_by"] = approver
-    
-    APPROVED_DIR.mkdir(parents=True, exist_ok=True)
-    approved_path = APPROVED_DIR / f"{draft_id}.json"
-    approved_path.write_text(json.dumps(alert, indent=2), encoding="utf-8")
-    draft_path.unlink()
-    
-    return True, "approved"
+    write_audit_log(
+        {
+            "action": "alert_approved",
+            "draft_id": draft_id,
+            "approved_by": approver,
+            "alert": alert,
+        },
+        _audit_path(config),
+    )
+
+    if config.get("notification", {}).get("enabled", False):
+        _dispatch_and_store(alert, draft_id, config)
+
+    _store_approved(draft_id, alert)
+    return True, alert["status"]
 
 
 def get_pending_approvals() -> list[dict]:
@@ -507,33 +595,14 @@ def get_pending_approvals() -> list[dict]:
 # ---------------------------------------------------------------------------
 
 def notify_alerts(alerts: list[dict], config: dict) -> None:
-    """Process alerts through approval workflow and dispatch."""
-    if not config["notification"].get("enabled", False):
-        # Still create drafts for audit trail
-        for alert in alerts:
-            create_draft(alert, config)
-        return
-    
+    """Create alert records and dispatch auto-approved alerts.
+
+    Drafts wait for a duty officer. Auto-approved alerts (for example watch
+    alerts when ``auto_approve_watch`` is enabled) are dispatched immediately
+    when notifications are enabled and are always persisted to disk.
+    """
     for alert in alerts:
-        draft_id = create_draft(alert, config)
-        
-        # If auto-approved, dispatch immediately
-        if alert.get("status") == "approved":
-            delivery = dispatch_alert(alert, config)
-            
-            # Write audit log
-            audit_entry = {
-                "action": "alert_dispatched",
-                "draft_id": draft_id,
-                "alert": alert,
-                "delivery": delivery,
-                "dispatched_at": datetime.now(timezone.utc).isoformat(),
-            }
-            audit_path = ROOT / config["state"].get("audit_log", "system/logs/alert_audit.jsonl")
-            write_audit_log(audit_entry, audit_path)
-            
-            # Move to approved
-            approve_alert(draft_id, "auto")
+        create_draft(alert, config)
 
 
 def notify_stub(alerts: list[dict], config: dict) -> None:

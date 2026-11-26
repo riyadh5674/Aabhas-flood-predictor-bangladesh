@@ -176,6 +176,9 @@ class AlertWorkflowTests(unittest.TestCase):
         ae.DRAFT_DIR = self.base / "drafts"
         ae.APPROVED_DIR = self.base / "approved"
         self.config = _config()
+        # Keep audit writes inside the temp directory so tests never touch the
+        # repository's real append-only audit log.
+        self.config["state"]["audit_log"] = str(self.base / "audit.jsonl")
 
     def tearDown(self):
         ae.DRAFT_DIR = self._old_draft
@@ -203,7 +206,7 @@ class AlertWorkflowTests(unittest.TestCase):
 
     def test_approve_moves_draft_to_approved(self):
         draft_id = ae.create_draft(self._alert(), self.config)
-        ok, message = ae.approve_alert(draft_id, "duty_officer")
+        ok, message = ae.approve_alert(draft_id, "duty_officer", self.config)
         self.assertTrue(ok, message)
         self.assertFalse((ae.DRAFT_DIR / f"{draft_id}.json").exists())
         approved = json.loads((ae.APPROVED_DIR / f"{draft_id}.json").read_text(encoding="utf-8"))
@@ -212,9 +215,21 @@ class AlertWorkflowTests(unittest.TestCase):
 
     def test_approving_twice_fails(self):
         draft_id = ae.create_draft(self._alert(), self.config)
-        ae.approve_alert(draft_id, "duty_officer")
-        ok, _ = ae.approve_alert(draft_id, "duty_officer")
+        ae.approve_alert(draft_id, "duty_officer", self.config)
+        ok, _ = ae.approve_alert(draft_id, "duty_officer", self.config)
         self.assertFalse(ok)
+
+    def test_auto_approved_watch_is_persisted(self):
+        config = _config()
+        config["approval"] = {"required": True, "auto_approve_watch": True}
+        config["state"]["audit_log"] = str(self.base / "audit.jsonl")
+        alert = self._alert()
+        alert["alert_level"] = "watch"
+        draft_id = ae.create_draft(alert, config)
+        self.assertFalse((ae.DRAFT_DIR / f"{draft_id}.json").exists())
+        stored = json.loads((ae.APPROVED_DIR / f"{draft_id}.json").read_text(encoding="utf-8"))
+        self.assertEqual(stored["status"], "approved")
+        self.assertEqual(stored["approved_by"], "auto")
 
     def test_auto_approve_disabled_requires_manual(self):
         draft_id = ae.create_draft(self._alert(), self.config)

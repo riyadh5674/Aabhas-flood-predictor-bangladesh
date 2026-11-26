@@ -240,12 +240,12 @@ class D16Model:
         """
         import pandas as pd
 
-        probs = self.predict_proba(features_df, horizon)
-        threshold = float(THRESHOLDS[horizon]["t_warn"])
-        computed_at = datetime.now(timezone.utc).isoformat()
-        model_version = str(self.version)
         n_rows = len(features_df)
 
+        # Handle an empty feature partition before touching the pipeline.
+        # scikit-learn's predict_proba raises on a zero-row frame, which turned
+        # an empty (but valid) date partition into a 500 instead of an empty
+        # prediction set.
         if n_rows == 0:
             return pd.DataFrame(
                 columns=[
@@ -260,6 +260,11 @@ class D16Model:
                     "computed_at",
                 ]
             )
+
+        probs = self.predict_proba(features_df, horizon)
+        threshold = float(THRESHOLDS[horizon]["t_warn"])
+        computed_at = datetime.now(timezone.utc).isoformat()
+        model_version = str(self.version)
 
         # Extract columns once instead of building a Series per row with iloc.
         if "station_id" in features_df.columns:

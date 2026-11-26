@@ -71,6 +71,10 @@ from system.config.model_config import HORIZONS
 APP_VERSION = "1.1.0"
 logger = logging.getLogger("aabhas.api")
 
+# Process start time for the Prometheus uptime gauge. time.monotonic() is
+# immune to wall-clock changes (NTP steps, container clock drift).
+_PROCESS_STARTED_MONOTONIC = time.monotonic()
+
 PREVIEW_MODE = os.getenv("AABHAS_PREVIEW_MODE", "").lower() == "true"
 PREVIEW_USER = os.getenv("AABHAS_PREVIEW_USER", "")
 PREVIEW_PASSWORD = os.getenv("AABHAS_PREVIEW_PASSWORD", "")
@@ -310,11 +314,16 @@ async def require_admin_key(api_key: str = Security(_admin_key_header)) -> str:
     return api_key
 
 
-def require_admin_or_preview(api_key: str = Security(_admin_key_header)) -> str:
-    """Allow either admin key or preview mode credentials."""
+async def require_admin_or_preview(api_key: str = Security(_admin_key_header)) -> str:
+    """Allow either admin key or preview mode credentials.
+
+    FastAPI runs dependencies in an event loop, so the delegated check must be
+    awaited. Returning the coroutine object directly would silently bypass the
+    admin-key check.
+    """
     if PREVIEW_MODE:
         return "preview"
-    return require_admin_key(api_key)
+    return await require_admin_key(api_key)
 
 
 # ---------------------------------------------------------------------------
@@ -613,45 +622,50 @@ class AlertsListResponse(BaseModel):
 
 @app.get("/alerts/feed", response_model=AlertsListResponse, tags=["alerts"])
 def get_alerts(
-    status: Optional[str] = Query(None, description="Filter by status: draft, approved, dispatched"),
+    status: Optional[str] = Query(None, description="Filter by status: draft, approved, dispatched, dispatch_failed"),
     limit: int = Query(100, ge=1, le=500, description="Max results"),
     offset: int = Query(0, ge=0, description="Pagination offset"),
 ):
     """Get alert records with optional status filter."""
+    allowed_status = {"draft", "approved", "dispatched", "dispatch_failed"}
+    if status is not None and status not in allowed_status:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Invalid status. Choose one of: {', '.join(sorted(allowed_status))}",
+        )
+
     try:
-        from system.alerts.alert_engine import get_pending_approvals, DRAFT_DIR, APPROVED_DIR
+        from system.alerts.alert_engine import DRAFT_DIR, APPROVED_DIR
     except ImportError:
         raise HTTPException(status_code=503, detail="Alert engine not available")
-    
-    all_alerts = []
-    
-    # Load draft alerts
-    if DRAFT_DIR.exists():
-        for f in DRAFT_DIR.glob("*.json"):
+
+    # Keyed by draft_id so a record that appears in both directories (for
+    # example during a crash between write and unlink) is only returned once.
+    records: dict[str, dict] = {}
+    for directory in (DRAFT_DIR, APPROVED_DIR):
+        if not directory.exists():
+            continue
+        for path in directory.glob("*.json"):
             try:
-                alert = json.loads(f.read_text(encoding="utf-8"))
-                if status is None or alert.get("status") == status:
-                    all_alerts.append(alert)
+                alert = json.loads(path.read_text(encoding="utf-8"))
             except Exception:
-                pass
-    
-    # Load approved alerts
-    if APPROVED_DIR.exists():
-        for f in APPROVED_DIR.glob("*.json"):
-            try:
-                alert = json.loads(f.read_text(encoding="utf-8"))
-                if status is None or alert.get("status") == status:
-                    all_alerts.append(alert)
-            except Exception:
-                pass
-    
+                continue
+            key = alert.get("draft_id") or path.stem
+            records[key] = alert
+
+    all_alerts = list(records.values())
+    # pending_count must reflect every draft, regardless of the status filter.
+    pending = sum(1 for alert in all_alerts if alert.get("status") == "draft")
+
+    if status is not None:
+        all_alerts = [alert for alert in all_alerts if alert.get("status") == status]
+
     # Sort by triggered_at descending
     all_alerts.sort(key=lambda x: x.get("triggered_at", ""), reverse=True)
-    
+
     total = len(all_alerts)
-    pending = sum(1 for a in all_alerts if a.get("status") == "draft")
     paginated = all_alerts[offset:offset + limit]
-    
+
     return AlertsListResponse(
         alerts=paginated,
         pending_count=pending,
@@ -670,7 +684,7 @@ def approve_alert(draft_id: str, approver: str = Query(..., description="Approve
     ok, msg = approve_alert(draft_id, approver)
     if not ok:
         raise HTTPException(status_code=400, detail=msg)
-    return {"draft_id": draft_id, "status": "approved", "message": msg}
+    return {"draft_id": draft_id, "status": msg, "message": f"Alert {msg}"}
 
 
 @app.post("/alerts/evaluate", tags=["alerts"], dependencies=[Depends(require_admin_key)])
@@ -817,7 +831,6 @@ def monitoring_status():
     """
     try:
         from system.api.inference import get_model
-        from system.features.validate import QUALITY_DIR
         from system.alerts.alert_engine import get_pending_approvals
     except ImportError:
         raise HTTPException(status_code=503, detail="Monitoring dependencies not available")
@@ -924,7 +937,7 @@ def prometheus_metrics():
         f'aabhas_feature_age_days {age_days}',
         f'aabhas_latest_feature_date "{latest_feature_date or "unknown"}"',
         f'aabhas_model_version "{model.version if model.is_loaded else "unknown"}"',
-        f'aabhas_uptime_seconds {int((now - datetime.fromtimestamp(0, tz=timezone.utc)).total_seconds())}',
+        f'aabhas_uptime_seconds {int(time.monotonic() - _PROCESS_STARTED_MONOTONIC)}',
     ]
     
     return Response(content="\n".join(lines), media_type="text/plain")

@@ -168,7 +168,7 @@ Docker image
 
 Used for: Render / Cloud Run / any Docker host. The bundled slice makes the image
 self-contained; `AABHAS_FEATURE_STORE` or `HF_FEATURE_DATASET` can point at the full
-2,617-date store when available. Environment variables and the full runbook are in
+2,619-date store when available. Environment variables and the full runbook are in
 [`DEPLOYMENT.md`](../DEPLOYMENT.md).
 
 ### C. Daily data refresh

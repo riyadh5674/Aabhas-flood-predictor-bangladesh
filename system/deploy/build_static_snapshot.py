@@ -33,7 +33,7 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
-from system.api.inference import get_model, thresholds_info
+from system.api.inference import canonical_family, get_model, thresholds_info
 from system.config.model_config import FEATURE_STORE, HORIZONS
 
 DEFAULT_OUT = ROOT / "system" / "web" / "public" / "data" / "snapshot"
@@ -158,7 +158,44 @@ def write_trends(out: Path, dates: list[str], stations: list[dict]) -> set[int]:
     return active
 
 
+def remap_bands(out: Path, dates: list[str], model) -> int:
+    """Recompute band/action/threshold in existing prediction files.
+
+    Probabilities are frozen model outputs; the risk-band cuts are
+    configuration, not model weights. When a band cut changes, this updates the
+    published snapshot without paying for a full re-score. Returns the number of
+    prediction files that changed.
+    """
+    changed = 0
+    for date in dates:
+        path = out / "predictions" / f"{date}.json"
+        if not path.exists():
+            continue
+        try:
+            payload = json.loads(path.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            continue
+        file_changed = False
+        for horizon in HORIZONS:
+            for record in payload.get(horizon, []):
+                info = model.risk_band(float(record["probability"]), horizon)
+                if (
+                    record.get("band") != info["band"]
+                    or record.get("action") != info["action"]
+                    or record.get("threshold") != info["threshold"]
+                ):
+                    record["band"] = info["band"]
+                    record["action"] = info["action"]
+                    record["threshold"] = info["threshold"]
+                    file_changed = True
+        if file_changed:
+            dump(path, payload)
+            changed += 1
+    return changed
+
+
 def model_meta(model) -> dict:
+    raw_families = model._artefact.get("per_horizon_family") if model._artefact else None
     return {
         "version": model.version,
         "decision": "D16",
@@ -167,7 +204,11 @@ def model_meta(model) -> dict:
         "n_features": model.n_features,
         "frozen_at_utc": model.frozen_at_utc,
         "dataset_sha256_v2": model.dataset_sha256_v2,
-        "per_horizon_family": model._artefact.get("per_horizon_family") if model._artefact else None,
+        "per_horizon_family": (
+            {label: canonical_family(family) for label, family in raw_families.items()}
+            if raw_families
+            else None
+        ),
         "horizons": list(HORIZONS),
         "loaded_at": model._loaded_at.isoformat() if model._loaded_at else None,
     }
@@ -283,6 +324,11 @@ def main(argv: list[str] | None = None) -> int:
         "--rebuild-from",
         help="Re-score every date on/after this date (YYYY-MM-DD), even if already published.",
     )
+    parser.add_argument(
+        "--remap-bands",
+        action="store_true",
+        help="Recompute band/action fields in existing prediction files from the current config without re-scoring.",
+    )
     parser.add_argument("--out", default=str(DEFAULT_OUT), help="Snapshot output directory.")
     args = parser.parse_args(argv)
 
@@ -294,6 +340,21 @@ def main(argv: list[str] | None = None) -> int:
 
     stations = json.loads(STATIONS_FILE.read_text(encoding="utf-8"))
     generated_at = datetime.now(timezone.utc).isoformat()
+
+    if args.remap_bands:
+        if not out.exists():
+            print(f"No snapshot at {out}; run a full build first.")
+            return 1
+        model = get_model()
+        changed = remap_bands(out, dates, model)
+        trend_dates = dates[-args.trend_days :] if args.trend_days > 0 else dates
+        active = write_trends(out, trend_dates, stations)
+        write_metadata(out, dates, model, generated_at, station_count=len(active))
+        print(
+            f"Remapped risk bands in {changed:,} prediction file(s); "
+            f"metadata and {len(trend_dates):,} trend date(s) refreshed."
+        )
+        return 0
 
     if args.incremental:
         known = existing_dates(out)

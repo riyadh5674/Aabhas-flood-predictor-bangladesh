@@ -58,17 +58,19 @@ export const FALLBACK_RISK: RiskConfig = {
     "48h": {
       model: "lightgbm",
       bands: [
-        { name: "low", p_lo: null, p_hi: 0.0868, action: "routine monitoring" },
-        { name: "moderate", p_lo: 0.0868, p_hi: 0.1736, action: "watch" },
-        { name: "high", p_lo: 0.1736, p_hi: null, action: "warning" },
+        { name: "low", p_lo: null, p_hi: 0.0434, action: "routine monitoring" },
+        { name: "moderate", p_lo: 0.0434, p_hi: 0.0868, action: "watch" },
+        { name: "high", p_lo: 0.0868, p_hi: 0.563, action: "warning" },
+        { name: "very_high", p_lo: 0.563, p_hi: null, action: "high-risk warning / activate" },
       ],
     },
     "72h": {
       model: "xgboost",
       bands: [
-        { name: "low", p_lo: null, p_hi: 0.0963, action: "routine monitoring" },
-        { name: "moderate", p_lo: 0.0963, p_hi: 0.1926, action: "watch" },
-        { name: "high", p_lo: 0.1926, p_hi: null, action: "warning" },
+        { name: "low", p_lo: null, p_hi: 0.0482, action: "routine monitoring" },
+        { name: "moderate", p_lo: 0.0482, p_hi: 0.0963, action: "watch" },
+        { name: "high", p_lo: 0.0963, p_hi: 0.5277, action: "warning" },
+        { name: "very_high", p_lo: 0.5277, p_hi: null, action: "high-risk warning / activate" },
       ],
     },
   },
