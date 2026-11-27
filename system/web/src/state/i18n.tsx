@@ -75,7 +75,7 @@ const DICT: Record<string, { en: string; bn: string }> = {
   "home.openMap": { en: "Explore the risk map", bn: "ঝুঁকির মানচিত্র দেখুন" },
   "home.findStation": { en: "Find a station", bn: "স্টেশন খুঁজুন" },
   "home.startRegion": { en: "Start with your region", bn: "আপনার এলাকার পূর্বাভাস" },
-  "home.regionTitle": { en: "How is the river outlook changing?", bn: "আপনার এলাকার নদীর পরিস্থিতি কেমন?" },
+  "home.regionTitle": { en: "How is the river outlook changing?", bn: "How is the river outlook changing?" },
   "home.regionHelp": { en: "Select a division to see its stations and forecast details.", bn: "স্টেশন ও পূর্বাভাসের বিস্তারিত দেখতে একটি বিভাগ বেছে নিন।" },
   "home.allRegions": { en: "See all divisions", bn: "সব বিভাগ দেখুন" },
 

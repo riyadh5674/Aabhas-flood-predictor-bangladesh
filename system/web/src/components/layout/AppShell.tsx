@@ -97,6 +97,7 @@ export function AppShell() {
 
   return (
     <div className="relative min-h-dvh">
+      <a href="#main-content" className="skip-link">Skip to content</a>
       <BackgroundFX />
       <WelcomeIntro />
       <Sidebar collapsed={collapsed} onToggle={() => setCollapsed((v) => !v)} />
@@ -108,7 +109,7 @@ export function AppShell() {
         )}
       >
         {isPreview ? (
-          <div className="flex min-h-9 items-center justify-center gap-2 border-b border-amber-400/25 bg-amber-400/10 px-3 py-2 text-center text-[10px] font-semibold uppercase tracking-[0.12em] text-amber-200 sm:text-xs">
+          <div className="flex min-h-9 items-center justify-center gap-2 border-b border-amber-400/25 bg-amber-400/10 px-3 py-2 text-center text-[10px] font-semibold uppercase tracking-[0.12em] text-amber-200 sm:text-xs" role="status">
             <span>Preview environment</span>
             <span className="hidden font-normal normal-case tracking-normal text-amber-100/80 sm:inline">
               Model output is experimental and is not an official flood warning
@@ -118,7 +119,7 @@ export function AppShell() {
         <TopBar />
         <ContextBar />
         <DataFreshnessBanner />
-        <main className="mx-auto w-full max-w-[1500px] px-4 pb-8 pt-6 sm:px-6">
+        <main id="main-content" tabIndex={-1} className="mx-auto w-full max-w-[1500px] px-4 pb-28 pt-6 outline-none sm:px-6 lg:pb-12">
           <AnimatePresence mode="wait" initial={false}>
             <motion.div
               key={location.pathname}

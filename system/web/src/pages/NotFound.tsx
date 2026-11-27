@@ -1,41 +1,27 @@
-import { Compass } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
-import { useEffect } from "react";
-import { PageHeader } from "@/components/ui/PageHeader";
+import { Compass, Home, Map } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Card } from "@/components/ui/Card";
-import { Reveal } from "@/components/ui/Reveal";
-import { StatusPill } from "@/components/StatusPill";
 
 export function NotFoundPage() {
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    // no-op hook to keep structure consistent; navigate home on Enter handled globally
-  }, []);
-
   return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-6">
-      <Reveal>
-        <div className="grid h-20 w-20 place-items-center rounded-full mb-4" style={{ background: "var(--surface-2)", border: "1px solid var(--border)" }}>
-          <Compass size={30} style={{ color: "var(--muted)" }} />
+    <div className="flex min-h-[65vh] items-center justify-center px-4 py-10">
+      <Card className="max-w-xl p-8 text-center sm:p-10">
+        <div
+          className="mx-auto mb-5 grid h-20 w-20 place-items-center rounded-full"
+          style={{ background: "var(--accent-soft)", color: "var(--accent)", border: "1px solid var(--accent-line)" }}
+        >
+          <Compass size={32} />
         </div>
-        <PageHeader
-          eyebrow="Page not found"
-          title="This page doesn't exist"
-          description="We can’t find that page. Head back to the Bangladesh outlook or open the risk map."
-          actions={
-            <>
-              <Link to="/" className="btn btn--primary">
-                Back to overview <span aria-hidden="true">&rarr;</span>
-              </Link>
-              <Link to="/map" className="btn btn--ghost">
-                Open risk map
-              </Link>
-              <StatusPill compact />
-            </>
-          }
-        />
-      </Reveal>
+        <div className="micro mb-3">Page not found</div>
+        <h1 className="display mb-3 text-[clamp(2rem,4vw,3rem)]">This page drifted off the map.</h1>
+        <p className="mx-auto max-w-[46ch] text-[14px] leading-relaxed text-2">
+          The link may be outdated or mistyped. You can return to the national outlook or open the live risk map.
+        </p>
+        <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
+          <Link to="/" className="btn btn--primary"><Home size={15} /> Back to overview</Link>
+          <Link to="/map" className="btn btn--ghost"><Map size={15} /> Open risk map</Link>
+        </div>
+      </Card>
     </div>
   );
 }

@@ -23,7 +23,7 @@ export function Card({
 }
 
 export function Skeleton({ className, style }: { className?: string; style?: React.CSSProperties }) {
-  return <div className={cn("skel", className)} style={style} aria-hidden="true" />;
+  return <div className={cn("skel", className)} style={style} aria-hidden="true" role="status" aria-label="Loading" />;
 }
 
 export function SkeletonText({ lines = 3, className }: { lines?: number; className?: string }) {

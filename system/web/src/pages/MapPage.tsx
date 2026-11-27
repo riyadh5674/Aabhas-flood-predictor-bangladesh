@@ -50,7 +50,7 @@ export function MapPage() {
       <PageHeader
         eyebrow="Explore Bangladesh"
         title="Flood risk, on the map."
-        description={<>See which river stations are reporting elevated risk. Select a division or district to explore nearby stations.</>}
+        description={<>See which river stations are reporting elevated risk. Select a division or district to explore nearby stations. Latest model features: <span className="num">{date || "—"}</span>.</>}
         actions={<span className={`source-badge source-badge--${result.data?.source ?? (result.isError ? "error" : "loading")}`}><span />{result.data?.source === "demo" ? "Sample outlook" : result.data?.source === "live" ? "Model output" : result.isError ? "Forecast unavailable" : "Loading outlook"}</span>}
       />
 

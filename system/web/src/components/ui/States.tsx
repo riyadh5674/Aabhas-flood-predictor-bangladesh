@@ -48,7 +48,7 @@ export function ErrorState({
       <h3 className="text-[15px] font-medium">{title}</h3>
       {description ? <p className="mt-1.5 max-w-[46ch] text-[13px] leading-relaxed muted">{description}</p> : null}
       {onRetry ? (
-        <button type="button" className="btn btn--sm mt-5" onClick={onRetry}>
+        <button type="button" className="btn btn--sm btn--primary mt-5" onClick={onRetry}>
           <RefreshCw size={13} />
           {retryLabel}
         </button>

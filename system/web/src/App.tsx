@@ -13,9 +13,17 @@ const NotFound = lazy(() => import("@/pages/NotFound").then((m) => ({ default: m
 
 function LoadingFallback() {
   return (
-    <div className="flex h-[400px] items-center justify-center gap-3">
-      <div className="skel h-4 w-48" />
-      <div className="skel h-4 w-32" />
+    <div className="mx-auto max-w-[1500px] px-4 py-10 sm:px-6" role="status" aria-live="polite" aria-label="Loading page">
+      <div className="mb-6 space-y-3">
+        <div className="skel h-3 w-28" />
+        <div className="skel h-10 w-full max-w-md" />
+        <div className="skel h-4 w-full max-w-2xl" />
+      </div>
+      <div className="grid gap-4 md:grid-cols-3">
+        <div className="skel h-36 rounded-[18px]" />
+        <div className="skel h-36 rounded-[18px]" />
+        <div className="skel h-36 rounded-[18px]" />
+      </div>
     </div>
   );
 }

@@ -54,7 +54,7 @@ export function StationsPage() {
           title="Station directory"
           description={
             <>
-              {forecast.isError ? "Forecast data is unavailable." : forecast.isLoading ? "Loading station forecasts…" : `All ${rows.length} FFWC stations for the ${horizon.toUpperCase()} horizon, ranked by risk band then probability.`}
+              {forecast.isError ? "Forecast data is unavailable." : forecast.isLoading ? "Loading station forecasts…" : `All ${rows.length} FFWC stations for the ${horizon.toUpperCase()} horizon on ${date || "the selected date"}, ranked by risk band then probability.`}
               {!forecast.isError && !forecast.isLoading ? " Click a station for its full detail page." : null}
             </>
           }

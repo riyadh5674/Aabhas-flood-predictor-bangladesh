@@ -26,8 +26,7 @@ export function ModelPage() {
           title="Model card"
           description={
             <>
-              Frozen D16 inference artefact. Thresholds and risk bands are fetched from <span className="font-medium">/thresholds</span>;
-              the published model card identifies the bundled threshold copy when the service is unavailable.
+              Frozen D16 inference artifact. Thresholds and risk bands come from the live API when available; if the API is unavailable, the app shows unavailable state instead of substituting fake forecasts.
             </>
           }
           actions={<StatusPill compact />}

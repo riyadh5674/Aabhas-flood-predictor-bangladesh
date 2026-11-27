@@ -1,8 +1,11 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { FlaskConical, RotateCw, Share2 } from "lucide-react";
+import { AlertTriangle, Clock3, FlaskConical, RotateCw, Share2 } from "lucide-react";
 import { Segmented } from "@/components/ui/Segmented";
 import { DatePicker } from "@/components/ui/DatePicker";
 import { DEMO_ENABLED } from "@/lib/config";
+import { shortDate } from "@/lib/format";
+import { evaluateFreshness } from "@/lib/freshness";
+import { useHealth } from "@/lib/queries";
 import { HORIZONS, type Horizon } from "@/lib/types";
 import { useApp } from "@/state/AppProvider";
 import { useI18n } from "@/state/i18n";
@@ -15,6 +18,11 @@ export function ContextBar() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { date, setDate, dates, latestDate, horizon, setHorizon, dataMode, setDataMode } = useApp();
+  const health = useHealth();
+  const latestFeatureDate = health.data?.latest_feature_date ?? latestDate;
+  const freshness = evaluateFreshness(latestFeatureDate);
+  const staleCritical = Object.entries(health.data?.sources ?? {}).filter(([, source]) => source.critical && source.status !== "ok");
+  const degraded = Boolean(health.data?.degraded) || staleCritical.length > 0;
 
   const share = async () => {
     try {
@@ -92,6 +100,23 @@ export function ContextBar() {
         </div>
 
         <div className="ml-auto flex items-center gap-1.5">
+          <div
+            className="hidden items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] md:inline-flex"
+            style={{
+              borderColor: degraded || freshness.warn ? "color-mix(in srgb, var(--band-high) 35%, transparent)" : "var(--border)",
+              color: degraded || freshness.warn ? "var(--band-high)" : "var(--muted)",
+              background: degraded || freshness.warn ? "color-mix(in srgb, var(--band-high) 10%, transparent)" : "var(--surface-2)",
+            }}
+            title={
+              degraded
+                ? `Critical inputs are degraded: ${staleCritical.map(([name]) => name).join(", ") || "unknown source"}.`
+                : `Latest model feature date: ${latestFeatureDate || "unknown"}.`
+            }
+          >
+            {degraded ? <AlertTriangle size={12} /> : <Clock3 size={12} />}
+            <span className="num">Data {latestFeatureDate ? shortDate(latestFeatureDate) : "—"}</span>
+            {degraded ? <span className="font-medium">degraded</span> : freshness.warn ? <span className="font-medium">{freshness.label}</span> : null}
+          </div>
           {DEMO_ENABLED ? (
             <button
               type="button"
